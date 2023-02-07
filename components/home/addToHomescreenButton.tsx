@@ -1,8 +1,8 @@
 import { useState, useEffect } from "react";
-import { callAddToHomescreenPrompt } from "@/lib/callAddToHomescreenPrompt";
+import { CallAddToHomescreenPrompt } from "@/lib/callAddToHomescreenPrompt";
 
-export default function addToHomescreenButton() {
-  const [prompt, promptToInstall] = callAddToHomescreenPrompt();
+export default function AddToHomescreenButton() {
+  const [prompt, promptToInstall] = CallAddToHomescreenPrompt();
   const [isVisible, setVisibleState] = useState(true);
 
   const hide = () => setVisibleState(false);

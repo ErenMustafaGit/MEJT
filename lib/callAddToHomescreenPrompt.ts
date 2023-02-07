@@ -9,7 +9,7 @@ interface IBeforeInstallPromptEvent extends Event {
   prompt(): Promise<void>;
 }
 
-export function callAddToHomescreenPrompt(): [
+export function CallAddToHomescreenPrompt(): [
   IBeforeInstallPromptEvent | null,
   () => void,
 ] {
