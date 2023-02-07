@@ -41,8 +41,8 @@ export default function Layout({
             <Image
               src="/logo.png"
               alt="MEJT logo"
-              width="30"
-              height="30"
+              width="90"
+              height="60"
               className="mr-2 rounded-sm"
             ></Image>
           </Link>
@@ -67,9 +67,7 @@ export default function Layout({
         {children}
       </main>
       <div className="absolute w-full border-t border-gray-200 bg-white py-5 text-center">
-        <p className="text-gray-500">
-          MEJT - 2023
-        </p>
+        <p className="text-gray-500">MEJT - {new Date().getFullYear()}</p>
       </div>
     </>
   );

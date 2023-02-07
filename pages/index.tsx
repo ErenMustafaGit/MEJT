@@ -1,5 +1,6 @@
 import Card from "@/components/home/card";
 import Layout from "@/components/layout";
+import AddToHomescreenButton from "@/components/home/addToHomescreenButton";
 import Balancer from "react-wrap-balancer";
 import { motion } from "framer-motion";
 import { FADE_DOWN_ANIMATION_VARIANTS } from "@/lib/constants";
@@ -45,13 +46,14 @@ export default function Home() {
           variants={FADE_DOWN_ANIMATION_VARIANTS}
         >
           <a
-            className="group flex max-w-fit items-center justify-center space-x-2 rounded-full border border-black bg-black px-5 py-2 text-sm text-white transition-colors hover:bg-white hover:text-black"
+            className="group flex max-w-fit items-center justify-center space-x-2 rounded-full border border-black bg-black px-5 py-2 text-sm text-white transition-colors"
             href="#"
             target="_blank"
             rel="noopener noreferrer"
           >
             <p>Get Started</p>
           </a>
+          <AddToHomescreenButton />
         </motion.div>
       </motion.div>
     </Layout>
