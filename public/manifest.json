@@ -1,6 +1,6 @@
 {
-  "name": "Next PWA demo",
-  "short_name": "Next PWA",
+  "name": "MEJT Training",
+  "short_name": "MEJT",
   "icons": [
     {
       "src": "windows11/SmallTile.scale-100.png",
