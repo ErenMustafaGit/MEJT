@@ -6,32 +6,26 @@ const nextConfig = {
     domains: ["lh3.googleusercontent.com"],
   },
   async redirects() {
-    return [
-      {
-        source: "/github",
-        destination: "https://github.com/steven-tey/precedent",
-        permanent: false,
-      },
-    ];
+    return [];
   },
 };
 
 // module.exports = nextConfig;
 
-const withPWA = require('next-pwa')({
-  dest: 'public'
+const withPWA = require("next-pwa")({
+  dest: "public",
   // disable: process.env.NODE_ENV === 'development',
   // register: true,
   // scope: '/app',
   // sw: 'service-worker.js',
   //...
-})
+});
 
 module.exports = withPWA({
-    pwa: {
+  pwa: {
     dest: "public",
     register: true,
     skipWaiting: true,
   },
   nextConfig,
-})
+});

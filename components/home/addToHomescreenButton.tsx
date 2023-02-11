@@ -18,7 +18,7 @@ export default function AddToHomescreenButton() {
   }
 
   return (
-    <div className="group flex max-w-fit cursor-pointer items-center justify-center space-x-2 rounded-full border-2 border-black px-5 py-2 text-sm transition-colors hover:bg-black hover:text-white">
+    <div className="group flex max-w-fit cursor-pointer items-center justify-center space-x-2 rounded-full border-2 border-rblue-500 px-5 py-2 text-sm text-rblue-600 transition-colors hover:bg-rblue-500 hover:text-white">
       <button onClick={promptToInstall}>Download App</button>
     </div>
   );
