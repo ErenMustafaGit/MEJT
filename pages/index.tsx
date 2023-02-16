@@ -7,7 +7,7 @@ import Image from "next/image";
 
 export default function Home() {
   const imageClassName =
-    " h-2/3 w-2/3 transform rounded-lg object-cover object-center shadow-lg transition-all duration-250 ease-in-out hover:scale-105 hover:shadow-xl sm:h-1/2 sm:w-1/2";
+    "h-2/3 w-2/3 transform rounded-lg object-cover object-center shadow-lg transition-all duration-250 ease-in-out hover:scale-105 hover:shadow-xl sm:h-1/2 sm:w-1/2";
 
   return (
     <Layout>

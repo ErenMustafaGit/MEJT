@@ -1,11 +1,43 @@
 import { useState, useEffect } from "react";
 import { CallAddToHomescreenPrompt } from "@/lib/callAddToHomescreenPrompt";
+import { getParser } from "bowser";
 
 export default function AddToHomescreenButton() {
   const [prompt, promptToInstall] = CallAddToHomescreenPrompt();
   const [isVisible, setVisibleState] = useState(true);
 
+  const INCOMPATIBLE_BROWSERS = ["Mozilla", "Firefox"];
+
+  const browserIsSupported = (useragent: any) => {
+    const browser = getParser(useragent);
+    console.log(browser);
+    const currentBrowser = browser.getBrowserName();
+    let isSupported = true;
+    INCOMPATIBLE_BROWSERS.forEach((incompatible_browser) => {
+      if (currentBrowser === incompatible_browser) {
+        isSupported = false;
+      }
+    });
+    return isSupported;
+  };
+
   const hide = () => setVisibleState(false);
+
+  useEffect(() => {
+    // Hide the button if the browser is not supported
+    // Or if the user is in PWA
+    if (
+      typeof window !== "undefined" &&
+      !browserIsSupported(navigator.userAgent)
+    ) {
+      hide();
+    } else if (
+      typeof window !== "undefined" &&
+      window.matchMedia("(display-mode: standalone)").matches
+    ) {
+      hide();
+    }
+  }, []);
 
   useEffect(() => {
     if (prompt) {
