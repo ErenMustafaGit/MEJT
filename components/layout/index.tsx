@@ -49,13 +49,22 @@ export default function Layout({
           <div>
             <AnimatePresence>
               {!session && status !== "loading" ? (
-                <motion.button
-                  className="rounded-full border-2 border-rblue-500 bg-rblue-500 p-1.5 px-4 text-sm text-white transition-all hover:bg-white hover:text-rblue-500"
-                  onClick={() => setShowSignInModal(true)}
-                  {...FADE_IN_ANIMATION_SETTINGS}
-                >
-                  Sign In
-                </motion.button>
+                <div className="flex gap-4">
+                  <Link
+                    className="rounded-full border-2 border-rblue-500 bg-rblue-500 p-1.5 px-4 text-sm text-white transition-all hover:border-rblue-600 hover:bg-rblue-600"
+                    href="/login"
+                    {...FADE_IN_ANIMATION_SETTINGS}
+                  >
+                    Sign In
+                  </Link>
+                  <Link
+                    className="rounded-full border-2 border-rblue-500 bg-rblue-500 p-1.5 px-4 text-sm text-white transition-all hover:border-rblue-600 hover:bg-rblue-600"
+                    href="/register"
+                    {...FADE_IN_ANIMATION_SETTINGS}
+                  >
+                    Sign up
+                  </Link>
+                </div>
               ) : (
                 <UserDropdown />
               )}
@@ -63,12 +72,13 @@ export default function Layout({
           </div>
         </div>
       </div>
-      <main className="flex w-full flex-col items-center justify-center py-32">
-        {children}
-      </main>
-      <div className="absolute w-full border-t border-gray-200 bg-white py-5 text-center">
-        <p className="text-gray-500">MEJT - {new Date().getFullYear()}</p>
-      </div>
+      {/* flex w-full flex-col items-center justify-center py-32 */}
+      <main className="">{children}</main>
+      {/* <div className="fixed bottom-0 left-0 w-full border-t border-gray-200 bg-white py-2 text-center">
+        <p className="text-sm text-gray-500">
+          MEJT - {new Date().getFullYear()}
+        </p>
+      </div> */}
     </>
   );
 }

@@ -12,6 +12,9 @@ module.exports = {
   },
   theme: {
     extend: {
+      boxShadow: {
+        fade: "inset 350px 0 100px 0 #FFF",
+      },
       fontFamily: {
         display: ["var(--font-sf)", "system-ui", "sans-serif"],
         default: ["var(--font-inter)", "system-ui", "sans-serif"],
