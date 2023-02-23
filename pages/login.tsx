@@ -84,7 +84,7 @@ export default function Login() {
               variants={FADE_DOWN_ANIMATION_VARIANTS}
             >
               <Balancer>
-                You don't have an account?{" "}
+                You don&apos;t have an account?{" "}
                 <Link
                   href="/register"
                   className="text-rblue-500 transition duration-300 ease-out hover:text-rblue-300 hover:underline"
