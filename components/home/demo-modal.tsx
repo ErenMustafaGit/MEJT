@@ -21,7 +21,7 @@ const DemoModal = ({
         <div className="flex flex-col items-center justify-center space-y-3 bg-white px-4 py-6 pt-8 text-center md:px-16">
           <a href="https://mejt.erenc.fr">
             <Image
-              src="/logo.png"
+              src="/mj-logo.png"
               alt="MEJT Logo"
               className="h-10 w-10 rounded-full"
               width={20}
@@ -30,7 +30,8 @@ const DemoModal = ({
           </a>
           <h3 className="font-display text-2xl font-bold">MEJT</h3>
           <p className="text-sm text-gray-500">
-          MEJT is a training platform for athletes and coaches to improve their performance.
+            MEJT is a training platform for athletes and coaches to improve
+            their performance.
           </p>
         </div>
       </div>
