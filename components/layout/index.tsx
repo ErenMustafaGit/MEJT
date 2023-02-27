@@ -55,7 +55,7 @@ export default function Layout({
                   </Link>
                   <Link
                     className="rounded-full border-2 border-rblue-500 bg-rblue-500 p-1.5 px-4 text-sm text-white transition-all hover:border-rblue-600 hover:bg-rblue-600"
-                    href="/register"
+                    href="/role-choice"
                     {...FADE_IN_ANIMATION_SETTINGS}
                   >
                     Sign up

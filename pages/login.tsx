@@ -1,11 +1,9 @@
 import Layout from "@/components/layout";
 import Link from "next/link";
 
-import AddToHomescreenButton from "@/components/home/addToHomescreenButton";
 import Balancer from "react-wrap-balancer";
 import { motion } from "framer-motion";
 import { FADE_DOWN_ANIMATION_VARIANTS } from "@/lib/constants";
-import Image from "next/image";
 import { useRouter } from "next/router";
 import { Mail, Lock } from "lucide-react";
 
@@ -34,13 +32,12 @@ export default function Login() {
           className="flex w-full flex-col items-center justify-center py-32"
           variants={FADE_DOWN_ANIMATION_VARIANTS}
         >
-           <div className="w-full md:py-10 px-5 md:w-1/2 md:px-10">
+          <div className="w-full px-5 md:w-1/2 md:py-10 md:px-10">
             <div className="mb-10 text-center">
               <h1 className="text-3xl font-bold text-rblue-500">Login</h1>
               <p className="py-1">Enter your information to login</p>
             </div>
             <form action={`${API_URL}/register`} method="post">
-
               <div className="-mx-3 flex">
                 <div className="mb-5 w-full px-3">
                   <label className="px-1 text-xs font-semibold">Email</label>

@@ -1,11 +1,9 @@
 import Layout from "@/components/layout";
 import Link from "next/link";
 
-import AddToHomescreenButton from "@/components/home/addToHomescreenButton";
 import Balancer from "react-wrap-balancer";
 import { motion } from "framer-motion";
 import { FADE_DOWN_ANIMATION_VARIANTS } from "@/lib/constants";
-import Image from "next/image";
 import useLocalStorage from "@/lib/hooks/use-local-storage";
 import { useRouter } from "next/router";
 import { Fragment, useState, useEffect } from "react";
@@ -48,7 +46,7 @@ export default function RoleChoice() {
           className="flex w-full flex-col items-center justify-center py-32"
           variants={FADE_DOWN_ANIMATION_VARIANTS}
         >
-          <div className="w-full md:py-10 px-5 md:w-1/2 md:px-10">
+          <div className="w-full px-5 md:w-1/2 md:py-10 md:px-10">
             <div className="mb-10 text-center">
               <h1 className="text-3xl font-bold text-rblue-500">Register</h1>
               <p className="py-1">Enter your information to register</p>

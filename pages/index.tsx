@@ -60,7 +60,7 @@ export default function Home() {
           </motion.div>
 
           <motion.div
-            className="mx-auto mt-24 flex flex-col items-center space-x-4 space-y-4 sm:flex-row sm:space-x-12"
+            className="mx-auto mt-24 flex flex-col items-center  sm:flex-row sm:space-x-12"
             variants={FADE_DOWN_ANIMATION_VARIANTS}
           >
             <Image
@@ -70,8 +70,10 @@ export default function Home() {
               src="/assets/athlete.jpg"
               alt="Athlete shoes"
             />
-            <div className="rounded-lg bg-white object-cover object-center p-4 shadow-xl shadow-rblue-500/10">
-              <h3 className="text-2xl font-bold">For Athletes</h3>
+            <div className="rounded-lg object-cover object-center p-4">
+              <h3 className="text-2xl font-bold text-rblue-700">
+                For Athletes
+              </h3>
               <p className="mt-2 text-gray-400">
                 Track your progress, set goals, and analyze your performance
                 with our all-in-one training management platform.
@@ -82,8 +84,8 @@ export default function Home() {
             className="mx-auto mt-24 flex flex-col items-center space-x-4 space-y-4 sm:flex-row sm:space-x-12"
             variants={FADE_DOWN_ANIMATION_VARIANTS}
           >
-            <div className="rounded-lg bg-white object-cover object-center p-4 shadow-xl shadow-rblue-500/10">
-              <h3 className="text-2xl font-bold">For Trainer</h3>
+            <div className="rounded-lg object-cover object-center p-4 ">
+              <h3 className="text-2xl font-bold text-rblue-700">For Trainer</h3>
               <p className="mt-2 text-gray-400">
                 Track your athletes progress, set goals, and analyze their
                 performance with our all-in-one training management platform.

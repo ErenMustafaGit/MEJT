@@ -35,7 +35,7 @@ export default function RoleChoice() {
             <Balancer>What is your role ?</Balancer>
           </motion.h1>
           <motion.div
-            className="mx-auto mt-6 flex flex-col items-center justify-center gap-12 space-x-5 sm:flex-row sm:gap-12"
+            className="mx-auto mt-6 flex flex-col items-center justify-center gap-12  sm:flex-row sm:gap-12"
             variants={FADE_DOWN_ANIMATION_VARIANTS}
           >
             <button
@@ -53,9 +53,9 @@ export default function RoleChoice() {
                 width={500}
                 height={300}
               />
-              <h2 className="m-2 text-xl font-semibold">Trainer</h2>
+              <h2 className="m-4 text-xl font-semibold">Trainer</h2>
 
-              <p className="m-2 mt-2 text-left">
+              <p className="m-4 mt-2 text-left">
                 Create your squad, track the activity of your athletes..
               </p>
             </button>
@@ -68,15 +68,15 @@ export default function RoleChoice() {
               className="flex h-1/2 w-1/2 transform flex-col overflow-hidden rounded-lg bg-slate-100 bg-opacity-80 drop-shadow-xl transition duration-300 ease-out hover:scale-105 hover:drop-shadow-2xl sm:h-full sm:w-full sm:max-w-xs"
             >
               <Image
-                className=" w-full rounded-t-lg bg-gray-500 drop-shadow-xl"
+                className="w-full rounded-t-lg bg-gray-500 drop-shadow-xl"
                 src={`/assets/athlete.jpg`}
                 alt={"Trainer"}
                 width={500}
                 height={300}
               />
-              <h2 className="m-2 text-xl font-semibold">Athlete</h2>
+              <h2 className="m-4 text-xl font-semibold ">Athletes</h2>
 
-              <p className="m-2 mt-2 text-left">
+              <p className="m-4 mt-2 text-left">
                 Track your activity and injuries, give your feedback to your
                 trainer..
               </p>
