@@ -48,10 +48,10 @@ export default function RoleChoice() {
           className="flex w-full flex-col items-center justify-center py-32"
           variants={FADE_DOWN_ANIMATION_VARIANTS}
         >
-          <div className="w-full py-10 px-5 md:w-1/2 md:px-10">
+          <div className="w-full md:py-10 px-5 md:w-1/2 md:px-10">
             <div className="mb-10 text-center">
-              <h1 className="text-3xl font-bold text-rblue-500">REGISTER</h1>
-              <p>Enter your information to register</p>
+              <h1 className="text-3xl font-bold text-rblue-500">Register</h1>
+              <p className="py-1">Enter your information to register</p>
             </div>
             <form action={`${API_URL}/register`} method="post">
               <div className="-mx-3 flex">
@@ -171,7 +171,7 @@ export default function RoleChoice() {
               <div className="-mx-3 flex">
                 <div className="mb-5 w-full px-3">
                   <button className="mx-auto block w-full max-w-xs rounded-lg bg-rblue-500 px-3 py-3 font-semibold text-white hover:bg-rblue-600 active:bg-rblue-700">
-                    REGISTER NOW
+                    Register Now
                   </button>
                 </div>
               </div>

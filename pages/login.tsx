@@ -34,10 +34,10 @@ export default function Login() {
           className="flex w-full flex-col items-center justify-center py-32"
           variants={FADE_DOWN_ANIMATION_VARIANTS}
         >
-          <div className="w-full py-10 px-5 md:w-1/2 md:px-10">
+           <div className="w-full md:py-10 px-5 md:w-1/2 md:px-10">
             <div className="mb-10 text-center">
               <h1 className="text-3xl font-bold text-rblue-500">Login</h1>
-              <p>Enter your information to login</p>
+              <p className="py-1">Enter your information to login</p>
             </div>
             <form action={`${API_URL}/register`} method="post">
 
