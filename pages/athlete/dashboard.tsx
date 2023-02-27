@@ -68,8 +68,9 @@ export default function Login() {
               <Balancer>Feedback less sessions</Balancer>
             </h2>
             <div className="m-6 flex flex-wrap gap-6">
-              {sessions.map((session) => (
+              {sessions.map((session, key) => (
                 <SessionCard
+                  key={key}
                   id={session.id}
                   place={session.place}
                   date={session.date}
