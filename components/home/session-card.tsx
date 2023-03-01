@@ -1,5 +1,6 @@
 import Balancer from "react-wrap-balancer";
 import Link from "next/link";
+import { truncate } from "@/lib/utils";
 
 export default function SessionCard({
   id,
@@ -7,21 +8,26 @@ export default function SessionCard({
   place,
   description,
   name,
+  teamName,
 }: {
   id: number;
   date: string;
   place: string;
   description: string;
   name: string;
+  teamName: string;
 }) {
   return (
     <div
       className={`w-full rounded-xl border border-rblue-200 bg-white shadow-md sm:w-96`}
     >
       <div className="flex h-full flex-col justify-between p-4">
-        <h2 className="bg-gradient-to-br from-rblue-700 to-rblue-500 bg-clip-text font-display text-xl font-bold capitalize text-transparent">
-          <Balancer>{name}</Balancer>
+        <h2 className="truncate text-ellipsis bg-gradient-to-br from-rblue-700 to-rblue-500 bg-clip-text font-display text-xl font-bold capitalize text-transparent">
+          {teamName}
         </h2>
+        <p className="truncate text-ellipsis font-display capitalize text-gray-700">
+          {name}
+        </p>
         <div className="mt-4 flex flex-col justify-between gap-2 text-gray-500 md:flex-row">
           <Balancer>{date}</Balancer>
           <Link

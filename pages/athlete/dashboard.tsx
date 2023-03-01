@@ -9,28 +9,16 @@ import SessionCard from "@/components/home/session-card";
 
 const sessions = [
   {
-    id: 20,
+    teamName: "l'équipe du dimanche l'équipe du dimanche l'équipe du dimanche",
+    sessionId: 20,
     date: "2012-04-28T18:25:43.511Z",
     place: "le stade de sport, 69100 Villeurbanne",
     description: "entrainement du bas du corps en vu de la compétition",
     name: "entrainement pre-compet",
   },
   {
-    id: 30,
-    date: "2012-06-27T18:25:43.511Z",
-    place: "la salle de sport, 69000 Lyon",
-    description: "entrainement du haut du corps",
-    name: "entrainement post-vacances",
-  },
-  {
-    id: 30,
-    date: "2012-06-27T18:25:43.511Z",
-    place: "la salle de sport, 69000 Lyon",
-    description: "entrainement du haut du corps",
-    name: "entrainement post-vacances",
-  },
-  {
-    id: 30,
+    teamName: "les ours",
+    sessionId: 30,
     date: "2012-06-27T18:25:43.511Z",
     place: "la salle de sport, 69000 Lyon",
     description: "entrainement du haut du corps",
@@ -71,11 +59,12 @@ export default function Login() {
               {sessions.map((session, key) => (
                 <SessionCard
                   key={key}
-                  id={session.id}
+                  id={session.sessionId}
                   place={session.place}
                   date={session.date}
                   description={session.description}
                   name={session.name}
+                  teamName={session.teamName}
                 />
               ))}
             </div>
