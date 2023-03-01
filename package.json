@@ -48,6 +48,7 @@
     "@tailwindcss/forms": "^0.5.3",
     "@tailwindcss/line-clamp": "^0.4.2",
     "@tailwindcss/typography": "^0.5.9",
+    "@types/chart.js": "^2.9.37",
     "@types/luxon": "^3.2.0",
     "@types/ms": "^0.7.31",
     "autoprefixer": "^10.4.13",

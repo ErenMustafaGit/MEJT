@@ -60,28 +60,7 @@ export default function Graphic(
         console.log(newDate)
     }
 
-    const optionsData:{
-        scales:{
-            y:{
-                position:string;
-            };
-            x:{
-                type:string;
-                time:{
-                    unit:string;
-                    displayFormats:{
-                        day:string;
-                    }
-                }
-            };
-        };
-    
-        plugins:{
-            legend:{
-                display:boolean;
-            }
-        }
-    } = {
+    const optionsData:any = {
         scales:{
             y:
             {
