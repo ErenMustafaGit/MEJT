@@ -1,15 +1,22 @@
 import Layout from "@/components/layout";
+import DataGrid from "@/components/home/data-grid";
 import Link from "next/link";
 
 import Balancer from "react-wrap-balancer";
 import { motion } from "framer-motion";
 import { FADE_DOWN_ANIMATION_VARIANTS } from "@/lib/constants";
-import { useRouter } from "next/router";
-import { Mail, Lock } from "lucide-react";
+import SessionData from "models/session-data";
 
 export default function Login() {
   const API_URL = process.env.MEJT_API_URL;
-  const router = useRouter();
+
+  const sessions: SessionData[] = Array(8).fill({
+    id: "1",
+    name: "nom",
+    date: "string",
+    location: "string",
+    feedback: true,
+  });
 
   return (
     <Layout>
@@ -46,6 +53,17 @@ export default function Login() {
             <h2 className="text-3xl font-bold text-rblue-700">
               <Balancer>Sessions</Balancer>
             </h2>
+
+            <div className="flex w-full flex-col">
+              <DataGrid
+                header={["id", "name", "date", "location", "feedback"]}
+                data={sessions}
+                onRowClick={{
+                  slug: "id",
+                  path: "/athlete/session/",
+                }}
+              />
+            </div>
           </section>
         </motion.div>
       </motion.div>
