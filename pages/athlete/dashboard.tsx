@@ -10,12 +10,19 @@ import SessionData from "models/session-data";
 export default function Login() {
   const API_URL = process.env.MEJT_API_URL;
 
-  const sessions: SessionData[] = Array(8).fill({
+  const sessions: SessionData[] = Array(6).fill({
     id: "1",
-    name: "nom",
-    date: "string",
-    location: "string",
+    name: "Entrainement : Bas du corps	1",
+    date: "22 Feb 2021",
+    location: "Bat Ava Lovelace",
     feedback: true,
+  });
+  sessions.push({
+    id: "2",
+    name: "Entrainement : Bas du corps	1",
+    date: "22 Feb 2021",
+    location: "Bat Ava Lovelace",
+    feedback: false,
   });
 
   return (

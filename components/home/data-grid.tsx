@@ -2,6 +2,7 @@ import DataGridData from "models/data-grid-data";
 import { MouseEventHandler } from "react";
 import Balancer from "react-wrap-balancer";
 import { useRouter } from "next/router";
+import BooleanChips from "./boolean-chips";
 
 export default function DataGrid({
   header,
@@ -68,7 +69,15 @@ export default function DataGrid({
                   key={columnIndex + " " + rowIndex}
                   className={`flex h-full w-full items-center justify-center border-b border-gray-200 text-sm text-gray-500`}
                 >
-                  {typeof item[header] === "boolean" ? "bool" : item[header]}
+                  {typeof item[header] === "boolean" ? (
+                    <BooleanChips
+                      value={item[header]}
+                      trueString="Yes"
+                      falseString="No"
+                    />
+                  ) : (
+                    item[header]
+                  )}
                 </div>
               );
             })}
