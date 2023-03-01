@@ -35,24 +35,35 @@ export default function Login() {
   const config = 
   {
     title:"Stress",
-    xValues:[Date.parse("2023-01-20"), Date.parse("2023-02-15"), Date.parse("2023-02-20"), Date.parse("2023-02-23"), Date.parse("2023-02-24"), Date.now()],
-    yValues:[0,10,5,8,2,3],
+    xValues:[
+      Date.parse("2021-01-20"), 
+      Date.parse("2022-01-20"),
+       Date.parse("2022-07-14"), 
+       Date.parse("2022-11-15"), 
+       Date.parse("2022-12-12"),
+       Date.parse("2023-02-05"),
+       Date.parse("2023-02-15"),
+       Date.parse("2023-02-17"),
+       Date.parse("2023-02-25"),
+       Date.parse("2023-02-27"),
+       Date.parse("2023-02-28"),
+       Date.now()
+      ],
+    yValues:[0,10,5,8,2,3,0,0,2,9,5,6],
     lineColor:BLUE_LINE_GRAPH,
     fillColor:BLUE_FILL_GRAPH
   };
 
   const config2 ={
-    title:"Tiredness",
-    xValues:[Date.parse("2023-01-20"), Date.parse("2023-02-15"), Date.parse("2023-02-20"), Date.parse("2023-02-23"), Date.parse("2023-02-24"), Date.now()],
-    yValues:[0,10,5,8,2,3],
+    ...config,
+    title:'Tiredness',
     lineColor:ORANGE_LINE_GRAPH,
     fillColor:ORANGE_FILL_GRAPH
   };
 
   const config3 = {
-    title:"Fitness",
-    xValues:[Date.parse("2023-01-20"), Date.parse("2023-02-15"), Date.parse("2023-02-20"), Date.parse("2023-02-23"), Date.parse("2023-02-24"), Date.now()],
-    yValues:[0,10,5,8,2,3],
+    ...config,
+    title:'Fitness',
     lineColor:VIOLET_LINE_GRAPH,
     fillColor:VIOLET_FILL_GRAPH
   };
