@@ -17,7 +17,7 @@ export default function Login() {
     password: "",
   });
 
-  console.log(API_URL);
+  console.log("API URL", API_URL);
 
   const submitLogin = async (e: any) => {
     e.preventDefault();
