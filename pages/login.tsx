@@ -2,14 +2,42 @@ import Layout from "@/components/layout";
 import Link from "next/link";
 
 import Balancer from "react-wrap-balancer";
+import Axios from "axios";
 import { motion } from "framer-motion";
 import { FADE_DOWN_ANIMATION_VARIANTS } from "@/lib/constants";
 import { useRouter } from "next/router";
 import { Mail, Lock } from "lucide-react";
+import { useState } from "react";
 
 export default function Login() {
-  const API_URL = process.env.NEXT_PUBLIC_API_URL;
+  const API_URL = process.env.NEXT_PUBLIC_MEJT_API_URL;
   const router = useRouter();
+  const [formData, setFormData] = useState({
+    email: "",
+    password: "",
+  });
+
+  console.log(API_URL);
+
+  const submitLogin = async (e: any) => {
+    e.preventDefault();
+    let token: string;
+    try {
+      console.log(formData);
+      const { data } = await Axios.post(`${API_URL}/login`, {
+        email: formData.email,
+        password: formData.password,
+      });
+      token = data.userDetails;
+      console.log(token);
+    } catch (error) {
+      if (Axios.isAxiosError(error)) {
+        console.error(error);
+      } else {
+        console.error(error);
+      }
+    }
+  };
 
   return (
     <Layout>
@@ -37,7 +65,7 @@ export default function Login() {
               <h1 className="text-3xl font-bold text-rblue-500">Login</h1>
               <p className="py-1">Enter your information to login</p>
             </div>
-            <form action={`${API_URL}/register`} method="post">
+            <form onSubmit={submitLogin}>
               <div className="-mx-3 flex">
                 <div className="mb-5 w-full px-3">
                   <label className="px-1 text-xs font-semibold">Email</label>
@@ -47,6 +75,10 @@ export default function Login() {
                     </div>
                     <input
                       type="email"
+                      value={formData.email}
+                      onChange={(e) =>
+                        setFormData({ ...formData, email: e.target.value })
+                      }
                       className="-ml-10 w-full rounded-lg border-2 border-gray-200 py-2 pl-10 pr-3 outline-none focus:border-rblue-500"
                       placeholder="oliver.kahn@example.com"
                     />
@@ -62,6 +94,10 @@ export default function Login() {
                     </div>
                     <input
                       type="password"
+                      value={formData.password}
+                      onChange={(e) =>
+                        setFormData({ ...formData, password: e.target.value })
+                      }
                       className="-ml-10 w-full rounded-lg border-2 border-gray-200 py-2 pl-10 pr-3 outline-none focus:border-rblue-500"
                       placeholder="************"
                     />
