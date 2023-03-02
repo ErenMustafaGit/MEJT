@@ -76,7 +76,9 @@ export default function DataGrid({
                       falseString="No"
                     />
                   ) : (
-                    item[header]
+                    <Balancer className="truncate text-ellipsis xl:overflow-visible">
+                      {item[header]}
+                    </Balancer>
                   )}
                 </div>
               );

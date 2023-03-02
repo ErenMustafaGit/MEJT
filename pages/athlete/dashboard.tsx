@@ -117,7 +117,7 @@ export default function Dashboard() {
     <Layout>
       <div className="flex w-full flex-col items-center">
         <motion.div
-          className="max-w-full px-5 xl:px-0 2xl:max-w-7xl"
+          className="max-w-full md:px-5 xl:px-0 2xl:max-w-7xl"
           initial="hidden"
           whileInView="show"
           animate="show"
@@ -135,7 +135,7 @@ export default function Dashboard() {
             className="flex w-full flex-col items-center justify-center py-32"
             variants={FADE_DOWN_ANIMATION_VARIANTS}
           >
-            <section className="mx-4 mb-10 w-full px-8">
+            <section className="mb-10 w-full px-8 sm:mx-4">
               <h2 className="text-3xl font-bold text-rblue-700">
                 <Balancer>Feedback less sessions</Balancer>
               </h2>
@@ -153,8 +153,8 @@ export default function Dashboard() {
                 ))}
               </div>
             </section>
-            <section className="mx-4 mb-10 w-full px-8">
-              <h2 className="text-3xl font-bold text-rblue-700">
+            <section className="mb-10 w-full sm:mx-4 sm:px-8">
+              <h2 className="mx-4 text-3xl font-bold text-rblue-700">
                 <Balancer>Teams</Balancer>
               </h2>
               <div className="mt-5 flex h-auto w-full flex-col flex-wrap justify-center gap-8 lg:h-2/4 lg:flex-row">
@@ -189,7 +189,7 @@ export default function Dashboard() {
                 </div>
               </div>
             </section>
-            <section className="mx-4 mb-10 w-full px-8">
+            <section className="mb-10 w-full px-8 sm:mx-4">
               <h2 className="text-3xl font-bold text-rblue-700">
                 <Balancer>Sessions</Balancer>
               </h2>

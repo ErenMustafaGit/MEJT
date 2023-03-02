@@ -104,7 +104,7 @@ export default function Graphic({
     <>
       <div>
         <div className="mr-2 flex flex-col justify-between gap-4 xl:flex-row">
-          <h3 className="mx-1 mb-1 text-xl font-bold">{title}</h3>
+          <h3 className="mx-6 mb-1 text-xl font-bold sm:mx-1">{title}</h3>
 
           <div className="flex justify-center">
             <button
