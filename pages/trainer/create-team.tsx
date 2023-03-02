@@ -63,16 +63,18 @@ export default function CreateTeam() {
           >
             <section className="mb-10 w-full sm:mx-4 sm:px-8">
               <h2 className="mx-4 text-3xl font-bold text-rblue-700">
-                <Balancer>Teams</Balancer>
+                <Balancer>Team creation</Balancer>
               </h2>
               <div className="mx-4 mt-4 flex items-center gap-2 text-3xl font-bold text-rblue-700 sm:gap-8">
-                <p className="text-xl text-rblue-700">Team name : </p>
+                <p className="text-sm text-rblue-700 sm:text-xl">
+                  Team name :{" "}
+                </p>
                 <div className="flex">
                   <input
                     type="name"
                     value={teamName}
                     onChange={(e) => setTeamName(e.target.value)}
-                    className="w-full rounded-lg border-2 border-gray-200 py-2 pl-10 pr-3 text-rblue-700 outline-none placeholder:italic placeholder:text-slate-400 focus:border-rblue-500"
+                    className="w-full rounded-lg border-2 border-gray-200 py-2 pl-10 pr-3 text-sm text-rblue-700 outline-none placeholder:italic placeholder:text-slate-400 focus:border-rblue-500 sm:text-lg"
                     placeholder="Team name"
                     required
                   />
