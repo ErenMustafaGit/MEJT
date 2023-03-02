@@ -99,7 +99,7 @@ export default function DataCreation({
                         onChange={(e) =>
                           handleOnChange(rowIndex, e.target.value)
                         }
-                        className="-ml-10 w-full rounded-lg border-2 border-gray-200 bg-white/20 py-2 pl-10 pr-3 outline-none focus:border-rblue-500"
+                        className="-ml-10 w-full rounded-lg border-2 border-gray-200 bg-white/20 py-2 pl-10 pr-3 outline-none placeholder:text-gray-400/70 focus:border-rblue-500"
                         placeholder="oliver.kahn@example.com"
                       />
                     </div>
@@ -129,7 +129,7 @@ export default function DataCreation({
       >
         <button
           onClick={() => handleOnAdd()}
-          className="flex gap-6 rounded-lg border-2 border-dashed border-gray-400 p-2 outline-none"
+          className="flex gap-6 rounded-lg border-2 border-dashed border-gray-400 p-2 outline-none transition-all duration-150 hover:bg-gray-100"
         >
           <PlusCircle className="mx-2 text-lg text-gray-400"></PlusCircle>
           <p className="w-full text-gray-400">Add a new athlete in the team</p>
