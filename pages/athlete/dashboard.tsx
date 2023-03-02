@@ -41,6 +41,39 @@ ChartJS.register(
 export default function Dashboard() {
   const router = useRouter();
   const API_URL = process.env.MEJT_API_URL;
+  ["id", "name", "date", "location", "feedback"];
+  const sessionsHeader = [
+    {
+      name: "id",
+      slug: "id",
+      size: 1,
+      show: false,
+    },
+    {
+      name: "Session name",
+      slug: "name",
+      size: 2,
+      show: true,
+    },
+    {
+      name: "Date",
+      slug: "date",
+      size: 2,
+      show: true,
+    },
+    {
+      name: "Location",
+      slug: "location",
+      size: 2,
+      show: true,
+    },
+    {
+      name: "Feedback",
+      slug: "feedback",
+      size: 2,
+      show: true,
+    },
+  ];
 
   // TO BE DELETED (DATA REPLACING API CALL)
   const sessions: SessionData[] = Array(6).fill({
@@ -196,7 +229,7 @@ export default function Dashboard() {
 
               <div className="flex w-full flex-col">
                 <DataGrid
-                  header={["id", "name", "date", "location", "feedback"]}
+                  header={sessionsHeader}
                   data={sessions}
                   onRowClick={{
                     slug: "id",
