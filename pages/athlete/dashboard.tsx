@@ -115,97 +115,99 @@ export default function Dashboard() {
 
   return (
     <Layout>
-      <motion.div
-        className="flex w-full flex-row"
-        initial="hidden"
-        whileInView="show"
-        animate="show"
-        viewport={{ once: true }}
-        variants={{
-          hidden: {},
-          show: {
-            transition: {
-              staggerChildren: 0.15,
-            },
-          },
-        }}
-      >
+      <div className="flex w-full flex-col items-center">
         <motion.div
-          className="flex w-full flex-col items-center justify-center py-32"
-          variants={FADE_DOWN_ANIMATION_VARIANTS}
+          className="max-w-full px-5 xl:px-0 2xl:max-w-7xl"
+          initial="hidden"
+          whileInView="show"
+          animate="show"
+          viewport={{ once: true }}
+          variants={{
+            hidden: {},
+            show: {
+              transition: {
+                staggerChildren: 0.15,
+              },
+            },
+          }}
         >
-          <section className="mx-4 mb-10 w-full px-8">
-            <h2 className="text-3xl font-bold text-rblue-700">
-              <Balancer>Feedback less sessions</Balancer>
-            </h2>
-            <div className="m-6 flex flex-wrap gap-6">
-              {sessionsLess.map((session, key) => (
-                <SessionCard
-                  key={key}
-                  id={session.sessionId}
-                  place={session.place}
-                  date={session.date}
-                  description={session.description}
-                  name={session.name}
-                  teamName={session.teamName}
-                />
-              ))}
-            </div>
-          </section>
-          <section className="mx-4 mb-10 w-full px-8">
-            <h2 className="text-3xl font-bold text-rblue-700">
-              <Balancer>Teams</Balancer>
-            </h2>
-            <div className="mt-5 flex h-auto w-full flex-col lg:h-2/4 lg:flex-row">
-              <div className="h-auto w-full lg:h-2/4 lg:w-1/3">
-                <Graphic
-                  title={config.title}
-                  xValues={config.xValues}
-                  yValues={config.yValues}
-                  lineColor={config.lineColor}
-                  fillColor={config.fillColor}
+          <motion.div
+            className="flex w-full flex-col items-center justify-center py-32"
+            variants={FADE_DOWN_ANIMATION_VARIANTS}
+          >
+            <section className="mx-4 mb-10 w-full px-8">
+              <h2 className="text-3xl font-bold text-rblue-700">
+                <Balancer>Feedback less sessions</Balancer>
+              </h2>
+              <div className="m-6 flex flex-wrap gap-6">
+                {sessionsLess.map((session, key) => (
+                  <SessionCard
+                    key={key}
+                    id={session.sessionId}
+                    place={session.place}
+                    date={session.date}
+                    description={session.description}
+                    name={session.name}
+                    teamName={session.teamName}
+                  />
+                ))}
+              </div>
+            </section>
+            <section className="mx-4 mb-10 w-full px-8">
+              <h2 className="text-3xl font-bold text-rblue-700">
+                <Balancer>Teams</Balancer>
+              </h2>
+              <div className="mt-5 flex h-auto w-full flex-col flex-wrap justify-center gap-8 lg:h-2/4 lg:flex-row">
+                <div className="">
+                  <Graphic
+                    title={config.title}
+                    xValues={config.xValues}
+                    yValues={config.yValues}
+                    lineColor={config.lineColor}
+                    fillColor={config.fillColor}
+                  />
+                </div>
+
+                <div className="">
+                  <Graphic
+                    title={config2.title}
+                    xValues={config2.xValues}
+                    yValues={config2.yValues}
+                    lineColor={config2.lineColor}
+                    fillColor={config2.fillColor}
+                  />
+                </div>
+
+                <div className="">
+                  <Graphic
+                    title={config3.title}
+                    xValues={config3.xValues}
+                    yValues={config3.yValues}
+                    lineColor={config3.lineColor}
+                    fillColor={config3.fillColor}
+                  />
+                </div>
+              </div>
+            </section>
+            <section className="mx-4 mb-10 w-full px-8">
+              <h2 className="text-3xl font-bold text-rblue-700">
+                <Balancer>Sessions</Balancer>
+              </h2>
+
+              <div className="flex w-full flex-col">
+                <DataGrid
+                  header={["id", "name", "date", "location", "feedback"]}
+                  data={sessions}
+                  onRowClick={{
+                    slug: "id",
+                    path: "/athlete/session/",
+                  }}
                 />
               </div>
-
-              <div className="h-auto w-full lg:h-2/4 lg:w-1/3">
-                <Graphic
-                  title={config2.title}
-                  xValues={config2.xValues}
-                  yValues={config2.yValues}
-                  lineColor={config2.lineColor}
-                  fillColor={config2.fillColor}
-                />
-              </div>
-
-              <div className="h-auto w-full lg:h-2/4 lg:w-1/3">
-                <Graphic
-                  title={config3.title}
-                  xValues={config3.xValues}
-                  yValues={config3.yValues}
-                  lineColor={config3.lineColor}
-                  fillColor={config3.fillColor}
-                />
-              </div>
-            </div>
-          </section>
-          <section className="mx-4 mb-10 w-full px-8">
-            <h2 className="text-3xl font-bold text-rblue-700">
-              <Balancer>Sessions</Balancer>
-            </h2>
-
-            <div className="flex w-full flex-col">
-              <DataGrid
-                header={["id", "name", "date", "location", "feedback"]}
-                data={sessions}
-                onRowClick={{
-                  slug: "id",
-                  path: "/athlete/session/",
-                }}
-              />
-            </div>
-          </section>
+            </section>
+          </motion.div>
         </motion.div>
-      </motion.div>
+      </div>
     </Layout>
   );
 }
