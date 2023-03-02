@@ -2,6 +2,7 @@ import Layout from "@/components/layout";
 import Link from "next/link";
 
 import Balancer from "react-wrap-balancer";
+import Axios from "axios";
 import { motion } from "framer-motion";
 import { FADE_DOWN_ANIMATION_VARIANTS } from "@/lib/constants";
 import useLocalStorage from "@/lib/hooks/use-local-storage";
@@ -15,15 +16,41 @@ const roles = [
   { id: 1, name: "Trainer" },
 ];
 
-export default function RoleChoice() {
-  const API_URL = process.env.NEXT_PUBLIC_API_URL;
+export default function Register() {
+  const API_URL = process.env.NEXT_PUBLIC_MEJT_API_URL;
   const [role, setRole] = useLocalStorage("role", 0);
-  const router = useRouter();
-  const [selected, setSelected] = useState(roles[0]);
+  const [selectedRole, setselectedRole] = useState(roles[0]);
+
+  const [formData, setFormData] = useState({
+    name: "",
+    email: "",
+    password: "",
+  });
+
+  const submitRegister = async (e: any) => {
+    e.preventDefault();
+    let token: string;
+    try {
+      const { data } = await Axios.post(`${API_URL}/register`, {
+        name: formData.name,
+        email: formData.email,
+        password: formData.password,
+        role: role,
+      });
+      token = data.userDetails;
+      console.log(token);
+    } catch (error) {
+      if (Axios.isAxiosError(error)) {
+        console.error(error);
+      } else {
+        console.error(error);
+      }
+    }
+  };
 
   // Useeffect to set the role
   useEffect(() => {
-    setSelected(roles[role]);
+    setselectedRole(roles[role]);
   }, [role]);
   return (
     <Layout>
@@ -51,7 +78,7 @@ export default function RoleChoice() {
               <h1 className="text-3xl font-bold text-rblue-500">Register</h1>
               <p className="py-1">Enter your information to register</p>
             </div>
-            <form action={`${API_URL}/register`} method="post">
+            <form onSubmit={submitRegister}>
               <div className="-mx-3 flex">
                 <div className="mb-5 w-full px-3">
                   <label className="px-1 text-xs font-semibold">Name</label>
@@ -61,6 +88,11 @@ export default function RoleChoice() {
                     </div>
                     <input
                       type="text"
+                      name="name"
+                      value={formData.name}
+                      onChange={(e) =>
+                        setFormData({ ...formData, name: e.target.value })
+                      }
                       className="-ml-10 w-full rounded-lg border-2 border-gray-200 py-2 pl-10 pr-3 outline-none focus:border-rblue-500"
                       placeholder="Oliver"
                     />
@@ -71,7 +103,7 @@ export default function RoleChoice() {
               <div className="-mx-3 flex">
                 <div className="mb-5 w-full px-3">
                   <label className="px-1 text-xs font-semibold">Role</label>
-                  <Listbox value={selected} onChange={setSelected}>
+                  <Listbox value={selectedRole} onChange={setselectedRole}>
                     <div className="relative mt-1">
                       <Listbox.Button className="relative w-full cursor-default rounded-lg rounded-lg border-2 border-gray-200 bg-white py-2 pl-3 pr-10 text-left outline-none focus:border-rblue-500 focus:outline-none focus-visible:border-indigo-500 focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-opacity-75 focus-visible:ring-offset-2 focus-visible:ring-offset-orange-300 sm:text-sm">
                         <div className="flex items-center">
@@ -79,7 +111,7 @@ export default function RoleChoice() {
                             <Globe className="-ml-6 w-1/2 text-lg text-gray-400"></Globe>
                           </div>
                           <span className="-ml-3 block truncate">
-                            {selected.name}
+                            {selectedRole.name}
                           </span>
                         </div>
                         <span className="pointer-events-none absolute inset-y-0 right-0 flex items-center pr-2">
@@ -145,6 +177,11 @@ export default function RoleChoice() {
                     </div>
                     <input
                       type="email"
+                      name="email"
+                      value={formData.email}
+                      onChange={(e) =>
+                        setFormData({ ...formData, email: e.target.value })
+                      }
                       className="-ml-10 w-full rounded-lg border-2 border-gray-200 py-2 pl-10 pr-3 outline-none focus:border-rblue-500"
                       placeholder="oliver.kahn@example.com"
                     />
@@ -160,6 +197,11 @@ export default function RoleChoice() {
                     </div>
                     <input
                       type="password"
+                      name="password"
+                      value={formData.password}
+                      onChange={(e) =>
+                        setFormData({ ...formData, password: e.target.value })
+                      }
                       className="-ml-10 w-full rounded-lg border-2 border-gray-200 py-2 pl-10 pr-3 outline-none focus:border-rblue-500"
                       placeholder="************"
                     />
