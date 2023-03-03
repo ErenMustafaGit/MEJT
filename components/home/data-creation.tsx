@@ -1,10 +1,10 @@
 import { Dispatch, SetStateAction, useState } from "react";
-import DataGridData from "models/data-grid-data";
 import DataHeader from "models/data-header";
 import Balancer from "react-wrap-balancer";
 import { useRouter } from "next/router";
 import { Mail, PlusCircle } from "lucide-react";
 import DataCreationModel from "models/data-creation-model";
+import { mailMatcher } from "@/lib/utils";
 
 export default function DataCreation({
   header,
@@ -23,19 +23,37 @@ export default function DataCreation({
 }) {
   const router = useRouter();
 
-  const handleOnChange = (index: number, value: string) => {
+  const handleOnChange = (
+    index: number,
+    value: string,
+    e: HTMLInputElement,
+  ) => {
     const newData = [...data];
     newData[index] = {
       ...newData[index],
       value: value,
     };
     dataSetter(newData);
+
+    if (value && value.length > 10) {
+      setTimeout(() => {
+        handleOnBlur(e);
+      }, 5000);
+    }
   };
 
   const handleOnRemove = (index: number) => {
     const newData = [...data];
     newData.splice(index, 1);
     dataSetter(newData);
+  };
+
+  const handleOnBlur = (e: HTMLInputElement) => {
+    if (e.value !== "" && e.value !== null && mailMatcher(e.value)) {
+      e.style.border = "1px solid #d1d5db";
+    } else {
+      e.style.border = "1px solid red";
+    }
   };
 
   const handleOnAdd = () => {
@@ -96,8 +114,11 @@ export default function DataCreation({
                       <input
                         type="email"
                         value={item.value}
+                        onBlur={(e) => {
+                          handleOnBlur(e.target);
+                        }}
                         onChange={(e) =>
-                          handleOnChange(rowIndex, e.target.value)
+                          handleOnChange(rowIndex, e.target.value, e.target)
                         }
                         className="-ml-10 w-full rounded-lg border-2 border-gray-200 bg-white/20 py-2 pl-10 pr-3 outline-none placeholder:text-gray-400/70 focus:border-rblue-500"
                         placeholder="oliver.kahn@example.com"

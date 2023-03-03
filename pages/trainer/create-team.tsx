@@ -9,26 +9,52 @@ import TeamData from "models/team-data";
 import DataCreation from "@/components/home/data-creation";
 import { useState } from "react";
 import DataCreationModel from "models/data-creation-model";
+import { displayToaster, mailMatcher } from "@/lib/utils";
+import Axios from "axios";
 
 export default function CreateTeam() {
   const router = useRouter();
-  const API_URL = process.env.MEJT_API_URL;
+  const API_URL = process.env.NEXT_PUBLIC_MEJT_API_URL;
 
   const [teamName, setTeamName] = useState("");
 
-  const handleSubmit = () => {
-    const emailRegex =
-      /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
+  const submitCreation = async (e: any) => {
+    e.preventDefault();
     const validData = data.filter(
-      (v) =>
-        v &&
-        v.value &&
-        v.value !== "" &&
-        v.value.toLowerCase().match(emailRegex),
+      (v) => v && v.value && v.value !== "" && mailMatcher(v.value),
     );
     if (validData && validData.length === 0) {
-      console.error("aucun mail conforme");
-      // TODO : red TOAST or red message
+      displayToaster("error", "No valid email");
+    }
+
+    let token: string;
+    if (!(!teamName || teamName === "" || validData.length === 0)) {
+      const athletesMails: {
+        email: string;
+      }[] = validData.map((v) => {
+        return { email: v.value };
+      });
+
+      try {
+        const { data } = await Axios.post(`${API_URL}/trainer/teams/create`, {
+          name: teamName,
+          athletes: athletesMails,
+        });
+        console.log(data);
+        displayToaster("success", "Team created");
+        // router.push(`/trainer/teams/${data.id}`);
+      } catch (error) {
+        if (Axios.isAxiosError(error)) {
+          console.error(error);
+          displayToaster(
+            "error",
+            `Error while creating team : ${error?.message}}`,
+          );
+        } else {
+          console.error(error);
+          displayToaster("error", `Error while creating team : ${error}}`);
+        }
+      }
     }
   };
 
@@ -58,7 +84,7 @@ export default function CreateTeam() {
           }}
         >
           <motion.div
-            className="flex w-full flex-col items-center justify-center py-32"
+            className="flex w-full flex-col items-center justify-center py-20 md:py-32"
             variants={FADE_DOWN_ANIMATION_VARIANTS}
           >
             <section className="mb-10 w-full sm:mx-4 sm:px-8">
@@ -104,7 +130,7 @@ export default function CreateTeam() {
               </div>
               <div className="mb-5 w-full px-3">
                 <button
-                  onClick={handleSubmit}
+                  onClick={submitCreation}
                   className="mx-auto mt-12 block w-full max-w-xs rounded-lg bg-rblue-500 px-3 py-3 font-semibold text-white hover:bg-rblue-600 active:bg-rblue-700"
                 >
                   Create Team
