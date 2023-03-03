@@ -55,7 +55,7 @@ export default function Register() {
   return (
     <Layout>
       <motion.div
-        className="flex w-full flex-row "
+        className="flex w-full flex-row overflow-hidden"
         initial="hidden"
         whileInView="show"
         animate="show"
@@ -70,7 +70,7 @@ export default function Register() {
         }}
       >
         <motion.div
-          className="flex w-full flex-col items-center justify-center py-32"
+          className="flex w-full flex-col items-center justify-center pt-32"
           variants={FADE_DOWN_ANIMATION_VARIANTS}
         >
           <div className="w-full px-5 md:w-1/2 md:py-10 md:px-10">
@@ -233,8 +233,10 @@ export default function Register() {
           </div>
         </motion.div>
         <motion.div
-          variants={FADE_DOWN_ANIMATION_VARIANTS}
-          className="bg-hero box-border hidden w-1/2 bg-[url('/assets/trainer.jpg')] bg-cover bg-center bg-no-repeat py-10 px-10 md:block"
+          initial={{ opacity: 0.2 }}
+          animate={{ opacity: 1 }}
+          transition={{ duration: 0.5 }}
+          className="bg-hero box-border hidden h-screen w-1/2 bg-[url('/assets/trainer.jpg')] bg-cover bg-center bg-no-repeat py-10 px-10 md:block"
         ></motion.div>
       </motion.div>
     </Layout>
