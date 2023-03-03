@@ -15,6 +15,14 @@ import { Listbox, Transition } from "@headlessui/react";
 
 import Axios from "axios";
 
+import DatePicker from "react-date-picker/dist/entry.nostyle"
+import 'react-date-picker/dist/DatePicker.css';
+import 'react-calendar/dist/Calendar.css';
+
+import TimePicker from "react-time-picker/dist/entry.nostyle"
+import 'react-time-picker/dist/TimePicker.css'
+import 'react-clock/dist/Clock.css';
+
 export default function CreateSession()
 {
     const router = useRouter();
@@ -98,7 +106,7 @@ export default function CreateSession()
         {
             sessionTeamId : -1,
             sessionName : "",
-            sessionDate : DateTime.now().toJSDate(),
+            sessionDate : DateTime.now(),
             sessionLocation : "",
             sessionDescription : ""
         }
@@ -113,7 +121,7 @@ export default function CreateSession()
         {
             const {data} = await Axios.post(`${API_URL}/trainer/sessions/create`,{
                 teamId:sessionInfo.sessionTeamId,
-                date:sessionInfo.sessionDate.toISOString(),
+                date:sessionInfo.sessionDate,
                 place:sessionInfo.sessionLocation,
                 description:sessionInfo.sessionDescription,
                 name:sessionInfo.sessionName
@@ -130,6 +138,7 @@ export default function CreateSession()
         */
         e.preventDefault();
         console.log(sessionInfo);
+        console.log(`Session date : ${sessionInfo.sessionDate.toISO()}`)
     }
     
     const [selectedTeam, setSelectedTeam] = useState(
@@ -278,6 +287,9 @@ export default function CreateSession()
 
                             <div className="mt-10">
                                 <label className="text-3xl text-gray-500 font-bold">When does it take place ?</label>
+                                <div>
+                                    <DatePicker value={sessionInfo.sessionDate.toJSDate()} format="dd/MM/yyyy" onChange={(newDate:Date) => setSessionInfo({...sessionInfo, sessionDate:DateTime.fromJSDate(newDate)})}/>
+                                </div>
                             </div>
 
                             <div className="mt-10 flex flex-col">
