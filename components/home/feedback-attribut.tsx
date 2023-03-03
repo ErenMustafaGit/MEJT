@@ -24,7 +24,7 @@ export default function FeedbackAttribut({
     "text-green-700",
   ];
   return (
-    <div className="flex w-24 flex-col items-center justify-center rounded-lg border-2 border-rblue-800/50 p-4 sm:w-52 sm:px-8">
+    <div className="flex w-24 flex-col items-center justify-center rounded-lg border-2 border-rblue-700/20 p-4 sm:w-52 sm:px-8">
       <Image width={300} height={300} src={icon} alt={title}></Image>
       <h3 className="font-bold uppercase text-gray-700 sm:text-xl">{title}</h3>
       <p className={`font-bold uppercase sm:text-4xl ${colors[value - 1]}`}>

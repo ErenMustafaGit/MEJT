@@ -20,15 +20,16 @@ export default function SessionDetail({}: {}) {
     name: "entrainement bas du corps",
     shape: 5,
     tiredness: 8,
-    stress: 5,
-    sensation: "pas au top",
+    stress: 3,
+    sensation:
+      "pas au top Lorem ipsum dolor sit amet consectetur adipisicing elit. Quisquam, quod. Lorem pas au top Lorem ipsum dolor sit amet consectetur adipisicing elit. Quisquam, quod. Lorem pas au top Lorem ipsum dolor sit amet consectetur adipisicing elit. Quisquam, quod. Lorem ",
     injury: "mollet gauche",
     date: "2012-04-25T18:25:43.511Z",
   };
 
   return (
     <Layout>
-      <div className="flex w-full flex-col">
+      <div className="flex w-full flex-col items-center justify-center">
         <motion.div
           className="max-w-full md:px-5 xl:px-0 2xl:max-w-7xl"
           initial="hidden"

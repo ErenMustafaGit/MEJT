@@ -12,7 +12,7 @@ export default function DisplayLongText({
     <div className="flex w-full flex-col gap-2">
       <p className="px-1 text-xs font-semibold">{title}</p>
       <div className="w-full rounded-lg border border-gray-500/30 p-2">
-        <p className="text-gray-500">{text}</p>
+        <Balancer className="text-gray-500">{text}</Balancer>
       </div>
     </div>
   );
