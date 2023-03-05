@@ -1,8 +1,14 @@
 import ms from "ms";
-import {} from "constants"
-import { BLUE_LINE_GRAPH, ORANGE_LINE_GRAPH, VIOLET_LINE_GRAPH } from "./constants";
+import {} from "constants";
+import {
+  BLUE_LINE_GRAPH,
+  ORANGE_LINE_GRAPH,
+  VIOLET_LINE_GRAPH,
+} from "./constants";
 import { DateTime } from "luxon";
 import { Color } from "chart.js";
+import { toast } from "react-toastify";
+
 export const timeAgo = (timestamp: Date, timeOnly?: boolean): string => {
   if (!timestamp) return "never";
   return `${ms(Date.now() - new Date(timestamp).getTime())}${
@@ -65,11 +71,22 @@ export const truncate = (str: string, length: number) => {
   return `${str.slice(0, length)}...`;
 };
 
-export const filterData = (data:any, allXValues:number[], allYValues:number[], deltaMonth?:number, deltaYear?:number) =>
-{
-  const infDate:number = DateTime.now().minus({month:deltaMonth, year:deltaYear}).toMillis();
-  const newLabels:number[] = allXValues.filter((label:number) => label >= infDate);
-  const newYValues:number[] = allYValues.slice(allYValues.length - newLabels.length);
+export const filterData = (
+  data: any,
+  allXValues: number[],
+  allYValues: number[],
+  deltaMonth?: number,
+  deltaYear?: number,
+) => {
+  const infDate: number = DateTime.now()
+    .minus({ month: deltaMonth, year: deltaYear })
+    .toMillis();
+  const newLabels: number[] = allXValues.filter(
+    (label: number) => label >= infDate,
+  );
+  const newYValues: number[] = allYValues.slice(
+    allYValues.length - newLabels.length,
+  );
   /*
 
   DEBUGING PURPOSE
@@ -86,17 +103,38 @@ export const filterData = (data:any, allXValues:number[], allYValues:number[], d
   */
 
   return {
-    labels:newLabels,
-    datasets:[
+    labels: newLabels,
+    datasets: [
       {
-        data:newYValues,
-        borderColor:data.datasets[0].borderColor,
-        fill:{
-          target:'origin',
-          above:data.datasets[0].fill.above,
-        }
-      }
+        data: newYValues,
+        borderColor: data.datasets[0].borderColor,
+        fill: {
+          target: "origin",
+          above: data.datasets[0].fill.above,
+        },
+      },
     ],
-    position:'right'
+    position: "right",
+  };
+};
+
+export const displayToaster = (type: "success" | "error", message: string) => {
+  if (type === "success") {
+    toast.success(message, {
+      theme: "colored",
+      position: toast.POSITION.BOTTOM_RIGHT,
+    });
+  } else {
+    toast.error(message, {
+      theme: "colored",
+      position: toast.POSITION.BOTTOM_RIGHT,
+    });
   }
+};
+
+export const mailMatcher = (mail: string) => {
+  const emailRegex =
+    /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
+
+  return mail.toLowerCase().match(emailRegex);
 };
