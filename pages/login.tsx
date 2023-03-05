@@ -4,7 +4,10 @@ import Link from "next/link";
 import Balancer from "react-wrap-balancer";
 import Axios from "axios";
 import { motion } from "framer-motion";
-import { FADE_DOWN_ANIMATION_VARIANTS } from "@/lib/constants";
+import {
+  FADE_DOWN_ANIMATION_VARIANTS,
+  FADE_IN_ANIMATION_SETTINGS,
+} from "@/lib/constants";
 import { useRouter } from "next/router";
 import { Mail, Lock } from "lucide-react";
 import { useState } from "react";
@@ -42,13 +45,12 @@ export default function Login() {
   return (
     <Layout>
       <motion.div
-        className="flex w-full flex-row "
+        className="flex w-full flex-row overflow-hidden"
         initial="hidden"
         whileInView="show"
         animate="show"
         viewport={{ once: true }}
         variants={{
-          hidden: {},
           show: {
             transition: {
               staggerChildren: 0.15,
@@ -57,7 +59,7 @@ export default function Login() {
         }}
       >
         <motion.div
-          className="flex w-full flex-col items-center justify-center py-32"
+          className="flex w-full flex-col items-center justify-center pt-32"
           variants={FADE_DOWN_ANIMATION_VARIANTS}
         >
           <div className="w-full px-5 md:w-1/2 md:py-10 md:px-10">
@@ -129,8 +131,10 @@ export default function Login() {
           </div>
         </motion.div>
         <motion.div
-          variants={FADE_DOWN_ANIMATION_VARIANTS}
-          className="bg-hero box-border hidden w-1/2 bg-[url('/assets/trainer.jpg')] bg-cover bg-center bg-no-repeat py-10 px-10 md:block"
+          initial={{ opacity: 0.2 }}
+          animate={{ opacity: 1 }}
+          transition={{ duration: 0.5 }}
+          className="bg-hero box-border hidden h-screen w-1/2 bg-[url('/assets/trainer.jpg')] bg-cover bg-center bg-no-repeat py-10 px-10 md:block"
         ></motion.div>
       </motion.div>
     </Layout>

@@ -9,8 +9,6 @@ import { filterData } from "@/lib/utils";
 
 Chart.register(Filler, TimeScale);
 
-//TODO  : passer en flex col quand on réduit la taille
-
 export default function Graphic({
   title,
   xValues,
