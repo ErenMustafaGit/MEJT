@@ -22,9 +22,8 @@ import 'react-calendar/dist/Calendar.css';
 import TimePicker from "react-time-picker/dist/entry.nostyle"
 import 'react-time-picker/dist/TimePicker.css'
 import 'react-clock/dist/Clock.css';
+import classNames from "classnames";
 
-import Clock from 'react-clock'
-import { Tienne } from "@next/font/google";
 
 export default function CreateSession()
 {
@@ -110,10 +109,13 @@ export default function CreateSession()
             sessionTeamId : -1,
             sessionName : "",
             sessionDate : DateTime.now(),
+            sessionTime : DateTime.now(),
             sessionLocation : "",
             sessionDescription : ""
         }
     )
+
+    // setSessionInfo({...sessionInfo, sessionTime:DateTime.fromMillis(Date.parse(newTime.toString()))})
 
     const submitNewSession = async (e:any) => {
         /*
@@ -122,15 +124,20 @@ export default function CreateSession()
         let token: string;
         try
         {
-            const {data} = await Axios.post(`${API_URL}/trainer/sessions/create`,{
-                teamId:sessionInfo.sessionTeamId,
-                date:sessionInfo.sessionDate,
-                place:sessionInfo.sessionLocation,
-                description:sessionInfo.sessionDescription,
-                name:sessionInfo.sessionName
-            });
-
-            token = data.userDetails;
+            if(sessionInfo.sessionTeamId !== -1 && sessionInfo.sessionLocation !== "" && sessionInfo.sessionDescription !== "" && sessionInfo.sessionName !== "")
+            {
+                const {data} = await Axios.post(`${API_URL}/trainer/sessions/create`,{
+                    teamId:sessionInfo.sessionTeamId,
+                    date:sessionInfo.sessionDate.set({hour:sessionInfo.sessionTime.hour, minute:sessionInfo.sessionTime.minute}),
+                    place:sessionInfo.sessionLocation,
+                    description:sessionInfo.sessionDescription,
+                    name:sessionInfo.sessionName
+                });
+                token = data.userDetails;
+            }else{
+                // message
+            }
+            
         }catch (error){
             if (Axios.isAxiosError(error)) {
                 console.error(error);
@@ -139,9 +146,19 @@ export default function CreateSession()
             }
         }
         */
+
+       // TODO : DELETE WHEN CONNECTION TO BACKEND IS OK
         e.preventDefault();
-        console.log(sessionInfo);
-        console.log(`Session date : ${sessionInfo.sessionDate.toISO()}`)
+
+        const data = {
+            teamId:sessionInfo.sessionTeamId,
+            date:sessionInfo.sessionDate.set({hour:sessionInfo.sessionTime.hour, minute:sessionInfo.sessionTime.minute}),
+            place:sessionInfo.sessionLocation,
+            description:sessionInfo.sessionDescription,
+            name:sessionInfo.sessionName
+        };
+
+        console.log(data);
     }
     
     const [selectedTeam, setSelectedTeam] = useState(
@@ -152,7 +169,6 @@ export default function CreateSession()
     );
 
     const [team, setTeam] = useLocalStorage("team", -1);
-    const [sessionTimeTest, setSessionTimeTest] = useState("10:00:00");
     
     useEffect(() => {
         setSelectedTeam({
@@ -292,8 +308,21 @@ export default function CreateSession()
                             <div className="mt-10">
                                 <label className="text-3xl text-gray-500 font-bold">When does it take place ?</label>
                                 <div>
-                                    <DatePicker value={sessionInfo.sessionDate.toJSDate()} format="dd/MM/yyyy" onChange={(newDate:Date) => setSessionInfo({...sessionInfo, sessionDate:DateTime.fromJSDate(newDate)})}/>
-                                    <TimePicker value={"10:00:00"}/>
+                                    <DatePicker value={sessionInfo.sessionDate.toJSDate()} format="dd/MM/yyyy" onChange={(newDate:Date) => {
+                                        if(newDate instanceof Date && !isNaN(newDate.getMilliseconds()))
+                                        {                                        
+                                            setSessionInfo({...sessionInfo, sessionDate:DateTime.fromJSDate(newDate)})
+                                        }
+                                        }}/>
+                                    <TimePicker value={sessionInfo.sessionTime.toJSDate()} onChange={(newTime) => {
+                                        
+                                        if(newTime != null)
+                                        {
+                                            const handm = newTime.toString().split(":");
+                                            setSessionInfo({...sessionInfo, sessionTime:sessionInfo.sessionTime.set({hour: parseInt(handm[0]), minute:parseInt(handm[1])})})
+                                        }
+                                        
+                                        }}/>
                                 </div>
                             </div>
 
@@ -316,7 +345,9 @@ export default function CreateSession()
                             <div
                               className="flex w-auto justify-center mt-10"
                             >
-                                <button className="bg-rblue-500 text-bold text-white text-xl py-2 px-10 rounded-md">Create session</button>
+                                <button className="mx-auto block w-full max-w-xs rounded-lg bg-rblue-500 px-3 py-3 font-semibold text-white hover:bg-rblue-600 active:bg-rblue-700">
+                                    Create session
+                                </button>
                             </div>
                             
                         </form>
