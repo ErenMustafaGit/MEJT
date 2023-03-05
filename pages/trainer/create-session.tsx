@@ -23,6 +23,9 @@ import TimePicker from "react-time-picker/dist/entry.nostyle"
 import 'react-time-picker/dist/TimePicker.css'
 import 'react-clock/dist/Clock.css';
 
+import Clock from 'react-clock'
+import { Tienne } from "@next/font/google";
+
 export default function CreateSession()
 {
     const router = useRouter();
@@ -149,6 +152,7 @@ export default function CreateSession()
     );
 
     const [team, setTeam] = useLocalStorage("team", -1);
+    const [sessionTimeTest, setSessionTimeTest] = useState("10:00:00");
     
     useEffect(() => {
         setSelectedTeam({
@@ -289,6 +293,7 @@ export default function CreateSession()
                                 <label className="text-3xl text-gray-500 font-bold">When does it take place ?</label>
                                 <div>
                                     <DatePicker value={sessionInfo.sessionDate.toJSDate()} format="dd/MM/yyyy" onChange={(newDate:Date) => setSessionInfo({...sessionInfo, sessionDate:DateTime.fromJSDate(newDate)})}/>
+                                    <TimePicker value={"10:00:00"}/>
                                 </div>
                             </div>
 
@@ -317,7 +322,9 @@ export default function CreateSession()
                         </form>
                     </motion.div>
                 </motion.div>
+                
             </div>
         </Layout>
+        
     );
 }
