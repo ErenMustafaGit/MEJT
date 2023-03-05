@@ -1,6 +1,6 @@
 import { FADE_IN_ANIMATION_SETTINGS } from "@/lib/constants";
 import { AnimatePresence, motion } from "framer-motion";
-import { useSession } from "next-auth/react";
+import { useSession, signOut } from "next-auth/react";
 import Image from "next/image";
 import Link from "next/link";
 import { ReactNode } from "react";
@@ -23,6 +23,7 @@ export default function Layout({
 }) {
   const { data: session, status } = useSession();
   const scrolled = useScroll(50);
+  console.log("session", session);
 
   return (
     <>
@@ -62,7 +63,19 @@ export default function Layout({
                   </Link>
                 </div>
               ) : (
-                <UserDropdown />
+                <div className="flex gap-4">
+                  <button
+                    onClick={() =>
+                      signOut({
+                        redirect: false,
+                      })
+                    }
+                    className="rounded-full border-2 border-rblue-500 bg-rblue-500 p-1.5 px-4 text-sm text-white transition-all hover:border-rblue-600 hover:bg-rblue-600"
+                    {...FADE_IN_ANIMATION_SETTINGS}
+                  >
+                    Sign out
+                  </button>
+                </div>
               )}
             </AnimatePresence>
           </div>

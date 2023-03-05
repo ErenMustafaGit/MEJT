@@ -31,14 +31,14 @@ export default function Register() {
     e.preventDefault();
     let token: string;
     try {
-      const { data } = await Axios.post(`${API_URL}/register`, {
+      const { data } = await Axios.post(`${API_URL}/signup`, {
         name: formData.name,
         email: formData.email,
         password: formData.password,
-        role: role,
+        type: role?.toString(),
       });
-      token = data.userDetails;
-      console.log(token);
+      token = data?.userDetails;
+      console.log(data);
     } catch (error) {
       if (Axios.isAxiosError(error)) {
         console.error(error);

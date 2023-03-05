@@ -4,13 +4,12 @@ import Link from "next/link";
 import Balancer from "react-wrap-balancer";
 import Axios from "axios";
 import { motion } from "framer-motion";
-import {
-  FADE_DOWN_ANIMATION_VARIANTS,
-  FADE_IN_ANIMATION_SETTINGS,
-} from "@/lib/constants";
+import { FADE_DOWN_ANIMATION_VARIANTS } from "@/lib/constants";
 import { useRouter } from "next/router";
 import { Mail, Lock } from "lucide-react";
 import { useState } from "react";
+import { setCookie } from "cookies-next";
+import { signIn, signOut, useSession } from "next-auth/react";
 
 export default function Login() {
   const API_URL = process.env.NEXT_PUBLIC_MEJT_API_URL;
@@ -20,19 +19,16 @@ export default function Login() {
     password: "",
   });
 
-  console.log("API URL", API_URL);
+  const { data: session, status } = useSession();
+  console.log("session", session);
 
   const submitLogin = async (e: any) => {
     e.preventDefault();
-    let token: string;
     try {
-      console.log(formData);
-      const { data } = await Axios.post(`${API_URL}/login`, {
+      const res = await signIn("credentials", {
         email: formData.email,
         password: formData.password,
       });
-      token = data.userDetails;
-      console.log(token);
     } catch (error) {
       if (Axios.isAxiosError(error)) {
         console.error(error);
