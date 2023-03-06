@@ -4,32 +4,42 @@ import Link from "next/link";
 import Balancer from "react-wrap-balancer";
 import Axios from "axios";
 import { motion } from "framer-motion";
-import { FADE_DOWN_ANIMATION_VARIANTS } from "@/lib/constants";
+import { FADE_DOWN_ANIMATION_VARIANTS, TRAINER } from "@/lib/constants";
 import { useRouter } from "next/router";
 import { Mail, Lock } from "lucide-react";
 import { useState } from "react";
 import { setCookie } from "cookies-next";
-import { signIn, signOut, useSession } from "next-auth/react";
 
 export default function Login() {
-  const API_URL = process.env.NEXT_PUBLIC_MEJT_API_URL;
   const router = useRouter();
   const [formData, setFormData] = useState({
     email: "",
     password: "",
   });
 
-  const { data: session, status } = useSession();
-  console.log("session", session);
+  const [loading, setLoading] = useState(false);
 
   const submitLogin = async (e: any) => {
     e.preventDefault();
     try {
-      const res = await signIn("credentials", {
+      setLoading(true);
+      const res = await Axios.post("/api/login", {
         email: formData.email,
         password: formData.password,
       });
+      if (res.data.success) {
+        setCookie("session", res.data.user, {
+          maxAge: 30 * 24 * 60 * 60,
+          path: "/",
+        });
+        res.data.user.type === TRAINER
+          ? router.push("/trainer/dashboard")
+          : router.push("/athlete/dashboard");
+      } else {
+        setLoading(false);
+      }
     } catch (error) {
+      setLoading(false);
       if (Axios.isAxiosError(error)) {
         console.error(error);
       } else {
@@ -104,8 +114,15 @@ export default function Login() {
               </div>
               <div className="-mx-3 flex">
                 <div className="mb-5 w-full px-3">
-                  <button className="mx-auto block w-full max-w-xs rounded-lg bg-rblue-500 px-3 py-3 font-semibold text-white hover:bg-rblue-600 active:bg-rblue-700">
-                    Login
+                  <button
+                    disabled={loading}
+                    className={`${
+                      loading
+                        ? "cursor-not-allowed bg-rblue-100 hover:bg-rblue-100"
+                        : "bg-rblue-500"
+                    } " mx-auto block w-full max-w-xs rounded-lg  px-3 py-3 font-semibold text-white hover:bg-rblue-600 active:bg-rblue-700`}
+                  >
+                    {loading ? "Loading" : "Login"}
                   </button>
                 </div>
               </div>
@@ -118,9 +135,9 @@ export default function Login() {
                 You don&apos;t have an account?{" "}
                 <Link
                   href="/register"
-                  className="text-rblue-500 transition duration-300 ease-out hover:text-rblue-300 hover:underline"
+                  className={`text-rblue-500 transition duration-300 ease-out hover:text-rblue-300 hover:underline `}
                 >
-                  Sign up
+                  Signup
                 </Link>
               </Balancer>
             </motion.div>

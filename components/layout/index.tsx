@@ -1,14 +1,14 @@
 import { FADE_IN_ANIMATION_SETTINGS } from "@/lib/constants";
 import { AnimatePresence, motion } from "framer-motion";
-import { useSession, signOut } from "next-auth/react";
 import Image from "next/image";
 import Link from "next/link";
 import { ReactNode } from "react";
-import useScroll from "@/lib/hooks/use-scroll";
+import { getCookie, deleteCookie } from "cookies-next";
 import Meta from "./meta";
 import UserDropdown from "./user-dropdown";
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+import { useRouter } from "next/router";
 
 export default function Layout({
   meta,
@@ -21,9 +21,8 @@ export default function Layout({
   };
   children: ReactNode;
 }) {
-  const { data: session, status } = useSession();
-  const scrolled = useScroll(50);
-  console.log("session", session);
+  const session = getCookie("session");
+  const router = useRouter();
 
   return (
     <>
@@ -45,7 +44,7 @@ export default function Layout({
           </Link>
           <div>
             <AnimatePresence>
-              {!session && status !== "loading" ? (
+              {!session ? (
                 <div className="flex gap-4">
                   <Link
                     className="rounded-full border-2 border-rblue-500 bg-rblue-500 p-1.5 px-4 text-sm text-white transition-all hover:border-rblue-600 hover:bg-rblue-600"
@@ -64,12 +63,13 @@ export default function Layout({
                 </div>
               ) : (
                 <div className="flex gap-4">
+                  <UserDropdown />
                   <button
-                    onClick={() =>
-                      signOut({
-                        redirect: false,
-                      })
-                    }
+                    onClick={() => {
+                      // Remove cookie with key "session"
+                      deleteCookie("session");
+                      router.push("/login");
+                    }}
                     className="rounded-full border-2 border-rblue-500 bg-rblue-500 p-1.5 px-4 text-sm text-white transition-all hover:border-rblue-600 hover:bg-rblue-600"
                     {...FADE_IN_ANIMATION_SETTINGS}
                   >

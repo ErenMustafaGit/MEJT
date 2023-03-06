@@ -1,14 +1,18 @@
 import { useState } from "react";
-import { signOut, useSession } from "next-auth/react";
 import { LayoutDashboard, LogOut } from "lucide-react";
 import Popover from "@/components/shared/popover";
 import Image from "next/image";
 import { motion } from "framer-motion";
-import { FADE_IN_ANIMATION_SETTINGS } from "@/lib/constants";
+import { ATHLETE, FADE_IN_ANIMATION_SETTINGS, TRAINER } from "@/lib/constants";
+import { getUser } from "@/lib/auth";
+import { useRouter } from "next/router";
+import { deleteCookie } from "cookies-next";
 
 export default function UserDropdown() {
-  const { data: session } = useSession();
-  const { email, image } = session?.user || {};
+  const router = useRouter();
+
+  const session = getUser();
+  const { email, image, type } = session || {};
   const [openPopover, setOpenPopover] = useState(false);
 
   if (!email) return null;
@@ -29,15 +33,22 @@ export default function UserDropdown() {
               <p className="text-sm">Dashboard</p>
             </Link> */}
             <button
-              className="relative flex w-full cursor-not-allowed items-center justify-start space-x-2 rounded-md p-2 text-left text-sm transition-all duration-75 hover:bg-gray-100"
-              disabled
+              className="relative flex w-full items-center justify-start space-x-2 rounded-md p-2 text-left text-sm transition-all duration-75 hover:bg-gray-100"
+              onClick={() => {
+                if (type === ATHLETE) router.push("/athlete/dashboard");
+                else if (type === TRAINER) router.push("/trainer/dashboard");
+              }}
             >
               <LayoutDashboard className="h-4 w-4" />
               <p className="text-sm">Dashboard</p>
             </button>
             <button
               className="relative flex w-full items-center justify-start space-x-2 rounded-md p-2 text-left text-sm transition-all duration-75 hover:bg-gray-100"
-              onClick={() => signOut({ redirect: false })}
+              onClick={() => {
+                // Remove cookie with key "session"
+                deleteCookie("session");
+                router.push("/login");
+              }}
             >
               <LogOut className="h-4 w-4" />
               <p className="text-sm">Logout</p>

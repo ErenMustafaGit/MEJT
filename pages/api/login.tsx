@@ -9,8 +9,7 @@ export default async function handler(req: any, res: any) {
         email,
         password,
       });
-      const { token } = response.data;
-      res.status(200).json({ token });
+      res.status(200).json(response.data);
     } catch (error: any) {
       res.status(400).json({ message: error.message });
     }

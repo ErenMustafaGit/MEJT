@@ -2,6 +2,8 @@ import NextAuth, { DefaultUser, NextAuthOptions, Session } from "next-auth";
 import CredentialsProvider from "next-auth/providers/credentials";
 import axios from "axios";
 import { User, Session as MySession } from "models/user";
+import { JWT } from "next-auth/jwt";
+import { AdapterUser } from "next-auth/adapters";
 
 export const authOptions: NextAuthOptions = {
   providers: [
@@ -50,11 +52,16 @@ export const authOptions: NextAuthOptions = {
     }),
   ],
   callbacks: {
-    async jwt({ token, user, account }) {
+    async jwt({ token, user, account }): Promise<any> {
+      console.log("jwt");
+      console.log("token jwt", token);
+      console.log("user jwt", user);
+      console.log("account", account);
       if (account && user) {
         return {
           ...token,
           accessToken: token,
+          user: token.user,
           // refreshToken: refreshToken,
         };
       }
@@ -63,8 +70,6 @@ export const authOptions: NextAuthOptions = {
     },
 
     async session({ session, token }): Promise<MySession> {
-      console.log("session", session);
-      console.log("token", token);
       return session;
     },
   },
