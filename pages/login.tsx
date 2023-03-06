@@ -11,6 +11,7 @@ import { useState } from "react";
 import { setCookie } from "cookies-next";
 
 export default function Login() {
+  const API_URL = process.env.NEXT_PUBLIC_MEJT_API_URL;
   const router = useRouter();
   const [formData, setFormData] = useState({
     email: "",
@@ -23,7 +24,7 @@ export default function Login() {
     e.preventDefault();
     try {
       setLoading(true);
-      const res = await Axios.post("/api/login", {
+      const res = await Axios.post(`${API_URL}/login`, {
         email: formData.email,
         password: formData.password,
       });
