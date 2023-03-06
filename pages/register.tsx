@@ -35,16 +35,14 @@ export default function Register() {
 
   const submitRegister = async (e: any) => {
     e.preventDefault();
-    let token: string;
     try {
       const { data } = await Axios.post(`${API_URL}/signup`, {
         name: formData.name,
         email: formData.email,
         password: formData.password,
-        type: role?.toString(),
+        type: selectedRole.id?.toString(),
       });
-      token = data?.userDetails;
-      if (token) {
+      if (data.success) {
         const res = await Axios.post("/api/login", {
           email: formData.email,
           password: formData.password,
