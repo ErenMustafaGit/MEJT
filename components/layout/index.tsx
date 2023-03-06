@@ -1,4 +1,4 @@
-import { FADE_IN_ANIMATION_SETTINGS } from "@/lib/constants";
+import { ATHLETE, FADE_IN_ANIMATION_SETTINGS, TRAINER } from "@/lib/constants";
 import { AnimatePresence, motion } from "framer-motion";
 import Image from "next/image";
 import Link from "next/link";
@@ -9,6 +9,7 @@ import UserDropdown from "./user-dropdown";
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { useRouter } from "next/router";
+import { getUser } from "@/lib/auth";
 
 export default function Layout({
   meta,
@@ -21,7 +22,8 @@ export default function Layout({
   };
   children: ReactNode;
 }) {
-  const session = getCookie("session");
+  const session = getUser();
+  const { email, image, type } = session || {};
   const router = useRouter();
 
   return (
@@ -63,6 +65,17 @@ export default function Layout({
                 </div>
               ) : (
                 <div className="flex gap-4">
+                  <button
+                    onClick={() => {
+                      if (type === ATHLETE) router.push("/athlete/dashboard");
+                      else if (type === TRAINER)
+                        router.push("/trainer/dashboard");
+                    }}
+                    className="hidden text-sm text-rblue-500 transition-all duration-300 ease-out hover:text-rblue-300 hover:underline sm:block"
+                    {...FADE_IN_ANIMATION_SETTINGS}
+                  >
+                    Dashboard
+                  </button>
                   <UserDropdown />
                   <button
                     onClick={() => {

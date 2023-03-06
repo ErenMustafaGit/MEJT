@@ -30,8 +30,14 @@ export function middleware(req: NextRequest) {
   if (noauthPrefix.some((prefix) => pathname.startsWith(prefix))) {
     const session = req.cookies.get("session")?.value;
     if (session) {
-      // On verifie le type de la session et on redirige vers la bonne page
-      return NextResponse.redirect(new URL("/", req.url));
+      // On verifie le type de l'utilisateur et on redirige vers la bonne page
+      const user: User | null = getUser(req.cookies.get("session")?.value);
+      if (user?.type === TRAINER) {
+        return NextResponse.redirect(new URL("/trainer/dashboard", req.url));
+      } else if (user?.type === ATHLETE) {
+        console.log("redirecting to trainer dashboard");
+        return NextResponse.redirect(new URL("/athlete/dashboard", req.url));
+      }
     }
   }
   return NextResponse.next();

@@ -78,7 +78,7 @@ export default function RoleChoice() {
                 width={500}
                 height={300}
               />
-              <h2 className="m-4 text-xl font-semibold ">Athletes</h2>
+              <h2 className="m-4 text-xl font-semibold ">Athlete</h2>
 
               <p className="m-4 mt-2 text-left">
                 Track your activity and injuries, give your feedback to your

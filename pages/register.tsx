@@ -25,6 +25,7 @@ export default function Register() {
   const API_URL = process.env.NEXT_PUBLIC_MEJT_API_URL;
   const [role, setRole] = useLocalStorage("role", 0);
   const [selectedRole, setselectedRole] = useState(roles[0]);
+  const [loading, setLoading] = useState(false);
   const router = useRouter();
 
   const [formData, setFormData] = useState({
@@ -36,6 +37,7 @@ export default function Register() {
   const submitRegister = async (e: any) => {
     e.preventDefault();
     try {
+      setLoading(true);
       const { data } = await Axios.post(`${API_URL}/signup`, {
         name: formData.name,
         email: formData.email,
@@ -55,10 +57,14 @@ export default function Register() {
           res.data.user.type === TRAINER
             ? router.push("/trainer/dashboard")
             : router.push("/athlete/dashboard");
+        } else {
+          setLoading(false);
         }
+      } else {
+        setLoading(false);
       }
-      console.log(data);
     } catch (error) {
+      setLoading(false);
       if (Axios.isAxiosError(error)) {
         console.error(error);
       } else {
@@ -229,8 +235,15 @@ export default function Register() {
               </div>
               <div className="-mx-3 flex">
                 <div className="mb-5 w-full px-3">
-                  <button className="mx-auto block w-full max-w-xs rounded-lg bg-rblue-500 px-3 py-3 font-semibold text-white hover:bg-rblue-600 active:bg-rblue-700">
-                    Register Now
+                  <button
+                    disabled={loading}
+                    className={`${
+                      loading
+                        ? "cursor-not-allowed bg-rblue-100 hover:bg-rblue-100 active:bg-rblue-100"
+                        : "bg-rblue-500 hover:bg-rblue-600 active:bg-rblue-700"
+                    } " mx-auto block w-full max-w-xs rounded-lg  px-3 py-3 font-semibold text-white`}
+                  >
+                    {loading ? "Loading" : "Register Now"}
                   </button>
                 </div>
               </div>

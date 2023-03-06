@@ -119,9 +119,9 @@ export default function Login() {
                     disabled={loading}
                     className={`${
                       loading
-                        ? "cursor-not-allowed bg-rblue-100 hover:bg-rblue-100"
-                        : "bg-rblue-500"
-                    } " mx-auto block w-full max-w-xs rounded-lg  px-3 py-3 font-semibold text-white hover:bg-rblue-600 active:bg-rblue-700`}
+                        ? "cursor-not-allowed bg-rblue-100 hover:bg-rblue-100 active:bg-rblue-100"
+                        : "bg-rblue-500 hover:bg-rblue-600 active:bg-rblue-700"
+                    } " mx-auto block w-full max-w-xs rounded-lg  px-3 py-3 font-semibold text-white`}
                   >
                     {loading ? "Loading" : "Login"}
                   </button>
