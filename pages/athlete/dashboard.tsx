@@ -17,6 +17,10 @@ import { useRouter } from "next/router";
 import Graphic from "@/components/graphics/graphic";
 import SessionCard from "@/components/home/session-card";
 
+import {useState} from 'react'
+
+import Axios from 'axios'
+
 import {
   Chart as ChartJS,
   CategoryScale,
@@ -146,6 +150,59 @@ export default function Dashboard() {
     fillColor: VIOLET_FILL_GRAPH,
   };
 
+
+  // const [teams, setTeams] = useState<{teamId:number;teamName:string;}[]>([]);
+  const teams = [
+    {
+      teamId:1,
+      teamName:"Equipe 1"
+    },
+    {
+      teamId:2,
+      teamName:"Equipe 2"
+    },{
+      teamId:3,
+      teamName:"Equipe 3"
+    },{
+      teamId:4,
+      teamName:"Equipe 4"
+    },
+  ]
+
+   /*
+    const getAllTeams = async () =>
+    {
+        await Axios.get(`${API_URL}/athlete/teams`)
+        .then((response) => {
+            const allTeams = response.data.teams;
+
+            setTeams(allTeams.map((team:any) => {
+                return {
+                    name:team.name,
+                    id:team.teamId
+                }
+            }));
+        })
+    }
+
+    */
+
+
+    let temp = {};
+    teams.forEach(team => {
+      temp = {...temp, [team.teamId]:false}
+    });
+    const [dictButtons, setDictButtons] = useState<{[key: number]:boolean}>({...temp, [teams[0].teamId]:true});
+
+    const updateButtonsAndData = (teamId:number) => {
+      const key:string|undefined = Object.keys(dictButtons).find(key => dictButtons[parseInt(key)] === true);
+      if(key !== undefined)
+      {
+        console.log(`Success ! Key = ${key}`);
+        setDictButtons({...dictButtons, [parseInt(key)]:false, [teamId]:true});
+      }
+    }
+    
   return (
     <Layout>
       <div className="flex w-full flex-col items-center">
@@ -186,10 +243,28 @@ export default function Dashboard() {
                 ))}
               </div>
             </section>
-            <section className="mb-10 w-full sm:mx-4 sm:px-8">
-              <h2 className="mx-4 text-3xl font-bold text-rblue-700">
+            <section className="mb-10 w-full sm:mx-4 px-8">
+              <h2 className="text-3xl font-bold text-rblue-700">
                 <Balancer>Teams</Balancer>
               </h2>
+
+              <div className="flex flex-row mt-5 ">
+                {
+                  teams.map((team) => {
+                    return (
+                    <button 
+                      key={team.teamId} 
+                      className={`rounded-full border ${ (dictButtons[team.teamId]) ? "border-rblue-600 bg-rblue-600" : "border-rblue-500 bg-rblue-500"} border-rblue-500 bg-rblue-500 p-1 px-2 text-center text-sm text-white transition-all hover:border-rblue-600 hover:bg-rblue-600 mr-2`}
+                      onClick={
+                        () => updateButtonsAndData(team.teamId)
+                      }
+                    >
+                      {team.teamName}
+                    </button>);
+                  })
+                }
+              </div>
+
               <div className="mt-5 flex h-auto w-full flex-col flex-wrap justify-center gap-8 lg:h-2/4 lg:flex-row">
                 <div className="">
                   <Graphic
