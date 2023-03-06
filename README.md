@@ -35,6 +35,7 @@ MEJT is a training app. It allows you to create and manage your training session
 - `capitalize` – Capitalize the first letter of a string
 - `truncate` – Truncate a string to a specified length
 - [`use-debounce`](https://www.npmjs.com/package/use-debounce) – Debounce a function call / state update
+- [`cookies`](https://github.com/andreizanik/cookies-next) – Simple cookie management for Next.js
 
 ### Code Quality
 
