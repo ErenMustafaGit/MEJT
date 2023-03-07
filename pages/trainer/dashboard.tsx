@@ -1,15 +1,45 @@
 import Layout from "@/components/layout";
 import DataGrid from "@/components/home/data-grid";
-
+import { useState, useEffect } from "react";
 import Balancer from "react-wrap-balancer";
 import { motion } from "framer-motion";
 import { FADE_DOWN_ANIMATION_VARIANTS } from "@/lib/constants";
 import { useRouter } from "next/router";
 import TeamData from "models/team-data";
+import Axios from "axios";
+import { getToken } from "@/lib/auth";
+import Skeleton from "react-loading-skeleton";
+import "react-loading-skeleton/dist/skeleton.css";
 
 export default function Dashboard() {
+  const API_URL = process.env.NEXT_PUBLIC_MEJT_API_URL;
+  const token = getToken();
+  console.log("token", token);
+
   const router = useRouter();
-  const API_URL = process.env.MEJT_API_URL;
+
+  const [teams, setTeams] = useState([]);
+  const [loading, setLoading] = useState(false);
+
+  useEffect(() => {
+    setLoading(true);
+    Axios.get(`${API_URL}/trainer/teams`, {
+      headers: { Authorization: `Bearer ${token}` },
+    })
+      .then((res) => {
+        setLoading(false);
+        console.log(res);
+        if (res.data.success) {
+          setTeams(res.data.teams);
+        } else {
+          console.error("error", res.data.error);
+        }
+      })
+      .catch((err) => {
+        setLoading(false);
+        console.log(err);
+      });
+  }, []);
 
   const teamsHeader = [
     {
@@ -45,20 +75,20 @@ export default function Dashboard() {
   ];
 
   // TO BE DELETED (DATA REPLACING API CALL)
-  const teams: TeamData[] = Array(6).fill({
-    teamId: "1",
-    name: "3 IFA",
-    trainerId: "1",
-    sessionNumber: 5,
-    athleteNumber: 10,
-  });
-  teams.push({
-    teamId: "2",
-    name: "Les IFA",
-    trainerId: "1",
-    sessionNumber: 5,
-    athleteNumber: 10,
-  });
+  // const teams: TeamData[] = Array(6).fill({
+  //   teamId: "1",
+  //   name: "3 IFA",
+  //   trainerId: "1",
+  //   sessionNumber: 5,
+  //   athleteNumber: 10,
+  // });
+  // teams.push({
+  //   teamId: "2",
+  //   name: "Les IFA",
+  //   trainerId: "1",
+  //   sessionNumber: 5,
+  //   athleteNumber: 10,
+  // });
 
   return (
     <Layout>
@@ -87,14 +117,19 @@ export default function Dashboard() {
                 <Balancer>Teams</Balancer>
               </h2>
               <div className="mt-8 flex w-full flex-col">
-                <DataGrid
-                  header={teamsHeader}
-                  data={teams}
-                  onRowClick={{
-                    slug: "teamId",
-                    path: "/trainer/team/",
-                  }}
-                />
+                {!loading && teams.length !== 0 && (
+                  <DataGrid
+                    header={teamsHeader}
+                    data={teams}
+                    onRowClick={{
+                      slug: "teamId",
+                      path: "/trainer/team/",
+                    }}
+                  />
+                )}
+                {loading && (
+                  <Skeleton height={100} className={`rounded-full`} />
+                )}
               </div>
             </section>
           </motion.div>

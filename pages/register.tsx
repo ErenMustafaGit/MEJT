@@ -4,22 +4,29 @@ import Link from "next/link";
 import Balancer from "react-wrap-balancer";
 import Axios from "axios";
 import { motion } from "framer-motion";
-import { FADE_DOWN_ANIMATION_VARIANTS } from "@/lib/constants";
+import {
+  FADE_DOWN_ANIMATION_VARIANTS,
+  ATHLETE,
+  TRAINER,
+} from "@/lib/constants";
 import useLocalStorage from "@/lib/hooks/use-local-storage";
 import { useRouter } from "next/router";
 import { Fragment, useState, useEffect } from "react";
 import { Listbox, Transition } from "@headlessui/react";
 import { CheckIcon, ChevronDown, Mail, Lock, User, Globe } from "lucide-react";
+import { setCookie } from "cookies-next";
 
 const roles = [
-  { id: 0, name: "Athlete" },
-  { id: 1, name: "Trainer" },
+  { id: ATHLETE, name: "Athlete" },
+  { id: TRAINER, name: "Trainer" },
 ];
 
 export default function Register() {
   const API_URL = process.env.NEXT_PUBLIC_MEJT_API_URL;
   const [role, setRole] = useLocalStorage("role", 0);
   const [selectedRole, setselectedRole] = useState(roles[0]);
+  const [loading, setLoading] = useState(false);
+  const router = useRouter();
 
   const [formData, setFormData] = useState({
     name: "",
@@ -29,17 +36,39 @@ export default function Register() {
 
   const submitRegister = async (e: any) => {
     e.preventDefault();
-    let token: string;
     try {
-      const { data } = await Axios.post(`${API_URL}/register`, {
+      setLoading(true);
+      const { data } = await Axios.post(`${API_URL}/signup`, {
         name: formData.name,
         email: formData.email,
         password: formData.password,
-        role: role,
+        type: selectedRole.id?.toString(),
       });
-      token = data.userDetails;
-      console.log(token);
+      if (data.success) {
+        const res = await Axios.post("/api/login", {
+          email: formData.email,
+          password: formData.password,
+        });
+        if (res.data.success) {
+          const session = {
+            token: res.data.token,
+            user: res.data.user,
+          };
+          setCookie("session", session, {
+            maxAge: 30 * 24 * 60 * 60,
+            path: "/",
+          });
+          res.data.user.type === TRAINER
+            ? router.push("/trainer/dashboard")
+            : router.push("/athlete/dashboard");
+        } else {
+          setLoading(false);
+        }
+      } else {
+        setLoading(false);
+      }
     } catch (error) {
+      setLoading(false);
       if (Axios.isAxiosError(error)) {
         console.error(error);
       } else {
@@ -210,8 +239,15 @@ export default function Register() {
               </div>
               <div className="-mx-3 flex">
                 <div className="mb-5 w-full px-3">
-                  <button className="mx-auto block w-full max-w-xs rounded-lg bg-rblue-500 px-3 py-3 font-semibold text-white hover:bg-rblue-600 active:bg-rblue-700">
-                    Register Now
+                  <button
+                    disabled={loading}
+                    className={`${
+                      loading
+                        ? "cursor-not-allowed bg-rblue-100 hover:bg-rblue-100 active:bg-rblue-100"
+                        : "bg-rblue-500 hover:bg-rblue-600 active:bg-rblue-700"
+                    } " mx-auto block w-full max-w-xs rounded-lg  px-3 py-3 font-semibold text-white`}
+                  >
+                    {loading ? "Loading" : "Register Now"}
                   </button>
                 </div>
               </div>

@@ -3,7 +3,11 @@ import Link from "next/link";
 import Layout from "@/components/layout";
 import Balancer from "react-wrap-balancer";
 import { motion } from "framer-motion";
-import { FADE_DOWN_ANIMATION_VARIANTS } from "@/lib/constants";
+import {
+  ATHLETE,
+  FADE_DOWN_ANIMATION_VARIANTS,
+  TRAINER,
+} from "@/lib/constants";
 import Image from "next/image";
 import useLocalStorage from "@/lib/hooks/use-local-storage";
 
@@ -41,7 +45,7 @@ export default function RoleChoice() {
             <button
               onClick={() => {
                 // Trainer
-                setRole(1);
+                setRole(TRAINER);
                 router.push("/register");
               }}
               className="flex h-1/2 w-1/2 transform flex-col overflow-hidden rounded-lg bg-slate-100 bg-opacity-80 drop-shadow-xl transition duration-300 ease-out hover:scale-105 hover:drop-shadow-2xl sm:h-full sm:w-full sm:max-w-xs"
@@ -62,7 +66,7 @@ export default function RoleChoice() {
             <button
               onClick={() => {
                 // Athlete
-                setRole(0);
+                setRole(ATHLETE);
                 router.push("/register");
               }}
               className="flex h-1/2 w-1/2 transform flex-col overflow-hidden rounded-lg bg-slate-100 bg-opacity-80 drop-shadow-xl transition duration-300 ease-out hover:scale-105 hover:drop-shadow-2xl sm:h-full sm:w-full sm:max-w-xs"
@@ -74,7 +78,7 @@ export default function RoleChoice() {
                 width={500}
                 height={300}
               />
-              <h2 className="m-4 text-xl font-semibold ">Athletes</h2>
+              <h2 className="m-4 text-xl font-semibold ">Athlete</h2>
 
               <p className="m-4 mt-2 text-left">
                 Track your activity and injuries, give your feedback to your
