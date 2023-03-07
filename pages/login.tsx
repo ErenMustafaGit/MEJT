@@ -29,7 +29,11 @@ export default function Login() {
         password: formData.password,
       });
       if (res.data.success) {
-        setCookie("session", res.data.user, {
+        const session = {
+          token: res.data.token,
+          user: res.data.user,
+        };
+        setCookie("session", session, {
           maxAge: 30 * 24 * 60 * 60,
           path: "/",
         });
