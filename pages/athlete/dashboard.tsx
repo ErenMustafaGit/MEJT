@@ -16,8 +16,10 @@ import SessionData from "models/session-data";
 import { useRouter } from "next/router";
 import Graphic from "@/components/graphics/graphic";
 import SessionCard from "@/components/home/session-card";
+import Skeleton from "react-loading-skeleton";
+import "react-loading-skeleton/dist/skeleton.css";
 
-import {useState} from 'react'
+import {useState, useEffect} from 'react'
 
 import Axios from 'axios'
 
@@ -31,6 +33,7 @@ import {
   Tooltip,
   Legend,
 } from "chart.js";
+import { getToken } from "@/lib/auth";
 
 ChartJS.register(
   CategoryScale,
@@ -44,7 +47,10 @@ ChartJS.register(
 
 export default function Dashboard() {
   const router = useRouter();
-  const API_URL = process.env.MEJT_API_URL;
+  const token = getToken();
+  const [loading, setLoading] = useState(false);
+  const API_URL = process.env.NEXT_PUBLIC_MEJT_API_URL;
+
   ["id", "name", "date", "location", "feedback"];
   const sessionsHeader = [
     {
@@ -149,9 +155,10 @@ export default function Dashboard() {
     lineColor: VIOLET_LINE_GRAPH,
     fillColor: VIOLET_FILL_GRAPH,
   };
+  const [teams, setTeams] = useState<{teamId:number;teamName:string;}[]>([]);
+  const [dictButtons, setDictButtons] = useState<{[key: number]:boolean}>({});
 
-
-  // const [teams, setTeams] = useState<{teamId:number;teamName:string;}[]>([]);
+  /*
   const teams = [
     {
       teamId:1,
@@ -169,30 +176,44 @@ export default function Dashboard() {
     },
   ]
 
-   /*
-    const getAllTeams = async () =>
-    {
-        await Axios.get(`${API_URL}/athlete/teams`)
-        .then((response) => {
-            const allTeams = response.data.teams;
+*/
 
-            setTeams(allTeams.map((team:any) => {
-                return {
-                    name:team.name,
-                    id:team.teamId
-                }
-            }));
-        })
-    }
+  useEffect(() =>
+  {
+    setLoading(true);
+    Axios.get(`${API_URL}/athlete/teams`,{
+      headers : {Authorization : `Bearer ${token}`}
+    })
+    .then((response) => {
+        setLoading(false);
+        if(response.data.success)
+        {
+          const allTeams = response.data.teams;
+          const prettyTeams:{teamId:number;teamName:string;}[] = allTeams.map((team:any) => {
+            return {
+              teamName:team.name,
+              teamId:team.teamId
+            }
+          });
+          setTeams(prettyTeams);
 
-    */
+          let temp = {};
+          prettyTeams.forEach(((team:{teamId:number;teamName:string;}) => {
+            temp = {...temp, [team.teamId]:false}
+          }));
 
-
-    let temp = {};
-    teams.forEach(team => {
-      temp = {...temp, [team.teamId]:false}
-    });
-    const [dictButtons, setDictButtons] = useState<{[key: number]:boolean}>({...temp, [teams[0].teamId]:true});
+          setDictButtons({...temp, [prettyTeams[0].teamId]:true})
+        }
+        else
+        {
+          console.error("error", response.data.error)
+        }
+    })
+    .catch((err) => {
+      setLoading(false);
+      console.log(err);
+    })
+  },[]);
 
     const updateButtonsAndData = (teamId:number) => {
       const key:string|undefined = Object.keys(dictButtons).find(key => dictButtons[parseInt(key)] === true);
@@ -249,7 +270,7 @@ export default function Dashboard() {
               </h2>
 
               <div className="flex flex-row mt-5 ">
-                {
+                {!loading && teams.length != 0 && (
                   teams.map((team) => {
                     return (
                     <button 
@@ -262,7 +283,11 @@ export default function Dashboard() {
                       {team.teamName}
                     </button>);
                   })
+                )
                 }
+                {loading && (
+                  <Skeleton height={100} className={`rounded-full`} />
+                )}
               </div>
 
               <div className="mt-5 flex h-auto w-full flex-col flex-wrap justify-center gap-8 lg:h-2/4 lg:flex-row">
