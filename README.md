@@ -25,6 +25,7 @@ MEJT is a training app. It allows you to create and manage your training session
 - [`@next/font`](https://nextjs.org/docs/basic-features/font-optimization) – Optimize custom fonts and remove external network requests for improved performance
 - [`@vercel/og`](https://vercel.com/docs/concepts/functions/edge-functions/og-image-generation) – Generate dynamic Open Graph images on the edge
 - [`react-wrap-balancer`](https://github.com/shuding/react-wrap-balancer) – Simple React component that makes titles more readable
+- [`react-loading-skeleton`](https://www.npmjs.com/package/react-loading-skeleton) - Make beautiful, animated loading skeletons that automatically adapt to your app
 
 ### Hooks and Utilities
 

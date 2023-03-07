@@ -39,57 +39,65 @@ export default function DataGrid({
             );
           })}
       </div>
+      {data.length === 0 && (
+        <div className="flex h-full w-full items-center justify-center p-2">
+          <Balancer className="text-italic text-sm italic text-gray-400 md:text-base lg:text-lg">
+            No data
+          </Balancer>
+        </div>
+      )}
 
-      {data.map((item, rowIndex) => {
-        return (
-          <div
-            key={rowIndex}
-            onClick={() => {
-              if (onRowClick) {
-                router.push(
-                  `${onRowClick.path}${item[onRowClick.slug]}`,
-                  undefined,
-                  { shallow: true },
-                );
-              }
-            }}
-            className={`flex h-12 items-center justify-center ${
-              rowIndex % 2 === 1 ? "bg-rblue-100/30" : "bg-white"
-            } ${
-              onRowClick
-                ? `cursor-pointer ${
-                    rowIndex % 2 === 1
-                      ? "hover:bg-rblue-100/60"
-                      : "hover:bg-gray-50"
-                  }`
-                : ""
-            } `}
-          >
-            {header
-              .filter((v) => v.show)
-              .map((header, columnIndex) => {
-                return (
-                  <div
-                    key={columnIndex + " " + rowIndex}
-                    className={`flex h-full w-full items-center justify-center border-b border-gray-200 text-sm text-gray-500`}
-                  >
-                    {typeof item[header.slug] === "boolean" ? (
-                      <BooleanChips
-                        value={item[header.slug]}
-                        trueString="Yes"
-                        falseString="No"
-                      />
-                    ) : (
-                      <Balancer className="truncate text-ellipsis xl:overflow-visible">
-                        {item[header.slug]}
-                      </Balancer>
-                    )}
-                  </div>
-                );
-              })}
-          </div>
-        );
-      })}
+      {data &&
+        data.map((item, rowIndex) => {
+          return (
+            <div
+              key={rowIndex}
+              onClick={() => {
+                if (onRowClick) {
+                  router.push(
+                    `${onRowClick.path}${item[onRowClick.slug]}`,
+                    undefined,
+                    { shallow: true },
+                  );
+                }
+              }}
+              className={`flex h-12 items-center justify-center ${
+                rowIndex % 2 === 1 ? "bg-rblue-100/30" : "bg-white"
+              } ${
+                onRowClick
+                  ? `cursor-pointer ${
+                      rowIndex % 2 === 1
+                        ? "hover:bg-rblue-100/60"
+                        : "hover:bg-gray-50"
+                    }`
+                  : ""
+              } `}
+            >
+              {header
+                .filter((v) => v.show)
+                .map((header, columnIndex) => {
+                  return (
+                    <div
+                      key={columnIndex + " " + rowIndex}
+                      className={`flex h-full w-full items-center justify-center border-b border-gray-200 text-sm text-gray-500`}
+                    >
+                      {typeof item[header.slug] === "boolean" ? (
+                        <BooleanChips
+                          value={item[header.slug]}
+                          trueString="Yes"
+                          falseString="No"
+                        />
+                      ) : (
+                        <Balancer className="truncate text-ellipsis xl:overflow-visible">
+                          {item[header.slug]}
+                        </Balancer>
+                      )}
+                    </div>
+                  );
+                })}
+            </div>
+          );
+        })}
     </div>
   );
 }
