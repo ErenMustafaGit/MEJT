@@ -32,7 +32,7 @@ export default function SessionCard({
           <Balancer>{date}</Balancer>
           <Link
             className="rounded-full border border-rblue-500 bg-rblue-500 p-1 px-2 text-center text-sm text-white transition-all hover:border-rblue-600 hover:bg-rblue-600"
-            href={`/athlete/feedback/${id}`}
+            href={`/athlete/session/${id}`}
           >
             Give a feedback
           </Link>
