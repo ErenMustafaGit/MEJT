@@ -6,7 +6,7 @@ import Balancer from "react-wrap-balancer";
 
 import "chartjs-adapter-luxon";
 import { filterData } from "@/lib/utils";
-
+import { Oval } from "react-loader-spinner";
 Chart.register(Filler, TimeScale);
 
 export default function Graphic({
@@ -14,14 +14,15 @@ export default function Graphic({
   xValues,
   yValues,
   lineColor,
-  fillColor
+  fillColor,
+  loading = false,
 }: {
   title: string;
   xValues: number[];
   yValues: number[];
   lineColor: string;
   fillColor: string;
-  
+  loading?: boolean;
 }) {
   const [allXValues, setAllXValues] = useState<number[]>([]);
   const [allYValues, setAllYValues] = useState<number[]>([]);
@@ -42,32 +43,23 @@ export default function Graphic({
     position: "right",
   });
 
-  useEffect(()=> {
+  useEffect(() => {
+    console.log(activeTab);
 
-    console.log(activeTab)
-    
-    if(activeTab[0])
-    {
+    if (activeTab[0]) {
       defaultData();
-    }
-    else if(activeTab[1])
-    {
+    } else if (activeTab[1]) {
       oneYearData();
-    }
-    else if(activeTab[2])
-    {
+    } else if (activeTab[2]) {
       threeMonthsData();
-    }
-    else if (activeTab[3])
-    {
+    } else if (activeTab[3]) {
       oneMonthData();
     }
-
-  }, [allXValues, allYValues])
+  }, [allXValues, allYValues]);
 
   useEffect(() => {
-    setAllXValues(xValues)
-    setAllYValues(yValues)
+    setAllXValues(xValues);
+    setAllYValues(yValues);
   }, [xValues, yValues]);
 
   const defaultData = () => {
@@ -134,7 +126,7 @@ export default function Graphic({
         <div className="mr-2 flex flex-col justify-between gap-4 xl:flex-row">
           <h3 className="mx-6 mb-1 text-xl font-bold sm:mx-1">{title}</h3>
 
-          <div className="flex sm:mx-2 mx-6 lg:mx-0 lg:justify-center">
+          <div className="mx-6 flex sm:mx-2 lg:mx-0 lg:justify-center">
             <button
               className={`${buttonClassName} rounded-tl-lg rounded-bl-lg border-r hover:border-r-4`}
               style={{
@@ -186,7 +178,24 @@ export default function Graphic({
         </div>
 
         <div className="relative">
-          <Line data={chartData} options={optionsData} />
+          {loading && (
+            <div className="absolute flex h-full w-full items-center justify-center py-20">
+              <Oval
+                height={80}
+                width={80}
+                color="#0767BF"
+                wrapperStyle={{}}
+                wrapperClass=""
+                visible={true}
+                ariaLabel="oval-loading"
+                secondaryColor="#0076FF"
+                strokeWidth={2}
+                strokeWidthSecondary={2}
+              />
+            </div>
+          )}
+
+          <Line data={chartData} options={optionsData}></Line>
         </div>
       </div>
     </>
