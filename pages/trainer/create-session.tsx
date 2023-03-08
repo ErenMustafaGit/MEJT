@@ -29,54 +29,26 @@ import "react-calendar/dist/Calendar.css";
 import TimePicker from "react-time-picker/dist/entry.nostyle";
 import "react-time-picker/dist/TimePicker.css";
 import "react-clock/dist/Clock.css";
-import classNames from "classnames";
+import { getToken } from "@/lib/auth";
 
 export default function CreateSession() {
   const router = useRouter();
   const API_URL = process.env.NEXT_PUBLIC_MEJT_API_URL;
+  const [teams, setTeams] = useState([]);
+  const token = getToken();
 
-  const teams = [
-    {
-      name: "Equipe 1",
-      id: 0,
-    },
-    {
-      name: "Equipe 2",
-      id: 1,
-    },
-    {
-      name: "Joueur 1",
-      id: 2,
-    },
-    {
-      name: "Equipe 3",
-      id: 3,
-    },
-    {
-      name: "Equipe 4",
-      id: 4,
-    },
-    {
-      name: "Joueur 2",
-      id: 5,
-    },
-  ];
+  useEffect(() => {
+    getAllTeams();
+  }, []);
 
-  /*
-    const getAllTeams = async () =>
-    {
-        await Axios.get(`${API_URL}/trainer/teams`)
-        .then((response) => {
-            const allTeams = response.data.teams;            
-            setTeams(allTeams.map((team:any) => {
-                return {
-                    name:team.name,
-                    id:team.teamId
-                }
-            }));
-        })
-    }
-    */
+  const getAllTeams = () => {
+    Axios.get(`${API_URL}/trainer/teams`, {
+      headers: { Authorization: `Bearer ${token}` },
+    }).then((response) => {
+      const allTeams = response.data.teams;
+      setTeams(allTeams);
+    });
+  };
 
   const [sessionInfo, setSessionInfo] = useState({
     sessionTeamId: -1,
@@ -216,45 +188,53 @@ export default function CreateSession() {
                         leaveFrom="opacity-100"
                         leaveTo="opacity-0"
                       >
-                        <Listbox.Options className="absolute z-20 mt-1 max-h-60 w-full overflow-auto rounded-md bg-white py-1 text-base shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none sm:text-sm">
-                          {teams.map((team, teamId) => {
-                            return (
-                              <Listbox.Option
-                                key={teamId}
-                                value={team}
-                                className={({ active }) =>
-                                  `relative cursor-default select-none py-2 pl-10 pr-4 ${
-                                    active
-                                      ? "bg-rblue-100 text-rblue-900"
-                                      : "text-gray-900"
-                                  }`
-                                }
-                              >
-                                {({ selected }) => (
-                                  <>
-                                    <span
-                                      className={`block truncate ${
-                                        team.id === selectedTeam.id
-                                          ? "font-medium"
-                                          : "font-normal"
-                                      }`}
-                                    >
-                                      {team.name}
-                                    </span>
-
-                                    {team?.id === selectedTeam?.id ? (
-                                      <span className="absolute inset-y-0 left-0 flex items-center pl-3 text-rblue-600">
-                                        <CheckIcon
-                                          className="h-5 w-5"
-                                          aria-hidden="true"
-                                        />
+                        <Listbox.Options className="absolute z-30 mt-1 max-h-60 w-full overflow-auto rounded-md bg-white py-1 text-base shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none sm:text-sm">
+                          {teams?.map(
+                            (
+                              team: {
+                                name: string;
+                                id: number;
+                              },
+                              teamId,
+                            ) => {
+                              return (
+                                <Listbox.Option
+                                  key={teamId}
+                                  value={team}
+                                  className={({ active }) =>
+                                    `relative cursor-default select-none py-2 pl-10 pr-4 ${
+                                      active
+                                        ? "bg-rblue-100 text-rblue-900"
+                                        : "text-gray-900"
+                                    }`
+                                  }
+                                >
+                                  {({ selected }) => (
+                                    <>
+                                      <span
+                                        className={`block truncate ${
+                                          team.id === selectedTeam.id
+                                            ? "font-medium"
+                                            : "font-normal"
+                                        }`}
+                                      >
+                                        {team.name}
                                       </span>
-                                    ) : null}
-                                  </>
-                                )}
-                              </Listbox.Option>
-                            );
-                          })}
+
+                                      {team?.id === selectedTeam?.id ? (
+                                        <span className="absolute inset-y-0 left-0 flex items-center pl-3 text-rblue-600">
+                                          <CheckIcon
+                                            className="h-5 w-5"
+                                            aria-hidden="true"
+                                          />
+                                        </span>
+                                      ) : null}
+                                    </>
+                                  )}
+                                </Listbox.Option>
+                              );
+                            },
+                          )}
                         </Listbox.Options>
                       </Transition>
                     </div>
