@@ -12,16 +12,11 @@ import {
   VIOLET_FILL_GRAPH,
   VIOLET_LINE_GRAPH,
 } from "@/lib/constants";
-import SessionData from "models/session-data";
+import { useState, useEffect } from "react";
+import AthleteData from "models/athlete-data";
 import { useRouter } from "next/router";
 import Graphic from "@/components/graphics/graphic";
-import SessionCard from "@/components/home/session-card";
-import Skeleton from "react-loading-skeleton";
-import "react-loading-skeleton/dist/skeleton.css";
-
-import {useState, useEffect} from 'react'
-
-import Axios from 'axios'
+import GoBack from "@/components/home/go-back";
 
 import {
   Chart as ChartJS,
@@ -34,6 +29,10 @@ import {
   Legend,
 } from "chart.js";
 import { getToken } from "@/lib/auth";
+import { displayToaster } from "@/lib/utils";
+import Axios from "axios";
+import Skeleton from "react-loading-skeleton";
+import SessionData from "models/session-data";
 
 ChartJS.register(
   CategoryScale,
@@ -47,9 +46,74 @@ ChartJS.register(
 
 export default function Dashboard() {
   const router = useRouter();
-  const token = getToken();
-  const [loading, setLoading] = useState(false);
   const API_URL = process.env.NEXT_PUBLIC_MEJT_API_URL;
+  const token = getToken();
+  const { teamId, athleteId } = router.query;
+  const [loading, setLoading] = useState<boolean>(false);
+  const [team, setTeam] = useState<any>({
+    name: "",
+  });
+  // TO BE CHANGED
+  const [athletesData, setAthletesData] = useState<any>([]);
+  const [athletes, setAthletes] = useState<AthleteData[]>([]);
+
+  const [athlete, setAthlete] = useState<any>(null);
+
+  useEffect(() => {
+    const fetchData = async () => {
+      setLoading(true);
+      Axios.get(
+        `${API_URL}/user/feedbackSessions/?teamId=${teamId}&athleteId=${athleteId}`,
+        {
+          headers: { Authorization: `Bearer ${token}` },
+        },
+      )
+        .then((res) => {
+          setLoading(false);
+          const data = res.data;
+          if (data.success && data.athlete) {
+            console.log("data", data);
+            // setAthletesData(data.athletes);
+            setAthlete(data.athlete);
+          } else {
+            console.error("error", res.data.error);
+          }
+        })
+        .catch((err) => {
+          setLoading(false);
+          console.log(err);
+        });
+    };
+
+    if (teamId) {
+      fetchData();
+    }
+  }, [teamId]);
+
+  useEffect(() => {
+    const athletes: AthleteData[] = athletesData.map((athlete: any) => {
+      const { userId, name, sessionsFeedbacks } = athlete;
+      let lastUpdate = "";
+      let fitness = 0;
+      let tiredness = 0;
+      let stress = 0;
+      if (sessionsFeedbacks) {
+        lastUpdate = sessionsFeedbacks[sessionsFeedbacks.length - 1].date;
+        fitness = sessionsFeedbacks[sessionsFeedbacks.length - 1].shape;
+        tiredness = sessionsFeedbacks[sessionsFeedbacks.length - 1].tiredness;
+        stress = sessionsFeedbacks[sessionsFeedbacks.length - 1].stress;
+      }
+      return {
+        userId,
+        name,
+        fitness,
+        tiredness,
+        stress,
+        lastUpdate,
+      };
+    });
+    setAthletes(athletes);
+  }, [athletesData]);
 
   const sessionsHeader = [
     {
@@ -100,26 +164,6 @@ export default function Dashboard() {
     feedback: false,
   });
 
-  const sessionsLess = [
-    {
-      teamName:
-        "l'équipe du dimanche l'équipe du dimanche l'équipe du dimanche",
-      sessionId: 20,
-      date: "2012-04-28T18:25:43.511Z",
-      place: "le stade de sport, 69100 Villeurbanne",
-      description: "entrainement du bas du corps en vu de la compétition",
-      name: "entrainement pre-compet",
-    },
-    {
-      teamName: "les ours",
-      sessionId: 30,
-      date: "2012-06-27T18:25:43.511Z",
-      place: "la salle de sport, 69000 Lyon",
-      description: "entrainement du haut du corps",
-      name: "entrainement post-vacances",
-    },
-  ];
-
   const config = {
     title: "Stress",
     xValues: [
@@ -154,79 +198,12 @@ export default function Dashboard() {
     lineColor: VIOLET_LINE_GRAPH,
     fillColor: VIOLET_FILL_GRAPH,
   };
-  const [teams, setTeams] = useState<{teamId:number;teamName:string;}[]>([]);
-  const [dictButtons, setDictButtons] = useState<{[key: number]:boolean}>({});
 
-  /*
-  const teams = [
-    {
-      teamId:1,
-      teamName:"Equipe 1"
-    },
-    {
-      teamId:2,
-      teamName:"Equipe 2"
-    },{
-      teamId:3,
-      teamName:"Equipe 3"
-    },{
-      teamId:4,
-      teamName:"Equipe 4"
-    },
-  ]
-
-*/
-
-  useEffect(() =>
-  {
-    setLoading(true);
-    Axios.get(`${API_URL}/athlete/teams`,{
-      headers : {Authorization : `Bearer ${token}`}
-    })
-    .then((response) => {
-        setLoading(false);
-        if(response.data.success)
-        {
-          const allTeams = response.data.teams;
-          const prettyTeams:{teamId:number;teamName:string;}[] = allTeams.map((team:any) => {
-            return {
-              teamName:team.name,
-              teamId:team.teamId
-            }
-          });
-          setTeams(prettyTeams);
-
-          let temp = {};
-          prettyTeams.forEach(((team:{teamId:number;teamName:string;}) => {
-            temp = {...temp, [team.teamId]:false}
-          }));
-
-          setDictButtons({...temp, [prettyTeams[0].teamId]:true})
-        }
-        else
-        {
-          console.error("error", response.data.error)
-        }
-    })
-    .catch((err) => {
-      setLoading(false);
-      console.log(err);
-    })
-  },[]);
-
-    const updateButtonsAndData = (teamId:number) => {
-      const key:string|undefined = Object.keys(dictButtons).find(key => dictButtons[parseInt(key)] === true);
-      if(key !== undefined)
-      {
-        setDictButtons({...dictButtons, [parseInt(key)]:false, [teamId]:true});
-      }
-    }
-    
   return (
     <Layout>
       <div className="flex w-full flex-col items-center">
         <motion.div
-          className="max-w-full md:px-5 xl:px-0 2xl:max-w-7xl"
+          className="w-full md:max-w-full md:px-5 xl:px-0 2xl:max-w-7xl"
           initial="hidden"
           whileInView="show"
           animate="show"
@@ -241,53 +218,19 @@ export default function Dashboard() {
           }}
         >
           <motion.div
-            className="flex w-full flex-col items-center justify-center py-32"
+            className="flex w-full flex-col items-center justify-center py-20 sm:py-32"
             variants={FADE_DOWN_ANIMATION_VARIANTS}
           >
-            <section className="mb-10 w-full px-8 sm:mx-4">
-              <h2 className="text-3xl font-bold text-rblue-700">
-                <Balancer>Feedback less sessions</Balancer>
-              </h2>
-              <div className="m-6 flex flex-wrap gap-6">
-                {sessionsLess.map((session, key) => (
-                  <SessionCard
-                    key={key}
-                    id={session.sessionId}
-                    place={session.place}
-                    date={session.date}
-                    description={session.description}
-                    name={session.name}
-                    teamName={session.teamName}
-                  />
-                ))}
-              </div>
-            </section>
-            <section className="mb-10 w-full sm:mx-4 px-8">
-              <h2 className="text-3xl font-bold text-rblue-700">
-                <Balancer>Teams</Balancer>
-              </h2>
+            <section className="mb-10 w-full sm:mx-4 sm:px-8">
+              <GoBack path="/trainer/dashboard"></GoBack>
 
-              <div className="mt-5 grid gap-4 grid-cols-3 md:grid-cols-4 xl:grid-cols-5">
-                {!loading && teams.length != 0 && (
-                  teams.map((team) => {
-                    return (
-                    <button 
-                      key={team.teamId} 
-                      className={`rounded-full border ${ (dictButtons[team.teamId]) ? "border-rblue-600 bg-rblue-600" : "border-rblue-500 bg-rblue-500"} p-1 px-2 text-center text-sm text-white transition-all hover:border-rblue-600 hover:bg-rblue-600 mr-2`}
-                      onClick={
-                        () => updateButtonsAndData(team.teamId)
-                      }
-                    >
-                      {team.teamName}
-                    </button>);
-                  })
-                )
-                }
-                {loading && (
-                  <Skeleton height={100} className={`rounded-full`} />
-                )}
-              </div>
-
+              {athlete ? (
+                <h2 className="mx-4 mb-4 text-3xl font-bold text-rblue-700">
+                  <Balancer>{athlete.name}</Balancer>
+                </h2>
+              ) : (
+                <Skeleton></Skeleton>
+              )}
               <div className="mt-5 flex h-auto w-full flex-col flex-wrap justify-center gap-8 lg:h-2/4 lg:flex-row">
                 <div className="">
                   <Graphic
@@ -331,7 +274,7 @@ export default function Dashboard() {
                   data={sessions}
                   onRowClick={{
                     slug: "id",
-                    path: "/athlete/session/",
+                    path: `/trainer/team/${teamId}/athlete/${athleteId}/feedback/`,
                   }}
                 />
               </div>
