@@ -52,6 +52,7 @@ export default function Dashboard() {
   const router = useRouter();
   const token = getToken();
   const [loading, setLoading] = useState(false);
+  const [loadingGraphs, setLoadingGraphs] = useState(false);
   const API_URL = process.env.NEXT_PUBLIC_MEJT_API_URL;
 
   const [athlete, setAthlete] = useState<
@@ -172,12 +173,12 @@ export default function Dashboard() {
   }, [athlete]);
 
   useEffect(() => {
-      setLoading(true);
+      setLoadingGraphs(true);
       Axios.get(`${API_URL}/user/feedbackSessions/?teamId=${selectedTeam}`, {
         headers: { Authorization: `Bearer ${token}` },
       })
         .then((res) => {
-          setLoading(false);
+          setLoadingGraphs(false);
           const data = res.data;
           if (data.success && data.athlete) {
             setAthlete(data.athlete);
@@ -187,7 +188,7 @@ export default function Dashboard() {
           }
         })
         .catch((err) => {
-          setLoading(false);
+          setLoadingGraphs(false);
           console.log(err);
           displayToaster("error", "Error while fetching data")
         });
@@ -225,9 +226,9 @@ export default function Dashboard() {
     })
   },[]);
 
-    const updateButtonsAndData = (teamId:number) => {
-      setSelectedTeam(teamId);
-    }
+  const updateButtonsAndData = (teamId:number) => {
+    setSelectedTeam(teamId);
+  }
     
   return (
     <Layout>
@@ -295,7 +296,9 @@ export default function Dashboard() {
                 )}
               </div>
 
-              <div className="mt-5 flex h-auto w-full flex-col flex-wrap justify-center gap-8 lg:h-2/4 lg:flex-row">
+              {!loadingGraphs &&
+              
+              <div className="mt-10 flex h-auto w-full flex-col flex-wrap justify-center gap-8 lg:h-2/4 lg:flex-row">
                 <div className="">
                   <Graphic
                     title="Stress"
@@ -325,8 +328,13 @@ export default function Dashboard() {
                     fillColor={VIOLET_FILL_GRAPH}
                   />
                 </div>
-
               </div>
+              }
+
+              {loadingGraphs &&            
+                <Skeleton height={100} className={`rounded-full`} />
+              }
+
             </section>
             <section className="mb-10 w-full px-8 sm:mx-4">
               <h2 className="text-3xl font-bold text-rblue-700">

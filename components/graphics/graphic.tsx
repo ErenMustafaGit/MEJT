@@ -25,6 +25,7 @@ export default function Graphic({
 }) {
   const [allXValues, setAllXValues] = useState<number[]>([]);
   const [allYValues, setAllYValues] = useState<number[]>([]);
+
   const [activeTab, setActiveTab] = useState([true, false, false, false]);
   const [chartData, setChartData] = useState({
     labels: allXValues,
@@ -41,27 +42,33 @@ export default function Graphic({
     position: "right",
   });
 
-  useEffect(() => {
-    setChartData({labels: allXValues,
-      datasets: [
-        {
-          data: allYValues,
-          borderColor: lineColor,
-          fill: {
-            target: "origin",
-            above: fillColor,
-          },
-        },
-      ],
-      position: "right",
-    })
-  }, []);
+  useEffect(()=> {
+
+    console.log(activeTab)
+    
+    if(activeTab[0])
+    {
+      defaultData();
+    }
+    else if(activeTab[1])
+    {
+      oneYearData();
+    }
+    else if(activeTab[2])
+    {
+      threeMonthsData();
+    }
+    else if (activeTab[3])
+    {
+      oneMonthData();
+    }
+
+  }, [allXValues, allYValues])
 
   useEffect(() => {
     setAllXValues(xValues)
     setAllYValues(yValues)
   }, [xValues, yValues]);
-
 
   const defaultData = () => {
     setChartData({
