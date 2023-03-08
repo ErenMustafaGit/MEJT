@@ -9,6 +9,7 @@ import { useRouter } from "next/router";
 import { Mail, Lock } from "lucide-react";
 import { useState } from "react";
 import { setCookie } from "cookies-next";
+import ActionButton from "@/components/home/action-button";
 
 export default function Login() {
   const API_URL = process.env.NEXT_PUBLIC_MEJT_API_URL;
@@ -119,16 +120,12 @@ export default function Login() {
               </div>
               <div className="-mx-3 flex">
                 <div className="mb-5 w-full px-3">
-                  <button
+                  <ActionButton
                     disabled={loading}
-                    className={`${
-                      loading
-                        ? "cursor-not-allowed bg-rblue-100 hover:bg-rblue-100 active:bg-rblue-100"
-                        : "bg-rblue-500 hover:bg-rblue-600 active:bg-rblue-700"
-                    } " mx-auto block w-full max-w-xs rounded-lg  px-3 py-3 font-semibold text-white`}
+                    onClick={() => router.push("/trainer/create-session")}
                   >
-                    {loading ? "Loading" : "Login"}
-                  </button>
+                    Login
+                  </ActionButton>
                 </div>
               </div>
             </form>

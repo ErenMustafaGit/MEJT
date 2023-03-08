@@ -8,9 +8,11 @@ export default function DataGrid({
   header,
   data,
   onRowClick,
+  emptyString = "No data",
 }: {
   header: DataHeader[];
   data: DataGridData[];
+  emptyString?: string;
   onRowClick?:
     | {
         slug: string;
@@ -42,7 +44,7 @@ export default function DataGrid({
       {data.length === 0 && (
         <div className="flex h-full w-full items-center justify-center p-2">
           <Balancer className="text-italic text-sm italic text-gray-400 md:text-base lg:text-lg">
-            No data
+            {emptyString}
           </Balancer>
         </div>
       )}
