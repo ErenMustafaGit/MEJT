@@ -100,12 +100,13 @@ export default function SessionDetail({}: {}) {
           setLoading(false);
           console.log(res);
           const data = res.data;
+          console.log(data);
           if (data.success) {
-            if (data.feedback === null) {
+            if (data.sessionFeedback === null) {
               setFeedbackGiven(false);
             } else {
               setFeedbackGiven(true);
-              setFeedbackIfGiven(data.sessionsFeedback);
+              setFeedbackIfGiven(data.sessionFeedback);
             }
           } else {
             displayToaster("error", "Error while fetching data");
