@@ -23,6 +23,8 @@ import { getToken } from "@/lib/auth";
 import Skeleton from "react-loading-skeleton";
 import { DateTime } from "luxon";
 
+import FeedbackSlider from "@/components/home/sliderFeedback";
+
 export default function SessionDetail({}: {}) {
   const router = useRouter();
   const API_URL = process.env.NEXT_PUBLIC_MEJT_API_URL;
@@ -30,7 +32,7 @@ export default function SessionDetail({}: {}) {
   const {slug} = router.query;
 
   const [fitnessLevel, setFitnessLevel] = useState<number>(5);
-  const [tirednessLevel, setTirednessLevel] = useState<number>(5);
+  const [tirednessLevel, setTirednessLevel] = useState<number>(5);  
   const [stressLevel, setStressLevel] = useState<number>(5);
   const [injured, setInjured] = useState<boolean>(false);
   const [injuryDesc, setInjuryDesc] = useState<string>("");
@@ -38,7 +40,7 @@ export default function SessionDetail({}: {}) {
 
   const [feedback, setFeedback] = useState<
   {
-    sucess:boolean;
+    success:boolean;
     sessionsFeedback:null|
       {
         sessionId:number;
@@ -80,6 +82,7 @@ export default function SessionDetail({}: {}) {
   const [feedbackGiven, setFeedbackGiven] = useState<boolean>();
   
   /*
+  [TESTING PURPOSE : TO SEE WHEN FEEDBACK IS GIVEN]
   const feedback = {
     sessionId: 0,
     name: "entrainement bas du corps",
@@ -115,13 +118,15 @@ export default function SessionDetail({}: {}) {
               setFeedbackIfGiven(data.sessionsFeedback);
             }
           } else {
+            displayToaster("error", "Error while fetching data")
             console.error("error", res.data.error);
           }
         })
         .catch((err) => {
           setLoading(false);
           console.log(err);
-      });
+          displayToaster("error", "Error while fetching data")
+        });
     }
     
     if(slug)
@@ -151,6 +156,8 @@ export default function SessionDetail({}: {}) {
         injury: injuryDesc,
       }
       console.log(test);
+
+      // UNCOMMENT WHEN API IS OK
       /*
       try {
         const res = await Axios.post(`${API_URL}/athlete/feedbackSession/create`, {
@@ -163,7 +170,7 @@ export default function SessionDetail({}: {}) {
         }, {headers:{Authorization : `Bearer ${token}`}});
 
         console.log(res);
-        if(res.data.sucess)
+        if(res.data.success)
         {
           displayToaster("success", "Feedback given");
           router.push(`/athlete/session/${slug}`);
@@ -300,80 +307,11 @@ export default function SessionDetail({}: {}) {
 
                 <h1 className="font-bold text-3xl text-rblue-500 w-full text-center">Give your session feedback !</h1>
 
-                <h2 className="font-bold text-2xl text-black">Fitness</h2>
-                <div className="flex flex-col justify-center items-center">
-                  <Slider.Root 
-                    defaultValue={[fitnessLevel]} 
-                    max={10} 
-                    step={1} 
-                    className="w-3/4 h-10 relative flex items-center select-none touch-none" 
-                    onValueChange={(newValue:number[]) => {setFitnessLevel(newValue[0])}}>
+                <FeedbackSlider title="Fitness" lowBoundText="Feeling bad..." highBoundText="Feeling well !" dynamicValue={fitnessLevel} valueChangeCallback={setFitnessLevel} className="mt-10"/>
 
-                    <Slider.Track className="relative h-1 bg-rblue-500 flex-grow">
-                      <Slider.SliderRange className="absolute "/>
-                    </Slider.Track>
-                    <Slider.Thumb className="bg-white w-8 h-8 block rounded-full focus:shadow-2xl border-blue-500 border-2 items-center justify-center cursor-pointer">
-                      <p className={`${(fitnessLevel === 10 ) ? "ml-[5px]" : "ml-[9px]"} mt-8 ${colors[fitnessLevel]} font-bold`}>{fitnessLevel}</p>
-                    </Slider.Thumb>
-                  </Slider.Root>
+                <FeedbackSlider title="Level of tiredness" lowBoundText="Fresh !" highBoundText="Tired..." dynamicValue={tirednessLevel} valueChangeCallback={setTirednessLevel} className="mt-10"/>
 
-                  <div className="w-3/4 mt-5 relative">
-                    <p className="absolute left-0 font-bold">Feeling bad...</p>
-                    <p className="absolute right-0 font-bold">Feeling well !</p>
-                  </div>
-
-                </div>
-
-                <h2 className="font-bold text-2xl text-black mt-10">Level of tiredness</h2>
-
-                <div className="flex flex-col justify-center items-center">
-                  <Slider.Root 
-                    defaultValue={[tirednessLevel]} 
-                    max={10} 
-                    step={1} 
-                    className="w-3/4 h-10 relative flex items-center select-none touch-none" 
-                    onValueChange={(newValue:number[]) => {setTirednessLevel(newValue[0])}}>
-
-                    <Slider.Track className="relative h-1 bg-rblue-500 flex-grow">
-                      <Slider.SliderRange className="absolute "/>
-                    </Slider.Track>
-                    <Slider.Thumb className="bg-white w-8 h-8 block rounded-full border-blue-500 border-2 items-center justify-center cursor-pointer">
-                      <p className={`${(tirednessLevel === 10 ) ? "ml-[5px]" : "ml-[9px]"} mt-8 ${colors[tirednessLevel]} font-bold`}>{tirednessLevel}</p>
-                    </Slider.Thumb>
-                    
-                  </Slider.Root>
-
-                  <div className="w-3/4 mt-5 relative">
-                    <p className="absolute left-0 font-bold">Fresh !</p>
-                    <p className="absolute right-0 font-bold">Tired ...</p>
-                  </div>
-
-                </div>
-
-                <h2 className="font-bold text-2xl text-black mt-10">Level of stress</h2>
-
-                <div className="flex flex-col justify-center items-center">
-                  <Slider.Root 
-                    defaultValue={[stressLevel]} 
-                    max={10} 
-                    step={1} 
-                    className="w-3/4 h-10 relative flex items-center select-none touch-none" 
-                    onValueChange={(newValue:number[]) => {setStressLevel(newValue[0])}}>
-
-                    <Slider.Track className="relative h-1 bg-rblue-500 flex-grow">
-                      <Slider.SliderRange className="absolute "/>
-                    </Slider.Track>
-                    <Slider.Thumb className="bg-white w-8 h-8 block rounded-full border-blue-500 border-2 items-center justify-center cursor-pointer">
-                      <p className={`${(stressLevel === 10 ) ? "ml-[5px]" : "ml-[9px]"} mt-8 ${colors[stressLevel]} font-bold`}>{stressLevel}</p>
-                    </Slider.Thumb>
-                    
-                  </Slider.Root>
-
-                  <div className="w-3/4 mt-5 relative">
-                    <p className="absolute left-0 font-bold">Zen !</p>
-                    <p className="absolute right-0 font-bold">Very stressed !</p>
-                  </div>
-                </div>
+                <FeedbackSlider title="Level of stress" lowBoundText="Zen !" highBoundText="Very stressed !" dynamicValue={stressLevel} valueChangeCallback={setStressLevel} className="mt-10"/>
 
                 <div className="flex flex-row justify-center items-center w-full mt-5">
                   <p className="-mt-1 font-bold">Injured ?</p>
