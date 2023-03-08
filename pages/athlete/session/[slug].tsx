@@ -187,7 +187,11 @@ export default function SessionDetail({}: {}) {
 
   return (
     <Layout>
-      {loading && <Skeleton height={100} className={`rounded-full`} />}
+      {loading && (
+        <div className="m-8 w-full py-32">
+          <Skeleton height={100} style={{ borderRadius: 10 }} />
+        </div>
+      )}
 
       {feedbackGiven && !loading && (
         <div className="flex w-full flex-col items-center justify-center">
@@ -284,11 +288,11 @@ export default function SessionDetail({}: {}) {
             >
               <section className="flex flex-col gap-4 px-8 sm:mx-4">
                 <div className="">
-                  <GoBack path="localhost:3000/athlete/dashboard" />
+                  <GoBack path="/athlete/dashboard" />
                 </div>
 
                 <h1 className="w-full text-center text-3xl font-bold text-rblue-500">
-                  Give your session feedback !
+                  Give your session feedback ! 🙌
                 </h1>
 
                 <FeedbackSlider
