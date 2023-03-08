@@ -25,3 +25,17 @@ export const ORANGE_FILL_GRAPH = "rgba(232, 79, 15, 0.3)";
 
 export const VIOLET_LINE_GRAPH = "rgba(93, 95, 239, 1)";
 export const VIOLET_FILL_GRAPH = "rgba(93, 95, 239, 0.3)";
+
+export const colors = [
+  "text-red-800",
+  "text-red-700",
+  "text-red-600/80",
+  "text-orange-500",
+  "text-orange-400",
+  "text-yellow-400",
+  "text-green-400/70",
+  "text-green-400",
+  "text-green-600/80",
+  "text-green-600",
+  "text-green-700",
+];

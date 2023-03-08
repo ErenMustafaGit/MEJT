@@ -100,11 +100,11 @@ export default function Graphic({
 
   return (
     <>
-      <div>
+      <div className="">
         <div className="mr-2 flex flex-col justify-between gap-4 xl:flex-row">
           <h3 className="mx-6 mb-1 text-xl font-bold sm:mx-1">{title}</h3>
 
-          <div className="flex justify-center">
+          <div className="flex sm:mx-2 mx-6 lg:mx-0 lg:justify-center">
             <button
               className={`${buttonClassName} rounded-tl-lg rounded-bl-lg border-r hover:border-r-4`}
               style={{
@@ -155,7 +155,9 @@ export default function Graphic({
           </div>
         </div>
 
-        <Line data={chartData} options={optionsData} />
+        <div className="relative">
+          <Line data={chartData} options={optionsData} />
+        </div>
       </div>
     </>
   );
