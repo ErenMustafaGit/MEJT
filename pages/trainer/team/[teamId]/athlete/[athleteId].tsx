@@ -31,6 +31,8 @@ import {
 import { getToken } from "@/lib/auth";
 import { displayToaster } from "@/lib/utils";
 import Axios from "axios";
+import Skeleton from "react-loading-skeleton";
+import SessionData from "models/session-data";
 
 ChartJS.register(
   CategoryScale,
@@ -46,28 +48,33 @@ export default function Dashboard() {
   const router = useRouter();
   const API_URL = process.env.NEXT_PUBLIC_MEJT_API_URL;
   const token = getToken();
-  const { slug } = router.query;
+  const { teamId, athleteId } = router.query;
   const [loading, setLoading] = useState<boolean>(false);
   const [team, setTeam] = useState<any>({
     name: "",
   });
+  // TO BE CHANGED
+  const [athletesData, setAthletesData] = useState<any>([]);
+  const [athletes, setAthletes] = useState<AthleteData[]>([]);
+
+  const [athlete, setAthlete] = useState<any>(null);
 
   useEffect(() => {
     const fetchData = async () => {
       setLoading(true);
-      Axios.get(`${API_URL}/trainer/teams`, {
-        headers: { Authorization: `Bearer ${token}` },
-      })
+      Axios.get(
+        `${API_URL}/user/feedbackSessions/?teamId=${teamId}&athleteId=${athleteId}`,
+        {
+          headers: { Authorization: `Bearer ${token}` },
+        },
+      )
         .then((res) => {
           setLoading(false);
           const data = res.data;
-          if (data.success) {
-            if (data.feedback === null) {
-              //   setFeedbackGiven(false);
-            } else {
-              //   setFeedbackGiven(true);
-              //   setFeedbackIfGiven(data.sessionsFeedback);
-            }
+          if (data.success && data.athlete) {
+            console.log("data", data);
+            // setAthletesData(data.athletes);
+            setAthlete(data.athlete);
           } else {
             console.error("error", res.data.error);
           }
@@ -78,123 +85,83 @@ export default function Dashboard() {
         });
     };
 
-    if (slug) {
+    if (teamId) {
       fetchData();
     }
-  }, [slug]);
+  }, [teamId]);
 
-  const athletesHeaders = [
+  useEffect(() => {
+    const athletes: AthleteData[] = athletesData.map((athlete: any) => {
+      const { userId, name, sessionsFeedbacks } = athlete;
+      let lastUpdate = "";
+      let fitness = 0;
+      let tiredness = 0;
+      let stress = 0;
+      if (sessionsFeedbacks) {
+        lastUpdate = sessionsFeedbacks[sessionsFeedbacks.length - 1].date;
+        fitness = sessionsFeedbacks[sessionsFeedbacks.length - 1].shape;
+        tiredness = sessionsFeedbacks[sessionsFeedbacks.length - 1].tiredness;
+        stress = sessionsFeedbacks[sessionsFeedbacks.length - 1].stress;
+      }
+      return {
+        userId,
+        name,
+        fitness,
+        tiredness,
+        stress,
+        lastUpdate,
+      };
+    });
+    setAthletes(athletes);
+  }, [athletesData]);
+
+  const sessionsHeader = [
     {
       name: "id",
-      slug: "userId",
+      slug: "id",
       size: 1,
       show: false,
     },
     {
-      name: "Name",
+      name: "Session name",
       slug: "name",
       size: 2,
       show: true,
     },
     {
-      name: "Fitness",
-      slug: "fitness",
+      name: "Date",
+      slug: "date",
       size: 2,
       show: true,
     },
     {
-      name: "Tiredness",
-      slug: "tiredness",
+      name: "Location",
+      slug: "location",
       size: 2,
       show: true,
     },
     {
-      name: "Stress",
-      slug: "stress",
-      size: 2,
-      show: true,
-    },
-    {
-      name: "Last Update",
-      slug: "lastUpdate",
+      name: "Feedback",
+      slug: "feedback",
       size: 2,
       show: true,
     },
   ];
 
   // TO BE DELETED (DATA REPLACING API CALL)
-  const athletesData = [
-    {
-      userId: 15,
-      email: "lala@gmail.coma",
-      name: "Example",
-      lastUpdate: "2012-04-25T18:25:43.511Z",
-      sessionsFeedbacks: [
-        {
-          sessionId: 0,
-          name: "entrainement bas du corps",
-          shape: 5,
-          tiredness: 8,
-          stress: 3,
-          sensation: "pas au top",
-          injury: "mollet gauche",
-          date: "2012-04-25T18:25:43.511Z",
-        },
-        {
-          sessionId: 1,
-          name: "entrainement bas du corps",
-          shape: 10,
-          tiredness: 10,
-          stress: 1,
-          sensation: "grande forme",
-          injury: "",
-          date: "2012-04-28T18:25:43.511Z",
-        },
-      ],
-    },
-    {
-      userId: 18,
-      email: "popo@gmail.coma",
-      name: "Example",
-      lastUpdate: "2012-04-25T18:25:43.511Z",
-      sessionsFeedbacks: [
-        {
-          sessionId: 0,
-          name: "entrainement bas du corps",
-          shape: 5,
-          tiredness: 8,
-          stress: 3,
-          sensation: "pas au top",
-          injury: "mollet gauche",
-          date: "2012-04-25T18:25:43.511Z",
-        },
-        {
-          sessionId: 1,
-          name: "entrainement bas du corps",
-          shape: 10,
-          tiredness: 10,
-          stress: 1,
-          sensation: "grande forme",
-          injury: "",
-          date: "2012-04-28T18:25:43.511Z",
-        },
-      ],
-    },
-  ];
-  const athletes: AthleteData[] = athletesData.map((athlete) => {
-    const { userId, name, sessionsFeedbacks } = athlete;
-    const lastUpdate = sessionsFeedbacks[sessionsFeedbacks.length - 1].date;
-    const fitness = sessionsFeedbacks[sessionsFeedbacks.length - 1].shape;
-    const tiredness = sessionsFeedbacks[sessionsFeedbacks.length - 1].tiredness;
-    const stress = sessionsFeedbacks[sessionsFeedbacks.length - 1].stress;
-    return {
-      userId,
-      name,
-      fitness,
-      tiredness,
-      stress,
-      lastUpdate,
-    };
+  const sessions: SessionData[] = Array(6).fill({
+    id: "1",
+    name: "Entrainement : Bas du corps	1",
+    date: "22 Feb 2021",
+    location: "Bat Ava Lovelace",
+    feedback: true,
+  });
+  sessions.push({
+    id: "2",
+    name: "Entrainement : Bas du corps	1",
+    date: "22 Feb 2021",
+    location: "Bat Ava Lovelace",
+    feedback: false,
   });
 
   const config = {
@@ -256,9 +223,15 @@ export default function Dashboard() {
           >
             <section className="mb-10 w-full sm:mx-4 sm:px-8">
               <GoBack path="/trainer/dashboard"></GoBack>
-              <h2 className="mx-4 mb-4 text-3xl font-bold text-rblue-700">
-                <Balancer>TEAM NAME</Balancer>
-              </h2>
+
+              {athlete ? (
+                <h2 className="mx-4 mb-4 text-3xl font-bold text-rblue-700">
+                  <Balancer>{athlete.name}</Balancer>
+                </h2>
+              ) : (
+                <Skeleton></Skeleton>
+              )}
+
               <div className="flex w-full justify-center">
                 <p className="mx-4 text-sm font-bold text-gray-400 sm:text-xl">
                   <Balancer>
@@ -299,15 +272,15 @@ export default function Dashboard() {
                 </div>
               </div>
             </section>
-            <section className="mb-10 flex w-full flex-col gap-4 px-8 sm:mx-4">
+            <section className="mb-10 w-full px-8 sm:mx-4">
               <h2 className="text-3xl font-bold text-rblue-700">
-                <Balancer>Athletes</Balancer>
+                <Balancer>Sessions</Balancer>
               </h2>
 
               <div className="flex w-full flex-col">
                 <DataGrid
-                  header={athletesHeaders}
-                  data={athletes}
+                  header={sessionsHeader}
+                  data={sessions}
                   onRowClick={{
                     slug: "id",
                     path: "/athlete/session/",

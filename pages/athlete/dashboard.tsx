@@ -41,7 +41,6 @@ ChartJS.register(
 export default function Dashboard() {
   const router = useRouter();
   const API_URL = process.env.MEJT_API_URL;
-  ["id", "name", "date", "location", "feedback"];
   const sessionsHeader = [
     {
       name: "id",
