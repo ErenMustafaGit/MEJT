@@ -239,8 +239,10 @@ export default function Register() {
                 </div>
               </div>
               <div className="-mx-3 flex">
-                <div className="mb-5 w-full px-3">
-                  <ActionButton disabled={loading}>Register Now</ActionButton>
+                <div className="mb-5 flex w-full justify-center px-3">
+                  <ActionButton className="w-full" disabled={loading}>
+                    Register Now
+                  </ActionButton>
                 </div>
               </div>
             </form>
