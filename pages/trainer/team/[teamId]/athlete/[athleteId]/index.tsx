@@ -231,15 +231,6 @@ export default function Dashboard() {
               ) : (
                 <Skeleton></Skeleton>
               )}
-
-              <div className="flex w-full justify-center">
-                <p className="mx-4 text-sm font-bold text-gray-400 sm:text-xl">
-                  <Balancer>
-                    Below graphics are a mean of the team’s indicators.
-                  </Balancer>
-                </p>
-              </div>
-
               <div className="mt-5 flex h-auto w-full flex-col flex-wrap justify-center gap-8 lg:h-2/4 lg:flex-row">
                 <div className="">
                   <Graphic
@@ -283,7 +274,7 @@ export default function Dashboard() {
                   data={sessions}
                   onRowClick={{
                     slug: "id",
-                    path: "/athlete/session/",
+                    path: `/trainer/team/${teamId}/athlete/${athleteId}/feedback/`,
                   }}
                 />
               </div>
