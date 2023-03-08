@@ -1,11 +1,8 @@
 import Layout from "@/components/layout";
 import { motion } from "framer-motion";
-
 import { FADE_DOWN_ANIMATION_VARIANTS } from "@/lib/constants";
-
 import { useRouter } from "next/router";
 import GoBack from "@/components/home/go-back";
-
 import {
   ChevronDown,
   CheckIcon,
@@ -15,27 +12,30 @@ import {
 } from "lucide-react";
 
 import { useState, useEffect, Fragment } from "react";
-import useLocalStorage from "@/lib/hooks/use-local-storage";
 import { DateTime } from "luxon";
-
 import { Listbox, Transition } from "@headlessui/react";
-
 import Axios from "axios";
-
 import DatePicker from "react-date-picker/dist/entry.nostyle";
 import "react-date-picker/dist/DatePicker.css";
 import "react-calendar/dist/Calendar.css";
-
 import TimePicker from "react-time-picker/dist/entry.nostyle";
 import "react-time-picker/dist/TimePicker.css";
 import "react-clock/dist/Clock.css";
 import { getToken } from "@/lib/auth";
+import { displayToaster } from "@/lib/utils";
+import ActionButton from "@/components/home/action-button";
 
 export default function CreateSession() {
   const router = useRouter();
   const API_URL = process.env.NEXT_PUBLIC_MEJT_API_URL;
   const [teams, setTeams] = useState([]);
   const token = getToken();
+  const [loading, setLoading] = useState(false);
+
+  const [selectedTeam, setSelectedTeam] = useState({
+    name: "Select your team...",
+    teamId: -1,
+  });
 
   useEffect(() => {
     getAllTeams();
@@ -59,68 +59,53 @@ export default function CreateSession() {
     sessionDescription: "",
   });
 
-  // setSessionInfo({...sessionInfo, sessionTime:DateTime.fromMillis(Date.parse(newTime.toString()))})
-
   const submitNewSession = async (e: any) => {
-    /*
-
-        e.preventDefault();
-        let token: string;
-        try
-        {
-            if(sessionInfo.sessionTeamId !== -1 && sessionInfo.sessionLocation !== "" && sessionInfo.sessionDescription !== "" && sessionInfo.sessionName !== "")
-            {
-                const {data} = await Axios.post(`${API_URL}/trainer/sessions/create`,{
-                    teamId:sessionInfo.sessionTeamId,
-                    date:sessionInfo.sessionDate.set({hour:sessionInfo.sessionTime.hour, minute:sessionInfo.sessionTime.minute}),
-                    place:sessionInfo.sessionLocation,
-                    description:sessionInfo.sessionDescription,
-                    name:sessionInfo.sessionName
-                });
-                token = data.userDetails;
-            }else{
-                // message
-            }
-            
-        }catch (error){
-            if (Axios.isAxiosError(error)) {
-                console.error(error);
-            } else {
-            console.error(error);
-            }
-        }
-        */
-
-    // TODO : DELETE WHEN CONNECTION TO BACKEND IS OK
     e.preventDefault();
+    try {
+      if (
+        sessionInfo.sessionTeamId !== -1 &&
+        sessionInfo.sessionLocation !== "" &&
+        sessionInfo.sessionDescription !== "" &&
+        sessionInfo.sessionName !== ""
+      ) {
+        const dataSend = {
+          teamId: sessionInfo.sessionTeamId,
+          date: sessionInfo.sessionDate
+            .set({
+              hour: sessionInfo.sessionTime.hour,
+              minute: sessionInfo.sessionTime.minute,
+            })
+            ?.toString(),
+          place: sessionInfo.sessionLocation,
+          description: sessionInfo.sessionDescription,
+          name: sessionInfo.sessionName,
+        };
+        const { data } = await Axios.post(
+          `${API_URL}/trainer/sessions/create`,
+          dataSend,
+        );
 
-    const data = {
-      teamId: sessionInfo.sessionTeamId,
-      date: sessionInfo.sessionDate.set({
-        hour: sessionInfo.sessionTime.hour,
-        minute: sessionInfo.sessionTime.minute,
-      }),
-      place: sessionInfo.sessionLocation,
-      description: sessionInfo.sessionDescription,
-      name: sessionInfo.sessionName,
-    };
-
-    console.log(data);
+        if (data.success) {
+          displayToaster("success", "Session created");
+          if (data.teamId) {
+            router.push(`trainer/team/${data.teamId}`);
+          } else {
+            router.push("/trainer/dashboard");
+          }
+        } else {
+          displayToaster("error", "Error while creating session");
+        }
+      } else {
+        displayToaster("error", "Please fill all the fields");
+      }
+    } catch (error) {
+      if (Axios.isAxiosError(error)) {
+        console.error(error);
+      } else {
+        console.error(error);
+      }
+    }
   };
-
-  const [selectedTeam, setSelectedTeam] = useState({
-    name: "Select your team...",
-    id: -1,
-  });
-
-  const [team, setTeam] = useLocalStorage("team", -1);
-
-  useEffect(() => {
-    setSelectedTeam({
-      name: "Select your team...",
-      id: -1,
-    });
-  }, [team]);
 
   return (
     <Layout>
@@ -160,7 +145,7 @@ export default function CreateSession() {
                       setSelectedTeam(newTeam);
                       setSessionInfo({
                         ...sessionInfo,
-                        sessionTeamId: newTeam.id,
+                        sessionTeamId: newTeam.teamId,
                       });
                     }}
                   >
@@ -193,7 +178,7 @@ export default function CreateSession() {
                             (
                               team: {
                                 name: string;
-                                id: number;
+                                teamId: number;
                               },
                               teamId,
                             ) => {
@@ -213,7 +198,7 @@ export default function CreateSession() {
                                     <>
                                       <span
                                         className={`block truncate ${
-                                          team.id === selectedTeam.id
+                                          team.teamId === selectedTeam.teamId
                                             ? "font-medium"
                                             : "font-normal"
                                         }`}
@@ -221,7 +206,7 @@ export default function CreateSession() {
                                         {team.name}
                                       </span>
 
-                                      {team?.id === selectedTeam?.id ? (
+                                      {team?.teamId === selectedTeam?.teamId ? (
                                         <span className="absolute inset-y-0 left-0 flex items-center pl-3 text-rblue-600">
                                           <CheckIcon
                                             className="h-5 w-5"
@@ -347,10 +332,10 @@ export default function CreateSession() {
               </div>
 
               <div className="-mx-3 mt-8 flex">
-                <div className="mb-5 w-full px-3">
-                  <button className="mx-auto block w-full max-w-xs rounded-lg bg-rblue-500 px-3 py-3 font-semibold text-white hover:bg-rblue-600 active:bg-rblue-700">
+                <div className="mb-5 flex w-full justify-center px-3">
+                  <ActionButton className="w-full" disabled={loading}>
                     Create session
-                  </button>
+                  </ActionButton>
                 </div>
               </div>
             </form>
