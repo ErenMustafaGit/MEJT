@@ -16,6 +16,12 @@ import SessionData from "models/session-data";
 import { useRouter } from "next/router";
 import Graphic from "@/components/graphics/graphic";
 import SessionCard from "@/components/home/session-card";
+import Skeleton from "react-loading-skeleton";
+import "react-loading-skeleton/dist/skeleton.css";
+
+import {useState, useEffect} from 'react'
+
+import Axios from 'axios'
 
 import {
   Chart as ChartJS,
@@ -27,6 +33,7 @@ import {
   Tooltip,
   Legend,
 } from "chart.js";
+import { getToken } from "@/lib/auth";
 
 ChartJS.register(
   CategoryScale,
@@ -40,7 +47,10 @@ ChartJS.register(
 
 export default function Dashboard() {
   const router = useRouter();
-  const API_URL = process.env.MEJT_API_URL;
+  const token = getToken();
+  const [loading, setLoading] = useState(false);
+  const API_URL = process.env.NEXT_PUBLIC_MEJT_API_URL;
+
   ["id", "name", "date", "location", "feedback"];
   const sessionsHeader = [
     {
@@ -145,7 +155,75 @@ export default function Dashboard() {
     lineColor: VIOLET_LINE_GRAPH,
     fillColor: VIOLET_FILL_GRAPH,
   };
+  const [teams, setTeams] = useState<{teamId:number;teamName:string;}[]>([]);
+  const [dictButtons, setDictButtons] = useState<{[key: number]:boolean}>({});
 
+  /*
+  const teams = [
+    {
+      teamId:1,
+      teamName:"Equipe 1"
+    },
+    {
+      teamId:2,
+      teamName:"Equipe 2"
+    },{
+      teamId:3,
+      teamName:"Equipe 3"
+    },{
+      teamId:4,
+      teamName:"Equipe 4"
+    },
+  ]
+
+*/
+
+  useEffect(() =>
+  {
+    setLoading(true);
+    Axios.get(`${API_URL}/athlete/teams`,{
+      headers : {Authorization : `Bearer ${token}`}
+    })
+    .then((response) => {
+        setLoading(false);
+        if(response.data.success)
+        {
+          const allTeams = response.data.teams;
+          const prettyTeams:{teamId:number;teamName:string;}[] = allTeams.map((team:any) => {
+            return {
+              teamName:team.name,
+              teamId:team.teamId
+            }
+          });
+          setTeams(prettyTeams);
+
+          let temp = {};
+          prettyTeams.forEach(((team:{teamId:number;teamName:string;}) => {
+            temp = {...temp, [team.teamId]:false}
+          }));
+
+          setDictButtons({...temp, [prettyTeams[0].teamId]:true})
+        }
+        else
+        {
+          console.error("error", response.data.error)
+        }
+    })
+    .catch((err) => {
+      setLoading(false);
+      console.log(err);
+    })
+  },[]);
+
+    const updateButtonsAndData = (teamId:number) => {
+      const key:string|undefined = Object.keys(dictButtons).find(key => dictButtons[parseInt(key)] === true);
+      if(key !== undefined)
+      {
+        console.log(`Success ! Key = ${key}`);
+        setDictButtons({...dictButtons, [parseInt(key)]:false, [teamId]:true});
+      }
+    }
+    
   return (
     <Layout>
       <div className="flex w-full flex-col items-center">
@@ -186,10 +264,32 @@ export default function Dashboard() {
                 ))}
               </div>
             </section>
-            <section className="mb-10 w-full sm:mx-4 sm:px-8">
-              <h2 className="mx-4 text-3xl font-bold text-rblue-700">
+            <section className="mb-10 w-full sm:mx-4 px-8">
+              <h2 className="text-3xl font-bold text-rblue-700">
                 <Balancer>Teams</Balancer>
               </h2>
+
+              <div className="mt-5 grid gap-4 grid-cols-3 md:grid-cols-4 xl:grid-cols-5">
+                {!loading && teams.length != 0 && (
+                  teams.map((team) => {
+                    return (
+                    <button 
+                      key={team.teamId} 
+                      className={`rounded-full border ${ (dictButtons[team.teamId]) ? "border-rblue-600 bg-rblue-600" : "border-rblue-500 bg-rblue-500"} border-rblue-500 bg-rblue-500 p-1 px-2 text-center text-sm text-white transition-all hover:border-rblue-600 hover:bg-rblue-600 mr-2`}
+                      onClick={
+                        () => updateButtonsAndData(team.teamId)
+                      }
+                    >
+                      {team.teamName}
+                    </button>);
+                  })
+                )
+                }
+                {loading && (
+                  <Skeleton height={100} className={`rounded-full`} />
+                )}
+              </div>
+
               <div className="mt-5 flex h-auto w-full flex-col flex-wrap justify-center gap-8 lg:h-2/4 lg:flex-row">
                 <div className="">
                   <Graphic
