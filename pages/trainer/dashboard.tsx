@@ -10,11 +10,11 @@ import Axios from "axios";
 import { getToken } from "@/lib/auth";
 import Skeleton from "react-loading-skeleton";
 import "react-loading-skeleton/dist/skeleton.css";
+import ActionButton from "@/components/home/action-button";
 
 export default function Dashboard() {
   const API_URL = process.env.NEXT_PUBLIC_MEJT_API_URL;
   const token = getToken();
-  console.log("token", token);
 
   const router = useRouter();
 
@@ -109,15 +109,23 @@ export default function Dashboard() {
           }}
         >
           <motion.div
-            className="flex w-full flex-col items-center justify-center py-32"
+            className="flex w-full flex-col items-center justify-center py-20 sm:py-32"
             variants={FADE_DOWN_ANIMATION_VARIANTS}
           >
-            <section className="mb-10 w-full sm:mx-4 sm:px-8">
-              <h2 className="mx-4 text-3xl font-bold text-rblue-700">
-                <Balancer>Teams</Balancer>
-              </h2>
-              <div className="mt-8 flex w-full flex-col">
-                {!loading && teams.length !== 0 && (
+            <section className="mb-10 flex w-full flex-col gap-8 sm:mx-4 sm:gap-4 sm:px-8">
+              <div className="flex flex-col items-center justify-between gap-4 sm:flex-row">
+                <h2 className="mx-4 text-3xl font-bold text-rblue-700">
+                  Teams
+                </h2>
+                <ActionButton
+                  onClick={() => router.push("/trainer/create-team")}
+                >
+                  Create a new team
+                </ActionButton>
+              </div>
+
+              <div className="flex w-full flex-col">
+                {!loading && (
                   <DataGrid
                     header={teamsHeader}
                     data={teams}
@@ -125,11 +133,19 @@ export default function Dashboard() {
                       slug: "teamId",
                       path: "/trainer/team/",
                     }}
+                    emptyString="You don't have any team yet"
                   />
                 )}
                 {loading && (
                   <Skeleton height={100} className={`rounded-full`} />
                 )}
+              </div>
+              <div className="flex w-full justify-center">
+                <ActionButton
+                  onClick={() => router.push("/trainer/create-session")}
+                >
+                  Create a new session
+                </ActionButton>
               </div>
             </section>
           </motion.div>

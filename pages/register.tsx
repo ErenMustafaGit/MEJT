@@ -15,6 +15,7 @@ import { Fragment, useState, useEffect } from "react";
 import { Listbox, Transition } from "@headlessui/react";
 import { CheckIcon, ChevronDown, Mail, Lock, User, Globe } from "lucide-react";
 import { setCookie } from "cookies-next";
+import ActionButton from "@/components/home/action-button";
 
 const roles = [
   { id: ATHLETE, name: "Athlete" },
@@ -239,16 +240,7 @@ export default function Register() {
               </div>
               <div className="-mx-3 flex">
                 <div className="mb-5 w-full px-3">
-                  <button
-                    disabled={loading}
-                    className={`${
-                      loading
-                        ? "cursor-not-allowed bg-rblue-100 hover:bg-rblue-100 active:bg-rblue-100"
-                        : "bg-rblue-500 hover:bg-rblue-600 active:bg-rblue-700"
-                    } " mx-auto block w-full max-w-xs rounded-lg  px-3 py-3 font-semibold text-white`}
-                  >
-                    {loading ? "Loading" : "Register Now"}
-                  </button>
+                  <ActionButton disabled={loading}>Register Now</ActionButton>
                 </div>
               </div>
             </form>
