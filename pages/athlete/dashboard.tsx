@@ -269,7 +269,7 @@ export default function Dashboard() {
                 <Balancer>Teams</Balancer>
               </h2>
 
-              <div className="flex flex-row mt-5 ">
+              <div className="mt-5 grid gap-4 grid-cols-3 md:grid-cols-4 xl:grid-cols-5">
                 {!loading && teams.length != 0 && (
                   teams.map((team) => {
                     return (
