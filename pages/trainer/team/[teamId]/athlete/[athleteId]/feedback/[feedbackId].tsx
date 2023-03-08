@@ -9,8 +9,7 @@ import DisplayLongText from "@/components/home/display-long-text";
 
 export default function SessionDetail({}: {}) {
   const router = useRouter();
-  console.log(router.query);
-  const { sessionId } = router.query;
+  const { teamId, athleteId, sessionId } = router.query;
 
   //   Soit affichage du feedback de la session
   //   Soit affichage du formulaire de feedback
