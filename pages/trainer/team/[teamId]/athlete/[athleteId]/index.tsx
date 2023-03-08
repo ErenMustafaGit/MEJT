@@ -54,8 +54,8 @@ export default function Dashboard() {
     name: "",
   });
   // TO BE CHANGED
-  const [athletesData, setAthletesData] = useState<any>([]);
-  const [athletes, setAthletes] = useState<AthleteData[]>([]);
+  const [sessionData, setSessionData] = useState<any>([]);
+  const [sessions, setSessions] = useState<SessionData[]>([]);
 
   const [athlete, setAthlete] = useState<any>(null);
 
@@ -72,7 +72,6 @@ export default function Dashboard() {
           setLoading(false);
           const data = res.data;
           if (data.success && data.athlete) {
-            console.log("data", data);
             // setAthletesData(data.athletes);
             setAthlete(data.athlete);
           } else {
@@ -83,6 +82,22 @@ export default function Dashboard() {
           setLoading(false);
           console.log(err);
         });
+
+      Axios.get(
+        `${API_URL}/athlete/sessions/?athleteId=${athleteId}&teamId=${teamId}`,
+        {
+          headers: { Authorization: `Bearer ${token}` },
+        },
+      ).then((res) => {
+        setLoading(false);
+        const data = res.data;
+        if (data.success && data.sessions) {
+          // setAthletesData(data.athletes);
+          setAthlete(data.athlete);
+        } else {
+          console.error("error", res.data.error);
+        }
+      });
     };
 
     if (teamId) {
@@ -91,29 +106,17 @@ export default function Dashboard() {
   }, [teamId]);
 
   useEffect(() => {
-    const athletes: AthleteData[] = athletesData.map((athlete: any) => {
-      const { userId, name, sessionsFeedbacks } = athlete;
-      let lastUpdate = "";
-      let fitness = 0;
-      let tiredness = 0;
-      let stress = 0;
-      if (sessionsFeedbacks) {
-        lastUpdate = sessionsFeedbacks[sessionsFeedbacks.length - 1].date;
-        fitness = sessionsFeedbacks[sessionsFeedbacks.length - 1].shape;
-        tiredness = sessionsFeedbacks[sessionsFeedbacks.length - 1].tiredness;
-        stress = sessionsFeedbacks[sessionsFeedbacks.length - 1].stress;
-      }
+    const sessions: SessionData[] = sessionData.map((session: any) => {
       return {
-        userId,
-        name,
-        fitness,
-        tiredness,
-        stress,
-        lastUpdate,
+        id: session.id,
+        name: session.name,
+        date: session.date,
+        location: session.location,
+        feedback: session.feedback,
       };
     });
-    setAthletes(athletes);
-  }, [athletesData]);
+    setSessions(sessions);
+  }, [sessionData]);
 
   const sessionsHeader = [
     {
@@ -148,21 +151,21 @@ export default function Dashboard() {
     },
   ];
 
-  // TO BE DELETED (DATA REPLACING API CALL)
-  const sessions: SessionData[] = Array(6).fill({
-    id: "1",
-    name: "Entrainement : Bas du corps	1",
-    date: "22 Feb 2021",
-    location: "Bat Ava Lovelace",
-    feedback: true,
-  });
-  sessions.push({
-    id: "2",
-    name: "Entrainement : Bas du corps	1",
-    date: "22 Feb 2021",
-    location: "Bat Ava Lovelace",
-    feedback: false,
-  });
+  // // TO BE DELETED (DATA REPLACING API CALL)
+  // const sessions: SessionData[] = Array(6).fill({
+  //   id: "1",
+  //   name: "Entrainement : Bas du corps	1",
+  //   date: "22 Feb 2021",
+  //   location: "Bat Ava Lovelace",
+  //   feedback: true,
+  // });
+  // sessions.push({
+  //   id: "2",
+  //   name: "Entrainement : Bas du corps	1",
+  //   date: "22 Feb 2021",
+  //   location: "Bat Ava Lovelace",
+  //   feedback: false,
+  // });
 
   const config = {
     title: "Stress",
