@@ -11,10 +11,12 @@ import { useState } from "react";
 import DataCreationModel from "models/data-creation-model";
 import { displayToaster, mailMatcher } from "@/lib/utils";
 import Axios from "axios";
+import { getToken } from "@/lib/auth";
 
 export default function CreateTeam() {
   const router = useRouter();
   const API_URL = process.env.NEXT_PUBLIC_MEJT_API_URL;
+  const token = getToken();
 
   const [teamName, setTeamName] = useState("");
 
@@ -27,7 +29,6 @@ export default function CreateTeam() {
       displayToaster("error", "No valid email");
     }
 
-    let token: string;
     if (!(!teamName || teamName === "" || validData.length === 0)) {
       const athletesMails: {
         email: string;
@@ -36,13 +37,24 @@ export default function CreateTeam() {
       });
 
       try {
-        const { data } = await Axios.post(`${API_URL}/trainer/teams/create`, {
-          name: teamName,
-          athletes: athletesMails,
-        });
-        console.log(data);
-        displayToaster("success", "Team created");
-        // router.push(`/trainer/teams/${data.id}`);
+        const { data } = await Axios.post(
+          `${API_URL}/trainer/teams/create`,
+          {
+            name: teamName,
+            athletes: athletesMails,
+          },
+          { headers: { Authorization: `Bearer ${token}` } },
+        );
+        if (data.success) {
+          displayToaster("success", "Team created");
+          if (data.teamId) {
+            router.push(`/trainer/teams/${data.teamId}`);
+          } else {
+            router.push(`/trainer/dashboard`);
+          }
+        } else {
+          displayToaster("error", "Error while creating team");
+        }
       } catch (error) {
         if (Axios.isAxiosError(error)) {
           console.error(error);
