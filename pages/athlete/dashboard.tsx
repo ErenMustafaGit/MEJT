@@ -219,7 +219,6 @@ export default function Dashboard() {
       const key:string|undefined = Object.keys(dictButtons).find(key => dictButtons[parseInt(key)] === true);
       if(key !== undefined)
       {
-        console.log(`Success ! Key = ${key}`);
         setDictButtons({...dictButtons, [parseInt(key)]:false, [teamId]:true});
       }
     }
@@ -275,7 +274,7 @@ export default function Dashboard() {
                     return (
                     <button 
                       key={team.teamId} 
-                      className={`rounded-full border ${ (dictButtons[team.teamId]) ? "border-rblue-600 bg-rblue-600" : "border-rblue-500 bg-rblue-500"} border-rblue-500 bg-rblue-500 p-1 px-2 text-center text-sm text-white transition-all hover:border-rblue-600 hover:bg-rblue-600 mr-2`}
+                      className={`rounded-full border ${ (dictButtons[team.teamId]) ? "border-rblue-600 bg-rblue-600" : "border-rblue-500 bg-rblue-500"} p-1 px-2 text-center text-sm text-white transition-all hover:border-rblue-600 hover:bg-rblue-600 mr-2`}
                       onClick={
                         () => updateButtonsAndData(team.teamId)
                       }
