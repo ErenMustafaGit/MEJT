@@ -21,6 +21,8 @@ import "react-loading-skeleton/dist/skeleton.css";
 
 import {useState, useEffect} from 'react'
 
+import { displayToaster } from "@/lib/utils";
+
 import Axios from 'axios'
 
 import {
@@ -34,6 +36,7 @@ import {
   Legend,
 } from "chart.js";
 import { getToken } from "@/lib/auth";
+import { DateTime } from "luxon";
 
 ChartJS.register(
   CategoryScale,
@@ -50,6 +53,30 @@ export default function Dashboard() {
   const token = getToken();
   const [loading, setLoading] = useState(false);
   const API_URL = process.env.NEXT_PUBLIC_MEJT_API_URL;
+
+  const [athlete, setAthlete] = useState<
+  {
+    email:string;
+    lastUpdate:string;
+    name:string;
+    sessionsFeedbacks:
+    {
+      sessionId:number;
+      name:string;
+      shape:number;
+      tiredness:number;
+      stress:number;
+      sensation:string;
+      injury:string;
+      date:string;
+    }[]
+  }
+  >();
+
+  const [xValues, setXValues] = useState<number[]>([]);
+  const [yValuesStress, setYValuesStress] = useState<number[]>([]);
+  const [yValuesTiredness, setYValuesTiredness] = useState<number[]>([]);
+  const [yValuesFitness, setYValuesFitness] = useState<number[]>([]);
 
   const sessionsHeader = [
     {
@@ -120,62 +147,52 @@ export default function Dashboard() {
     },
   ];
 
-  const config = {
-    title: "Stress",
-    xValues: [
-      Date.parse("2021-01-20"),
-      Date.parse("2022-01-20"),
-      Date.parse("2022-07-14"),
-      Date.parse("2022-11-15"),
-      Date.parse("2022-12-12"),
-      Date.parse("2023-02-05"),
-      Date.parse("2023-02-15"),
-      Date.parse("2023-02-17"),
-      Date.parse("2023-02-25"),
-      Date.parse("2023-02-27"),
-      Date.parse("2023-02-28"),
-      Date.now(),
-    ],
-    yValues: [0, 10, 5, 8, 2, 3, 0, 0, 2, 9, 5, 6],
-    lineColor: BLUE_LINE_GRAPH,
-    fillColor: BLUE_FILL_GRAPH,
-  };
-
-  const config2 = {
-    ...config,
-    title: "Tiredness",
-    lineColor: ORANGE_LINE_GRAPH,
-    fillColor: ORANGE_FILL_GRAPH,
-  };
-
-  const config3 = {
-    ...config,
-    title: "Fitness",
-    lineColor: VIOLET_LINE_GRAPH,
-    fillColor: VIOLET_FILL_GRAPH,
-  };
   const [teams, setTeams] = useState<{teamId:number;teamName:string;}[]>([]);
-  const [dictButtons, setDictButtons] = useState<{[key: number]:boolean}>({});
+  const [selectedTeam, setSelectedTeam] = useState<number>();
 
-  /*
-  const teams = [
-    {
-      teamId:1,
-      teamName:"Equipe 1"
-    },
-    {
-      teamId:2,
-      teamName:"Equipe 2"
-    },{
-      teamId:3,
-      teamName:"Equipe 3"
-    },{
-      teamId:4,
-      teamName:"Equipe 4"
-    },
-  ]
+  useEffect(() => {
 
-*/
+    const xValuesIn:number[] = [];
+
+    const yValuesStressIn:number[] = [];
+    const yValuesTirednessIn:number[] = [];
+    const yValuesFitnessIn:number[] = [];
+
+    athlete?.sessionsFeedbacks.forEach((feedback) => {
+      xValuesIn.push(DateTime.fromISO(feedback.date).toMillis());
+      yValuesStressIn.push(feedback.stress);      
+      yValuesTirednessIn.push(feedback.tiredness);
+      yValuesFitnessIn.push(feedback.shape);
+    });
+
+    setXValues(xValuesIn);
+    setYValuesStress(yValuesStressIn);
+    setYValuesFitness(yValuesFitnessIn);
+    setYValuesTiredness(yValuesTirednessIn);
+  }, [athlete]);
+
+  useEffect(() => {
+      setLoading(true);
+      Axios.get(`${API_URL}/user/feedbackSessions/?teamId=${selectedTeam}`, {
+        headers: { Authorization: `Bearer ${token}` },
+      })
+        .then((res) => {
+          setLoading(false);
+          const data = res.data;
+          if (data.success && data.athlete) {
+            setAthlete(data.athlete);
+          } else {
+            displayToaster("error", "Error while fetching data")
+            console.error("error", res.data.error);
+          }
+        })
+        .catch((err) => {
+          setLoading(false);
+          console.log(err);
+          displayToaster("error", "Error while fetching data")
+        });
+
+  }, [selectedTeam]);
 
   useEffect(() =>
   {
@@ -194,14 +211,8 @@ export default function Dashboard() {
               teamId:team.teamId
             }
           });
+          setSelectedTeam(prettyTeams[0].teamId);
           setTeams(prettyTeams);
-
-          let temp = {};
-          prettyTeams.forEach(((team:{teamId:number;teamName:string;}) => {
-            temp = {...temp, [team.teamId]:false}
-          }));
-
-          setDictButtons({...temp, [prettyTeams[0].teamId]:true})
         }
         else
         {
@@ -215,11 +226,7 @@ export default function Dashboard() {
   },[]);
 
     const updateButtonsAndData = (teamId:number) => {
-      const key:string|undefined = Object.keys(dictButtons).find(key => dictButtons[parseInt(key)] === true);
-      if(key !== undefined)
-      {
-        setDictButtons({...dictButtons, [parseInt(key)]:false, [teamId]:true});
-      }
+      setSelectedTeam(teamId);
     }
     
   return (
@@ -273,7 +280,7 @@ export default function Dashboard() {
                     return (
                     <button 
                       key={team.teamId} 
-                      className={`rounded-full border ${ (dictButtons[team.teamId]) ? "border-rblue-600 bg-rblue-600" : "border-rblue-500 bg-rblue-500"} p-1 px-2 text-center text-sm text-white transition-all hover:border-rblue-600 hover:bg-rblue-600 mr-2`}
+                      className={`rounded-full border ${ (team.teamId === selectedTeam) ? "border-rblue-600 bg-rblue-600" : "border-rblue-500 bg-rblue-500"} p-1 px-2 text-center text-sm text-white transition-all hover:border-rblue-600 hover:bg-rblue-600 mr-2`}
                       onClick={
                         () => updateButtonsAndData(team.teamId)
                       }
@@ -291,33 +298,34 @@ export default function Dashboard() {
               <div className="mt-5 flex h-auto w-full flex-col flex-wrap justify-center gap-8 lg:h-2/4 lg:flex-row">
                 <div className="">
                   <Graphic
-                    title={config.title}
-                    xValues={config.xValues}
-                    yValues={config.yValues}
-                    lineColor={config.lineColor}
-                    fillColor={config.fillColor}
+                    title="Stress"
+                    xValues={xValues}
+                    yValues={yValuesStress}
+                    lineColor={BLUE_LINE_GRAPH}
+                    fillColor={BLUE_FILL_GRAPH}
                   />
                 </div>
 
                 <div className="">
                   <Graphic
-                    title={config2.title}
-                    xValues={config2.xValues}
-                    yValues={config2.yValues}
-                    lineColor={config2.lineColor}
-                    fillColor={config2.fillColor}
+                    title="Tiredness"
+                    xValues={xValues}
+                    yValues={yValuesTiredness}
+                    lineColor={ORANGE_LINE_GRAPH}
+                    fillColor={ORANGE_FILL_GRAPH}
                   />
                 </div>
 
                 <div className="">
                   <Graphic
-                    title={config3.title}
-                    xValues={config3.xValues}
-                    yValues={config3.yValues}
-                    lineColor={config3.lineColor}
-                    fillColor={config3.fillColor}
+                    title="Fitness"
+                    xValues={xValues}
+                    yValues={yValuesFitness}
+                    lineColor={VIOLET_LINE_GRAPH}
+                    fillColor={VIOLET_FILL_GRAPH}
                   />
                 </div>
+
               </div>
             </section>
             <section className="mb-10 w-full px-8 sm:mx-4">

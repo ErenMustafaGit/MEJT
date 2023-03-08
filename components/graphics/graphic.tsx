@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { Line } from "react-chartjs-2";
 import { Chart, Filler, TimeScale } from "chart.js";
 
@@ -14,22 +14,23 @@ export default function Graphic({
   xValues,
   yValues,
   lineColor,
-  fillColor,
+  fillColor
 }: {
   title: string;
   xValues: number[];
   yValues: number[];
   lineColor: string;
   fillColor: string;
+  
 }) {
-  const allXValues: number[] = xValues;
-  const allYValues: number[] = yValues;
+  const [allXValues, setAllXValues] = useState<number[]>([]);
+  const [allYValues, setAllYValues] = useState<number[]>([]);
   const [activeTab, setActiveTab] = useState([true, false, false, false]);
   const [chartData, setChartData] = useState({
-    labels: xValues,
+    labels: allXValues,
     datasets: [
       {
-        data: yValues,
+        data: allYValues,
         borderColor: lineColor,
         fill: {
           target: "origin",
@@ -39,6 +40,28 @@ export default function Graphic({
     ],
     position: "right",
   });
+
+  useEffect(() => {
+    setChartData({labels: allXValues,
+      datasets: [
+        {
+          data: allYValues,
+          borderColor: lineColor,
+          fill: {
+            target: "origin",
+            above: fillColor,
+          },
+        },
+      ],
+      position: "right",
+    })
+  }, []);
+
+  useEffect(() => {
+    setAllXValues(xValues)
+    setAllYValues(yValues)
+  }, [xValues, yValues]);
+
 
   const defaultData = () => {
     setChartData({
