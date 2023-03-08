@@ -272,6 +272,7 @@ export default function Dashboard() {
                 <DataGrid
                   header={sessionsHeader}
                   data={sessions}
+                  clickCondition={"feedback"}
                   onRowClick={{
                     slug: "id",
                     path: `/trainer/team/${teamId}/athlete/${athleteId}/feedback/`,
