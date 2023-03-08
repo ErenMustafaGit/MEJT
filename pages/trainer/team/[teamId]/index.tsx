@@ -31,6 +31,7 @@ import {
 import { getToken } from "@/lib/auth";
 import { displayToaster } from "@/lib/utils";
 import Axios from "axios";
+import Skeleton from "react-loading-skeleton";
 
 ChartJS.register(
   CategoryScale,
@@ -57,6 +58,19 @@ export default function Dashboard() {
   useEffect(() => {
     const fetchData = async () => {
       setLoading(true);
+
+      const { data } = await Axios.get(
+        `${API_URL}/trainer/teaminformation/?teamId=${teamId}`,
+        {
+          headers: { Authorization: `Bearer ${token}` },
+        },
+      );
+      if (data.success && data.team) {
+        setTeam(data.team);
+      } else {
+        displayToaster("error", "Error on fetching team data");
+      }
+
       Axios.get(`${API_URL}/trainer/feedbackSessions/?teamId=${teamId}`, {
         headers: { Authorization: `Bearer ${token}` },
       })
@@ -144,66 +158,6 @@ export default function Dashboard() {
     },
   ];
 
-  // TO BE DELETED (DATA REPLACING API CALL)
-  //   const athletesData = [
-  //     {
-  //       userId: 15,
-  //       email: "lala@gmail.coma",
-  //       name: "Example",
-  //       lastUpdate: "2012-04-25T18:25:43.511Z",
-  //       sessionsFeedbacks: [
-  //         {
-  //           sessionId: 0,
-  //           name: "entrainement bas du corps",
-  //           shape: 5,
-  //           tiredness: 8,
-  //           stress: 3,
-  //           sensation: "pas au top",
-  //           injury: "mollet gauche",
-  //           date: "2012-04-25T18:25:43.511Z",
-  //         },
-  //         {
-  //           sessionId: 1,
-  //           name: "entrainement bas du corps",
-  //           shape: 10,
-  //           tiredness: 10,
-  //           stress: 1,
-  //           sensation: "grande forme",
-  //           injury: "",
-  //           date: "2012-04-28T18:25:43.511Z",
-  //         },
-  //       ],
-  //     },
-  //     {
-  //       userId: 18,
-  //       email: "popo@gmail.coma",
-  //       name: "Example",
-  //       lastUpdate: "2012-04-25T18:25:43.511Z",
-  //       sessionsFeedbacks: [
-  //         {
-  //           sessionId: 0,
-  //           name: "entrainement bas du corps",
-  //           shape: 5,
-  //           tiredness: 8,
-  //           stress: 3,
-  //           sensation: "pas au top",
-  //           injury: "mollet gauche",
-  //           date: "2012-04-25T18:25:43.511Z",
-  //         },
-  //         {
-  //           sessionId: 1,
-  //           name: "entrainement bas du corps",
-  //           shape: 10,
-  //           tiredness: 10,
-  //           stress: 1,
-  //           sensation: "grande forme",
-  //           injury: "",
-  //           date: "2012-04-28T18:25:43.511Z",
-  //         },
-  //       ],
-  //     },
-  //   ];
-
   const config = {
     title: "Stress",
     xValues: [
@@ -263,9 +217,14 @@ export default function Dashboard() {
           >
             <section className="mb-10 w-full sm:mx-4 sm:px-8">
               <GoBack path="/trainer/dashboard"></GoBack>
-              <h2 className="mx-4 mb-4 text-3xl font-bold text-rblue-700">
-                <Balancer>TEAM NAME</Balancer>
-              </h2>
+
+              {team?.name ? (
+                <h2 className="mx-4 mb-4 text-3xl font-bold text-rblue-700">
+                  <Balancer>{team.name}</Balancer>
+                </h2>
+              ) : (
+                <Skeleton></Skeleton>
+              )}
               <div className="flex w-full justify-center">
                 <p className="mx-4 text-sm font-bold text-gray-400 sm:text-xl">
                   <Balancer>
