@@ -9,10 +9,12 @@ export default function DataGrid({
   data,
   onRowClick,
   emptyString = "No data",
+  clickCondition,
 }: {
   header: DataHeader[];
   data: DataGridData[];
   emptyString?: string;
+  clickCondition?: DataHeader["slug"];
   onRowClick?:
     | {
         slug: string;
@@ -55,7 +57,10 @@ export default function DataGrid({
             <div
               key={rowIndex}
               onClick={() => {
-                if (onRowClick) {
+                if (
+                  (onRowClick && !clickCondition) ||
+                  (onRowClick && clickCondition && item[clickCondition])
+                ) {
                   router.push(
                     `${onRowClick.path}${item[onRowClick.slug]}`,
                     undefined,
@@ -66,7 +71,8 @@ export default function DataGrid({
               className={`flex h-12 items-center justify-center ${
                 rowIndex % 2 === 1 ? "bg-rblue-100/30" : "bg-white"
               } ${
-                onRowClick
+                (onRowClick && !clickCondition) ||
+                (onRowClick && clickCondition && item[clickCondition])
                   ? `cursor-pointer ${
                       rowIndex % 2 === 1
                         ? "hover:bg-rblue-100/60"
