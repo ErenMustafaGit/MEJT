@@ -60,6 +60,7 @@ export default function CreateSession() {
   });
 
   const submitNewSession = async (e: any) => {
+    setLoading(true);
     e.preventDefault();
     try {
       if (
@@ -84,6 +85,7 @@ export default function CreateSession() {
           `${API_URL}/trainer/sessions/create`,
           dataSend,
         );
+        setLoading(false);
 
         if (data.success) {
           displayToaster("success", "Session created");
@@ -99,6 +101,7 @@ export default function CreateSession() {
         displayToaster("error", "Please fill all the fields");
       }
     } catch (error) {
+      setLoading(false);
       if (Axios.isAxiosError(error)) {
         console.error(error);
       } else {
