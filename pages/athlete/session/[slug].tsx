@@ -73,7 +73,9 @@ export default function SessionDetail({}: {}) {
   });
   const [loading, setLoading] = useState<boolean>(false);
 
-  const [feedbackGiven, setFeedbackGiven] = useState<boolean>();
+  const [feedbackGiven, setFeedbackGiven] = useState<boolean | undefined>(
+    undefined,
+  );
 
   /*
   [TESTING PURPOSE : TO SEE WHEN FEEDBACK IS GIVEN]
@@ -97,7 +99,6 @@ export default function SessionDetail({}: {}) {
         headers: { Authorization: `Bearer ${token}` },
       })
         .then((res) => {
-          setLoading(false);
           console.log(res);
           const data = res.data;
           console.log(data);
@@ -112,6 +113,7 @@ export default function SessionDetail({}: {}) {
             displayToaster("error", "Error while fetching data");
             console.error("error", res.data.error);
           }
+          setLoading(false);
         })
         .catch((err) => {
           setLoading(false);
@@ -197,7 +199,7 @@ export default function SessionDetail({}: {}) {
       {feedbackGiven && !loading && (
         <div className="flex w-full flex-col items-center justify-center">
           <motion.div
-            className="max-w-full md:px-5 xl:px-0 2xl:max-w-7xl"
+            className="flex w-full justify-center md:px-5 xl:px-0 2xl:max-w-7xl"
             initial="hidden"
             whileInView="show"
             animate="show"
@@ -267,7 +269,7 @@ export default function SessionDetail({}: {}) {
       )}
 
       {!feedbackGiven && !loading && (
-        <div className="px-4 xl:px-36">
+        <div className="flex justify-center px-4 xl:px-36">
           <motion.div
             className="max-w-full md:px-5 xl:px-0 2xl:max-w-7xl"
             initial="hidden"

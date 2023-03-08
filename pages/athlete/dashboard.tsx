@@ -337,7 +337,6 @@ export default function Dashboard() {
                   />
                 </div>
               </div>
-              )
             </section>
             <section className="mb-10 w-full px-8 sm:mx-4">
               <h2 className="text-3xl font-bold text-rblue-700">
