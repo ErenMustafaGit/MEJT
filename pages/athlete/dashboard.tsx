@@ -19,11 +19,11 @@ import SessionCard from "@/components/home/session-card";
 import Skeleton from "react-loading-skeleton";
 import "react-loading-skeleton/dist/skeleton.css";
 
-import {useState, useEffect} from 'react'
+import { useState, useEffect } from "react";
 
 import { displayToaster } from "@/lib/utils";
 
-import Axios from 'axios'
+import Axios from "axios";
 
 import {
   Chart as ChartJS,
@@ -55,24 +55,30 @@ export default function Dashboard() {
   const [loadingGraphs, setLoadingGraphs] = useState(false);
   const API_URL = process.env.NEXT_PUBLIC_MEJT_API_URL;
 
-  const [athlete, setAthlete] = useState<
-  {
-    email:string;
-    lastUpdate:string;
-    name:string;
-    sessionsFeedbacks:
+  const [sessions, setSessions] = useState<
     {
-      sessionId:number;
-      name:string;
-      shape:number;
-      tiredness:number;
-      stress:number;
-      sensation:string;
-      injury:string;
-      date:string;
+      id: number;
+      name: string;
+      date: string;
+      location: string;
+      feedback: boolean;
     }[]
-  }
-  >();
+  >([]);
+  const [athlete, setAthlete] = useState<{
+    email: string;
+    lastUpdate: string;
+    name: string;
+    sessionsFeedbacks: {
+      sessionId: number;
+      name: string;
+      shape: number;
+      tiredness: number;
+      stress: number;
+      sensation: string;
+      injury: string;
+      date: string;
+    }[];
+  }>();
 
   const [xValues, setXValues] = useState<number[]>([]);
   const [yValuesStress, setYValuesStress] = useState<number[]>([]);
@@ -112,22 +118,6 @@ export default function Dashboard() {
     },
   ];
 
-  // TO BE DELETED (DATA REPLACING API CALL)
-  const sessions: SessionData[] = Array(6).fill({
-    id: "1",
-    name: "Entrainement : Bas du corps	1",
-    date: "22 Feb 2021",
-    location: "Bat Ava Lovelace",
-    feedback: true,
-  });
-  sessions.push({
-    id: "2",
-    name: "Entrainement : Bas du corps	1",
-    date: "22 Feb 2021",
-    location: "Bat Ava Lovelace",
-    feedback: false,
-  });
-
   const sessionsLess = [
     {
       teamName:
@@ -148,20 +138,21 @@ export default function Dashboard() {
     },
   ];
 
-  const [teams, setTeams] = useState<{teamId:number;teamName:string;}[]>([]);
+  const [teams, setTeams] = useState<{ teamId: number; teamName: string }[]>(
+    [],
+  );
   const [selectedTeam, setSelectedTeam] = useState<number>();
 
   useEffect(() => {
+    const xValuesIn: number[] = [];
 
-    const xValuesIn:number[] = [];
-
-    const yValuesStressIn:number[] = [];
-    const yValuesTirednessIn:number[] = [];
-    const yValuesFitnessIn:number[] = [];
+    const yValuesStressIn: number[] = [];
+    const yValuesTirednessIn: number[] = [];
+    const yValuesFitnessIn: number[] = [];
 
     athlete?.sessionsFeedbacks.forEach((feedback) => {
       xValuesIn.push(DateTime.fromISO(feedback.date).toMillis());
-      yValuesStressIn.push(feedback.stress);      
+      yValuesStressIn.push(feedback.stress);
       yValuesTirednessIn.push(feedback.tiredness);
       yValuesFitnessIn.push(feedback.shape);
     });
@@ -173,63 +164,79 @@ export default function Dashboard() {
   }, [athlete]);
 
   useEffect(() => {
-      setLoadingGraphs(true);
-      Axios.get(`${API_URL}/user/feedbackSessions/?teamId=${selectedTeam}`, {
-        headers: { Authorization: `Bearer ${token}` },
+    setLoadingGraphs(true);
+    Axios.get(`${API_URL}/user/feedbackSessions/?teamId=${selectedTeam}`, {
+      headers: { Authorization: `Bearer ${token}` },
+    })
+      .then((res) => {
+        setLoadingGraphs(false);
+        const data = res.data;
+        if (data.success && data.athlete) {
+          setAthlete(data.athlete);
+        } else {
+          displayToaster("error", "Error while fetching data");
+          console.error("error", res.data.error);
+        }
       })
-        .then((res) => {
-          setLoadingGraphs(false);
-          const data = res.data;
-          if (data.success && data.athlete) {
-            setAthlete(data.athlete);
-          } else {
-            displayToaster("error", "Error while fetching data")
-            console.error("error", res.data.error);
-          }
-        })
-        .catch((err) => {
-          setLoadingGraphs(false);
-          console.log(err);
-          displayToaster("error", "Error while fetching data")
-        });
+      .catch((err) => {
+        setLoadingGraphs(false);
+        console.log(err);
+        displayToaster("error", "Error while fetching data");
+      });
 
+    Axios.get(`${API_URL}/athlete/sessions/?teamId=${selectedTeam}`, {
+      headers: { Authorization: `Bearer ${token}` },
+    })
+      .then((res) => {
+        setLoadingGraphs(false);
+        const data = res.data;
+        if (data.success && data.sessions?.length) {
+          console.log("eren", data);
+          setSessions(data.sessions);
+        } else {
+          displayToaster("error", "Error while fetching data");
+          console.error("error", res.data.error);
+        }
+      })
+      .catch((err) => {
+        setLoadingGraphs(false);
+        console.log(err);
+        displayToaster("error", "Error while fetching data");
+      });
   }, [selectedTeam]);
 
-  useEffect(() =>
-  {
+  useEffect(() => {
     setLoading(true);
-    Axios.get(`${API_URL}/athlete/teams`,{
-      headers : {Authorization : `Bearer ${token}`}
+    Axios.get(`${API_URL}/athlete/teams`, {
+      headers: { Authorization: `Bearer ${token}` },
     })
-    .then((response) => {
+      .then((response) => {
         setLoading(false);
-        if(response.data.success)
-        {
+        if (response.data.success) {
           const allTeams = response.data.teams;
-          const prettyTeams:{teamId:number;teamName:string;}[] = allTeams.map((team:any) => {
-            return {
-              teamName:team.name,
-              teamId:team.teamId
-            }
-          });
+          const prettyTeams: { teamId: number; teamName: string }[] =
+            allTeams.map((team: any) => {
+              return {
+                teamName: team.name,
+                teamId: team.teamId,
+              };
+            });
           setSelectedTeam(prettyTeams[0].teamId);
           setTeams(prettyTeams);
+        } else {
+          console.error("error", response.data.error);
         }
-        else
-        {
-          console.error("error", response.data.error)
-        }
-    })
-    .catch((err) => {
-      setLoading(false);
-      console.log(err);
-    })
-  },[]);
+      })
+      .catch((err) => {
+        setLoading(false);
+        console.log(err);
+      });
+  }, []);
 
-  const updateButtonsAndData = (teamId:number) => {
+  const updateButtonsAndData = (teamId: number) => {
     setSelectedTeam(teamId);
-  }
-    
+  };
+
   return (
     <Layout>
       <div className="flex w-full flex-col items-center">
@@ -270,38 +277,37 @@ export default function Dashboard() {
                 ))}
               </div>
             </section>
-            <section className="mb-10 w-full sm:mx-4 px-8">
+            <section className="mb-10 w-full px-8 sm:mx-4">
               <h2 className="text-3xl font-bold text-rblue-700">
                 <Balancer>Teams</Balancer>
               </h2>
-
-              <div className="mt-5 grid gap-4 grid-cols-3 md:grid-cols-4 xl:grid-cols-5">
-                {!loading && teams.length != 0 && (
+              <div className="mt-5 grid grid-cols-3 gap-4 md:grid-cols-4 xl:grid-cols-5">
+                {!loading &&
+                  teams.length != 0 &&
                   teams.map((team) => {
                     return (
-                    <button 
-                      key={team.teamId} 
-                      className={`rounded-full border ${ (team.teamId === selectedTeam) ? "border-rblue-600 bg-rblue-600" : "border-rblue-500 bg-rblue-500"} p-1 px-2 text-center text-sm text-white transition-all hover:border-rblue-600 hover:bg-rblue-600 mr-2`}
-                      onClick={
-                        () => updateButtonsAndData(team.teamId)
-                      }
-                    >
-                      {team.teamName}
-                    </button>);
-                  })
-                )
-                }
+                      <button
+                        key={team.teamId}
+                        className={`rounded-full border ${
+                          team.teamId === selectedTeam
+                            ? "border-rblue-600 bg-rblue-600"
+                            : "border-rblue-500 bg-rblue-500"
+                        } mr-2 p-1 px-2 text-center text-sm text-white transition-all hover:border-rblue-600 hover:bg-rblue-600`}
+                        onClick={() => updateButtonsAndData(team.teamId)}
+                      >
+                        {team.teamName}
+                      </button>
+                    );
+                  })}
                 {loading && (
                   <Skeleton height={100} className={`rounded-full`} />
                 )}
               </div>
-
-              {!loadingGraphs &&
-              
               <div className="mt-10 flex h-auto w-full flex-col flex-wrap justify-center gap-8 lg:h-2/4 lg:flex-row">
                 <div className="">
                   <Graphic
                     title="Stress"
+                    loading={loadingGraphs}
                     xValues={xValues}
                     yValues={yValuesStress}
                     lineColor={BLUE_LINE_GRAPH}
@@ -312,6 +318,7 @@ export default function Dashboard() {
                 <div className="">
                   <Graphic
                     title="Tiredness"
+                    loading={loadingGraphs}
                     xValues={xValues}
                     yValues={yValuesTiredness}
                     lineColor={ORANGE_LINE_GRAPH}
@@ -322,6 +329,7 @@ export default function Dashboard() {
                 <div className="">
                   <Graphic
                     title="Fitness"
+                    loading={loadingGraphs}
                     xValues={xValues}
                     yValues={yValuesFitness}
                     lineColor={VIOLET_LINE_GRAPH}
@@ -329,12 +337,7 @@ export default function Dashboard() {
                   />
                 </div>
               </div>
-              }
-
-              {loadingGraphs &&            
-                <Skeleton height={100} className={`rounded-full`} />
-              }
-
+              )
             </section>
             <section className="mb-10 w-full px-8 sm:mx-4">
               <h2 className="text-3xl font-bold text-rblue-700">

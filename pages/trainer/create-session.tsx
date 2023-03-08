@@ -84,13 +84,16 @@ export default function CreateSession() {
         const { data } = await Axios.post(
           `${API_URL}/trainer/sessions/create`,
           dataSend,
+          {
+            headers: { Authorization: `Bearer ${token}` },
+          },
         );
         setLoading(false);
 
         if (data.success) {
           displayToaster("success", "Session created");
           if (data.teamId) {
-            router.push(`trainer/team/${data.teamId}`);
+            router.push(`/trainer/team/${data.teamId}`);
           } else {
             router.push("/trainer/dashboard");
           }
