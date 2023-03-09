@@ -117,16 +117,28 @@ export default function Dashboard() {
 
   const sessionsHeader = [
     {
-      name: "id",
-      slug: "id",
+      name: "sessionId",
+      slug: "sessionId",
       size: 1,
       show: false,
     },
     {
-      name: "Session name",
-      slug: "name",
+      name: "teamId",
+      slug: "teamId",
+      size: 1,
+      show: false,
+    },
+    {
+      name: "Description",
+      slug: "description",
       size: 2,
       show: true,
+    },
+    {
+      name: "teamName",
+      slug: "teamName",
+      size: 2,
+      show: false,
     },
     {
       name: "Date",
@@ -135,14 +147,14 @@ export default function Dashboard() {
       show: true,
     },
     {
-      name: "Location",
-      slug: "location",
+      name: "Place",
+      slug: "place",
       size: 2,
       show: true,
     },
     {
       name: "Feedback",
-      slug: "feedback",
+      slug: "feedbackProvided",
       size: 2,
       show: true,
     },
@@ -150,18 +162,13 @@ export default function Dashboard() {
 
   // TO BE DELETED (DATA REPLACING API CALL)
   const sessions: SessionData[] = Array(6).fill({
-    id: "1",
+    sessionId: "1",
+    teamId: "1",
     name: "Entrainement : Bas du corps	1",
+    description: "Entrainement : Bas du corps	1",
     date: "22 Feb 2021",
-    location: "Bat Ava Lovelace",
-    feedback: true,
-  });
-  sessions.push({
-    id: "2",
-    name: "Entrainement : Bas du corps	1",
-    date: "22 Feb 2021",
-    location: "Bat Ava Lovelace",
-    feedback: false,
+    place: "Bat Ava Lovelace",
+    feedbackProvided: true,
   });
 
   const config = {
