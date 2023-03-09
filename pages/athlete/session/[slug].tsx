@@ -9,7 +9,7 @@ import DisplayLongText from "@/components/home/display-long-text";
 import GoBack from "@/components/home/go-back";
 import { useState, useEffect } from "react";
 
-import { displayToaster } from "@/lib/utils";
+import { displayToaster, formatPrettyDate } from "@/lib/utils";
 
 import { Switch } from "@headlessui/react";
 
@@ -179,7 +179,9 @@ export default function SessionDetail({}: {}) {
                   <Balancer>{feedbackIfGiven.name}</Balancer>
                 </h2>
                 <div className="flex w-full flex-col justify-between gap-4 sm:flex-row">
-                  <p className="text-gray-500">{feedbackIfGiven.date}</p>
+                  <p className="text-gray-500">
+                    {formatPrettyDate(feedbackIfGiven.date)}
+                  </p>
                   <div className="flex gap-4 sm:mx-8">
                     <p className="text-gray-500">Injury</p>
                     <BooleanChips

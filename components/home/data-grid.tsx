@@ -3,6 +3,7 @@ import DataHeader from "models/data-header";
 import Balancer from "react-wrap-balancer";
 import { useRouter } from "next/router";
 import BooleanChips from "./boolean-chips";
+import { formatDateYYYYMMDD } from "@/lib/utils";
 
 export default function DataGrid({
   header,
@@ -95,6 +96,10 @@ export default function DataGrid({
                           trueString="Yes"
                           falseString="No"
                         />
+                      ) : header.slug === "date" ? (
+                        <Balancer className="truncate text-ellipsis xl:overflow-visible">
+                          {formatDateYYYYMMDD(item[header.slug])}
+                        </Balancer>
                       ) : (
                         <Balancer className="truncate text-ellipsis xl:overflow-visible">
                           {item[header.slug]}

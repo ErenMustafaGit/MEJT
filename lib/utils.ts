@@ -5,7 +5,7 @@ import {
   ORANGE_LINE_GRAPH,
   VIOLET_LINE_GRAPH,
 } from "./constants";
-import { DateTime } from "luxon";
+import { DateTime, DateTimeOptions } from "luxon";
 import { Color } from "chart.js";
 import { toast } from "react-toastify";
 
@@ -137,4 +137,33 @@ export const mailMatcher = (mail: string) => {
     /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
 
   return mail.toLowerCase().match(emailRegex);
+};
+
+export const formatPrettyDate = (
+  dateString: string,
+  showHours: boolean = true,
+): string => {
+  const date = new Date(dateString);
+  const options: Intl.DateTimeFormatOptions = {
+    weekday: "long",
+    month: "long",
+    day: "numeric",
+    year: "numeric",
+  };
+  if (showHours) {
+    options["hour"] = "numeric";
+    options["minute"] = "numeric";
+    options["second"] = "numeric";
+  }
+  const formattedDate = date.toLocaleDateString("en-US", options);
+  return formattedDate;
+};
+
+export const formatDateYYYYMMDD = (dateString: any): string => {
+  const date = new Date(dateString);
+  const year = date.getUTCFullYear();
+  const month = String(date.getUTCMonth() + 1).padStart(2, "0");
+  const day = String(date.getUTCDate()).padStart(2, "0");
+  const formattedDate = `${year}-${month}-${day}`;
+  return formattedDate;
 };
