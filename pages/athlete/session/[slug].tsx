@@ -99,9 +99,7 @@ export default function SessionDetail({}: {}) {
         headers: { Authorization: `Bearer ${token}` },
       })
         .then((res) => {
-          console.log(res);
           const data = res.data;
-          console.log(data);
           if (data.success) {
             if (data.sessionFeedback === null) {
               setFeedbackGiven(false);
@@ -217,6 +215,9 @@ export default function SessionDetail({}: {}) {
               className="flex w-full flex-col py-20 md:py-32"
               variants={FADE_DOWN_ANIMATION_VARIANTS}
             >
+              <div className="">
+                <GoBack path="/athlete/dashboard" />
+              </div>
               <section className="mb-10 flex w-full flex-col gap-4 px-8 sm:mx-4">
                 <h2 className="text-3xl font-bold text-rblue-700">
                   <Balancer>{feedbackIfGiven.name}</Balancer>
