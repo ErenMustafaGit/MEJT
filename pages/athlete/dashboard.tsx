@@ -12,7 +12,6 @@ import {
   VIOLET_FILL_GRAPH,
   VIOLET_LINE_GRAPH,
 } from "@/lib/constants";
-import SessionData from "models/session-data";
 import { useRouter } from "next/router";
 import Graphic from "@/components/graphics/graphic";
 import SessionCard from "@/components/home/session-card";
@@ -37,6 +36,7 @@ import {
 } from "chart.js";
 import { getToken } from "@/lib/auth";
 import { DateTime } from "luxon";
+import SessionData from "models/session-data";
 
 ChartJS.register(
   CategoryScale,
@@ -55,15 +55,7 @@ export default function Dashboard() {
   const [loadingGraphs, setLoadingGraphs] = useState(false);
   const API_URL = process.env.NEXT_PUBLIC_MEJT_API_URL;
 
-  const [sessions, setSessions] = useState<
-    {
-      id: number;
-      name: string;
-      date: string;
-      location: string;
-      feedback: boolean;
-    }[]
-  >([]);
+  const [sessions, setSessions] = useState<SessionData[]>([]);
   const [athlete, setAthlete] = useState<{
     email: string;
     lastUpdate: string;
@@ -87,16 +79,28 @@ export default function Dashboard() {
 
   const sessionsHeader = [
     {
-      name: "id",
-      slug: "id",
+      name: "sessionId",
+      slug: "sessionId",
       size: 1,
       show: false,
     },
     {
-      name: "Session name",
-      slug: "name",
+      name: "teamId",
+      slug: "teamId",
+      size: 1,
+      show: false,
+    },
+    {
+      name: "Description",
+      slug: "description",
       size: 2,
       show: true,
+    },
+    {
+      name: "teamName",
+      slug: "teamName",
+      size: 2,
+      show: false,
     },
     {
       name: "Date",
@@ -105,14 +109,14 @@ export default function Dashboard() {
       show: true,
     },
     {
-      name: "Location",
-      slug: "location",
+      name: "Place",
+      slug: "place",
       size: 2,
       show: true,
     },
     {
       name: "Feedback",
-      slug: "feedback",
+      slug: "feedbackProvided",
       size: 2,
       show: true,
     },
@@ -165,44 +169,50 @@ export default function Dashboard() {
 
   useEffect(() => {
     setLoadingGraphs(true);
-    Axios.get(`${API_URL}/user/feedbackSessions/?teamId=${selectedTeam}`, {
-      headers: { Authorization: `Bearer ${token}` },
-    })
-      .then((res) => {
-        setLoadingGraphs(false);
-        const data = res.data;
-        if (data.success && data.athlete) {
-          setAthlete(data.athlete);
-        } else {
-          displayToaster("error", "Error while fetching data");
-          console.error("error", res.data.error);
-        }
-      })
-      .catch((err) => {
-        setLoadingGraphs(false);
-        console.log(err);
-        displayToaster("error", "Error while fetching data");
-      });
 
-    Axios.get(`${API_URL}/athlete/sessions/?teamId=${selectedTeam}`, {
-      headers: { Authorization: `Bearer ${token}` },
-    })
-      .then((res) => {
-        setLoadingGraphs(false);
-        const data = res.data;
-        if (data.success && data.sessions?.length) {
-          console.log("eren", data);
-          setSessions(data.sessions);
-        } else {
-          displayToaster("error", "Error while fetching data");
-          console.error("error", res.data.error);
-        }
+    if (selectedTeam) {
+      Axios.get(`${API_URL}/user/feedbackSessions/?teamId=${selectedTeam}`, {
+        headers: { Authorization: `Bearer ${token}` },
       })
-      .catch((err) => {
-        setLoadingGraphs(false);
-        console.log(err);
-        displayToaster("error", "Error while fetching data");
-      });
+        .then((res) => {
+          setLoadingGraphs(false);
+          const data = res.data;
+          if (data.success && data.athlete) {
+            setAthlete(data.athlete);
+          } else {
+            displayToaster("error", "Error while fetching data");
+            console.error("error", res.data.error);
+          }
+        })
+        .catch((err) => {
+          setLoadingGraphs(false);
+          console.log(err);
+          displayToaster("error", "Error while fetching data");
+        });
+
+      Axios.get(`${API_URL}/athlete/sessions/?teamId=${selectedTeam}`, {
+        headers: { Authorization: `Bearer ${token}` },
+      })
+        .then((res) => {
+          setLoadingGraphs(false);
+          const data = res.data;
+          if (data.success) {
+            console.log("data", data);
+            setSessions(data.sessions);
+            console.log(data.sessions);
+          } else {
+            if (!data.success) {
+              displayToaster("error", "Error while fetching data");
+              console.error("error", res.data.error);
+            }
+          }
+        })
+        .catch((err) => {
+          setLoadingGraphs(false);
+          console.log(err);
+          displayToaster("error", "Error while fetching data");
+        });
+    }
   }, [selectedTeam]);
 
   useEffect(() => {
@@ -348,7 +358,7 @@ export default function Dashboard() {
                   header={sessionsHeader}
                   data={sessions}
                   onRowClick={{
-                    slug: "id",
+                    slug: "sessionId",
                     path: "/athlete/session/",
                   }}
                 />

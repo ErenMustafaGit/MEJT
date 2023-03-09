@@ -268,7 +268,7 @@ export default function SessionDetail({}: {}) {
         </div>
       )}
 
-      {!feedbackGiven && feedbackIfGiven?.sessionId !== -1 && !loading && (
+      {!feedbackGiven && !loading && (
         <div className="flex justify-center px-4 xl:px-36">
           <motion.div
             className="max-w-full md:px-5 xl:px-0 2xl:max-w-7xl"
