@@ -49,7 +49,7 @@ export default function Dashboard() {
   const API_URL = process.env.NEXT_PUBLIC_MEJT_API_URL;
   const token = getToken();
   const { teamId } = router.query;
-  const [loading, setLoading] = useState<boolean>(false);
+  const [loadingGraphs, setLoadingGraphs] = useState<boolean>(false);
   const [team, setTeam] = useState<any>({
     name: "",
   });
@@ -64,7 +64,7 @@ export default function Dashboard() {
 
   useEffect(() => {
     const fetchData = async () => {
-      setLoading(true);
+      setLoadingGraphs(true);
 
       const { data } = await Axios.get(
         `${API_URL}/trainer/teaminformation/?teamId=${teamId}`,
@@ -82,7 +82,7 @@ export default function Dashboard() {
         headers: { Authorization: `Bearer ${token}` },
       })
         .then((res) => {
-          setLoading(false);
+          setLoadingGraphs(false)
           const data = res.data;
           if (data.success) {
             setAthletesData(data.athletes);
@@ -91,7 +91,7 @@ export default function Dashboard() {
           }
         })
         .catch((err) => {
-          setLoading(false);
+          setLoadingGraphs(false)
           console.log(err);
         });
     };
@@ -297,6 +297,7 @@ export default function Dashboard() {
               <div className="mt-5 flex h-auto w-full flex-col flex-wrap justify-center gap-8 lg:h-2/4 lg:flex-row">
                 <div className="">
                   <Graphic
+                    loading={loadingGraphs}
                     title="Stress"
                     xValues={xValuesMean}
                     yValues={yValuesStressMean}
@@ -307,6 +308,7 @@ export default function Dashboard() {
 
                 <div className="">
                   <Graphic
+                    loading={loadingGraphs}
                     title="Tiredness"
                     xValues={xValuesMean}
                     yValues={yValuesTirednessMean}
@@ -317,6 +319,7 @@ export default function Dashboard() {
 
                 <div className="">
                   <Graphic
+                    loading={loadingGraphs}
                     title="Fitness"
                     xValues={xValuesMean}
                     yValues={yValuesFitnessMean}
