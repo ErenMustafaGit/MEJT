@@ -57,7 +57,9 @@ export default function Dashboard() {
   const [athletes, setAthletes] = useState<AthleteData[]>([]);
   const [xValuesMean, setXValuesMean] = useState<number[]>([]);
   const [yValuesStressMean, setYValuesStressMean] = useState<number[]>([]);
-  const [yValuesTirednessMean, setYValuesTirednessMean] = useState<number[]>([]);
+  const [yValuesTirednessMean, setYValuesTirednessMean] = useState<number[]>(
+    [],
+  );
   const [yValuesFitnessMean, setYValuesFitnessMean] = useState<number[]>([]);
 
   useEffect(() => {
@@ -128,115 +130,121 @@ export default function Dashboard() {
     {
       name: "id",
       slug: "userId",
-      size: 1,
       show: false,
     },
     {
       name: "Name",
       slug: "name",
-      size: 2,
       show: true,
     },
     {
       name: "Fitness",
       slug: "fitness",
-      size: 2,
       show: true,
     },
     {
       name: "Tiredness",
       slug: "tiredness",
-      size: 2,
       show: true,
     },
     {
       name: "Stress",
       slug: "stress",
-      size: 2,
       show: true,
     },
     {
       name: "Last Update",
       slug: "lastUpdate",
-      size: 2,
+      format: "date",
       show: true,
     },
   ];
 
   useEffect(() => {
     console.log(athletesData);
-    const athletes:any[] = athletesData;
+    const athletes: any[] = athletesData;
 
-    let datesMean:{[key:number]:{
-      nFeedbacks:number;
-      stress:number;
-      tiredness:number;
-      fitness:number;
-    }} = {};
+    let datesMean: {
+      [key: number]: {
+        nFeedbacks: number;
+        stress: number;
+        tiredness: number;
+        fitness: number;
+      };
+    } = {};
 
-    const xValues:number[] = [];
-    const yValuesStress:number[] = [];
-    const yValuesTiredness:number[] = [];
-    const yValuesFitness:number[] = [];
+    const xValues: number[] = [];
+    const yValuesStress: number[] = [];
+    const yValuesTiredness: number[] = [];
+    const yValuesFitness: number[] = [];
 
-    athletes.forEach((athlete) =>
-    {
+    athletes.forEach((athlete) => {
       console.log(athlete);
       const feedbacks = athlete.sessionsFeedbacks;
-      if(feedbacks)
-      {
-        feedbacks.forEach((feedback:any) => {
-          if(Object.keys(datesMean).includes(DateTime.fromISO(feedback.date).toMillis().toString()))
-          {
-            datesMean[DateTime.fromISO(feedback.date).toMillis()].nFeedbacks += 1;
-            datesMean[DateTime.fromISO(feedback.date).toMillis()].stress += feedback.stress;
-            datesMean[DateTime.fromISO(feedback.date).toMillis()].fitness += feedback.shape;
-            datesMean[DateTime.fromISO(feedback.date).toMillis()].tiredness += feedback.tiredness;
+      if (feedbacks) {
+        feedbacks.forEach((feedback: any) => {
+          if (
+            Object.keys(datesMean).includes(
+              DateTime.fromISO(feedback.date).toMillis().toString(),
+            )
+          ) {
+            datesMean[
+              DateTime.fromISO(feedback.date).toMillis()
+            ].nFeedbacks += 1;
+            datesMean[DateTime.fromISO(feedback.date).toMillis()].stress +=
+              feedback.stress;
+            datesMean[DateTime.fromISO(feedback.date).toMillis()].fitness +=
+              feedback.shape;
+            datesMean[DateTime.fromISO(feedback.date).toMillis()].tiredness +=
+              feedback.tiredness;
+          } else {
+            datesMean = {
+              ...datesMean,
+              [DateTime.fromISO(feedback.date).toMillis()]: {
+                nFeedbacks: 1,
+                stress: feedback.stress,
+                fitness: feedback.shape,
+                tiredness: feedback.tiredness,
+              },
+            };
           }
-          else
-          {
-            datesMean = {...datesMean, 
-              [DateTime.fromISO(feedback.date).toMillis()]:
-              {
-                nFeedbacks:1,
-                stress:feedback.stress,
-                fitness:feedback.shape,
-                tiredness:feedback.tiredness
-              }
-            }
-          }                
         });
       }
     });
 
-    if(Object.keys(datesMean))
-    {
+    if (Object.keys(datesMean)) {
       Object.keys(datesMean).forEach((dateMean) => {
         // ! dateMean is millis in string
         // Math.round(...*10)/10 used to round at 1 decimal place
-        const keyNum:number = parseInt(dateMean);
-        datesMean[keyNum].stress = Math.round((datesMean[keyNum].stress / datesMean[keyNum].nFeedbacks)*10)/10;
-        datesMean[keyNum].fitness = Math.round((datesMean[keyNum].fitness / datesMean[keyNum].nFeedbacks)*10)/10;
-        datesMean[keyNum].tiredness = Math.round((datesMean[keyNum].tiredness / datesMean[keyNum].nFeedbacks)*10)/10;
+        const keyNum: number = parseInt(dateMean);
+        datesMean[keyNum].stress =
+          Math.round(
+            (datesMean[keyNum].stress / datesMean[keyNum].nFeedbacks) * 10,
+          ) / 10;
+        datesMean[keyNum].fitness =
+          Math.round(
+            (datesMean[keyNum].fitness / datesMean[keyNum].nFeedbacks) * 10,
+          ) / 10;
+        datesMean[keyNum].tiredness =
+          Math.round(
+            (datesMean[keyNum].tiredness / datesMean[keyNum].nFeedbacks) * 10,
+          ) / 10;
       });
 
-      const orderedDatesMean = Object.keys(datesMean).sort().reduce(
-        (obj:{[key:number]:any}, key) => { 
-          obj[parseInt(key)] = datesMean[parseInt(key)]; 
+      const orderedDatesMean = Object.keys(datesMean)
+        .sort()
+        .reduce((obj: { [key: number]: any }, key) => {
+          obj[parseInt(key)] = datesMean[parseInt(key)];
           return obj;
-        }, 
-        {}
-      );
+        }, {});
 
-      Object.keys(orderedDatesMean).forEach((dateMean:string) => {
-
-        const dateInNumber:number = parseInt(dateMean);
+      Object.keys(orderedDatesMean).forEach((dateMean: string) => {
+        const dateInNumber: number = parseInt(dateMean);
 
         xValues.push(dateInNumber);
         yValuesStress.push(orderedDatesMean[dateInNumber].stress);
         yValuesTiredness.push(orderedDatesMean[dateInNumber].tiredness);
         yValuesFitness.push(orderedDatesMean[dateInNumber].fitness);
-
       });
 
       setXValuesMean(xValues);
@@ -244,8 +252,7 @@ export default function Dashboard() {
       setYValuesTirednessMean(yValuesTiredness);
       setYValuesFitnessMean(yValuesFitness);
     }
-    
-  },[athletesData]);
+  }, [athletesData]);
 
   return (
     <Layout>

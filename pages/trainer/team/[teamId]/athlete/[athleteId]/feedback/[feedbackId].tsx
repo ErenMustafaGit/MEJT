@@ -10,7 +10,7 @@ import GoBack from "@/components/home/go-back";
 import { getToken } from "@/lib/auth";
 import { useEffect, useState } from "react";
 import Axios from "axios";
-import { displayToaster } from "@/lib/utils";
+import { displayToaster, formatPrettyDate } from "@/lib/utils";
 
 export default function SessionDetail({}: {}) {
   const router = useRouter();
@@ -99,7 +99,9 @@ export default function SessionDetail({}: {}) {
                 <Balancer>{feedback.name}</Balancer>
               </h2>
               <div className="flex w-full flex-col justify-between gap-4 sm:flex-row">
-                <p className="text-gray-500">{feedback.date}</p>
+                <p className="text-gray-500">
+                  {formatPrettyDate(feedback.date)}
+                </p>
                 <div className="flex gap-4 sm:mx-8">
                   <p className="text-gray-500">Injury</p>
                   <BooleanChips

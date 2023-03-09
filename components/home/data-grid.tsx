@@ -96,7 +96,7 @@ export default function DataGrid({
                           trueString="Yes"
                           falseString="No"
                         />
-                      ) : header.slug === "date" ? (
+                      ) : header.format === "date" ? (
                         <Balancer className="truncate text-ellipsis xl:overflow-visible">
                           {formatDateYYYYMMDD(item[header.slug])}
                         </Balancer>

@@ -145,43 +145,37 @@ export default function Dashboard() {
     {
       name: "sessionId",
       slug: "sessionId",
-      size: 1,
       show: false,
     },
     {
       name: "teamId",
       slug: "teamId",
-      size: 1,
       show: false,
     },
     {
       name: "Description",
       slug: "description",
-      size: 2,
       show: true,
     },
     {
       name: "teamName",
       slug: "teamName",
-      size: 2,
       show: false,
     },
     {
       name: "Date",
       slug: "date",
-      size: 2,
+      format: "date",
       show: true,
     },
     {
       name: "Place",
       slug: "place",
-      size: 2,
       show: true,
     },
     {
       name: "Feedback",
       slug: "feedbackProvided",
-      size: 2,
       show: true,
     },
   ];

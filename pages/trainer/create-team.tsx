@@ -1,11 +1,9 @@
 import Layout from "@/components/layout";
-import DataGrid from "@/components/home/data-grid";
 
 import Balancer from "react-wrap-balancer";
 import { motion } from "framer-motion";
 import { FADE_DOWN_ANIMATION_VARIANTS } from "@/lib/constants";
 import { useRouter } from "next/router";
-import TeamData from "models/team-data";
 import DataCreation from "@/components/home/data-creation";
 import { useState } from "react";
 import DataCreationModel from "models/data-creation-model";
