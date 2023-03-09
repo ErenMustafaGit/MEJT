@@ -151,26 +151,6 @@ export default function Dashboard() {
 
   useEffect(() => {
     setLoadingGraphs(true);
-    setLoadingFeedbackLess(true);
-    // Getting feedbackLess sessions
-    Axios.get(`${API_URL}/athlete/feedbackSession/notProvided`, {
-      headers: { Authorization: `Bearer ${token}` },
-    })
-      .then((res) => {
-        const data = res.data;
-        setLoadingFeedbackLess(false);
-        if (data.success && data.sessions) {
-          setFeedbackLess(data.sessions);
-        } else {
-          displayToaster("error", "Error while fetching data");
-          console.error("error", res.data.error);
-        }
-      })
-      .catch((err) => {
-        setLoadingFeedbackLess(false);
-        console.log(err);
-        displayToaster("error", "Error while fetching data");
-      });
 
     if (selectedTeam) {
       Axios.get(`${API_URL}/user/feedbackSessions/?teamId=${selectedTeam}`, {
@@ -217,6 +197,28 @@ export default function Dashboard() {
 
   useEffect(() => {
     setLoading(true);
+
+    setLoadingFeedbackLess(true);
+    // Getting feedbackLess sessions
+    Axios.get(`${API_URL}/athlete/feedbackSession/notProvided`, {
+      headers: { Authorization: `Bearer ${token}` },
+    })
+      .then((res) => {
+        const data = res.data;
+        setLoadingFeedbackLess(false);
+        if (data.success && data.sessions) {
+          setFeedbackLess(data.sessions);
+        } else {
+          displayToaster("error", "Error while fetching data");
+          console.error("error", res.data.error);
+        }
+      })
+      .catch((err) => {
+        setLoadingFeedbackLess(false);
+        console.log(err);
+        displayToaster("error", "Error while fetching data");
+      });
+
     Axios.get(`${API_URL}/athlete/teams`, {
       headers: { Authorization: `Bearer ${token}` },
     })
