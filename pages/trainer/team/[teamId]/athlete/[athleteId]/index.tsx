@@ -56,12 +56,15 @@ export default function Dashboard() {
   // TO BE CHANGED
   const [athletesData, setAthletesData] = useState<any>([]);
   const [athletes, setAthletes] = useState<AthleteData[]>([]);
+  const [sessions, setSessions] = useState<SessionData[]>([]);
 
   const [athlete, setAthlete] = useState<any>(null);
+  const [loadingGraphs, setLoadingGraphs] = useState<boolean>(false);
 
   useEffect(() => {
     const fetchData = async () => {
       setLoading(true);
+      setLoadingGraphs(true);
       Axios.get(
         `${API_URL}/user/feedbackSessions/?teamId=${teamId}&athleteId=${athleteId}`,
         {
@@ -82,6 +85,30 @@ export default function Dashboard() {
         .catch((err) => {
           setLoading(false);
           console.log(err);
+        });
+
+      Axios.get(
+        `${API_URL}/athlete/sessions/?teamId=${teamId}&athleteId=${athleteId}`,
+        {
+          headers: { Authorization: `Bearer ${token}` },
+        },
+      )
+        .then((res) => {
+          setLoadingGraphs(false);
+          const data = res.data;
+          if (data.success && data.sessions) {
+            setSessions(data.sessions);
+          } else {
+            if (!data.success) {
+              displayToaster("error", "Error while fetching data");
+              console.error("error", res.data.error);
+            }
+          }
+        })
+        .catch((err) => {
+          setLoadingGraphs(false);
+          console.log(err);
+          displayToaster("error", "Error while fetching data");
         });
     };
 
@@ -160,17 +187,6 @@ export default function Dashboard() {
     },
   ];
 
-  // TO BE DELETED (DATA REPLACING API CALL)
-  const sessions: SessionData[] = Array(6).fill({
-    sessionId: "1",
-    teamId: "1",
-    name: "Entrainement : Bas du corps	1",
-    description: "Entrainement : Bas du corps	1",
-    date: "22 Feb 2021",
-    place: "Bat Ava Lovelace",
-    feedbackProvided: true,
-  });
-
   const config = {
     title: "Stress",
     xValues: [
@@ -241,6 +257,7 @@ export default function Dashboard() {
               <div className="mt-5 flex h-auto w-full flex-col flex-wrap justify-center gap-8 lg:h-2/4 lg:flex-row">
                 <div className="">
                   <Graphic
+                    loading={loadingGraphs}
                     title={config.title}
                     xValues={config.xValues}
                     yValues={config.yValues}
@@ -251,6 +268,7 @@ export default function Dashboard() {
 
                 <div className="">
                   <Graphic
+                    loading={loadingGraphs}
                     title={config2.title}
                     xValues={config2.xValues}
                     yValues={config2.yValues}
@@ -261,6 +279,7 @@ export default function Dashboard() {
 
                 <div className="">
                   <Graphic
+                    loading={loadingGraphs}
                     title={config3.title}
                     xValues={config3.xValues}
                     yValues={config3.yValues}
@@ -275,13 +294,13 @@ export default function Dashboard() {
                 <Balancer>Sessions</Balancer>
               </h2>
 
-              <div className="flex w-full flex-col">
+              <div className="my-2 flex w-full flex-col">
                 <DataGrid
                   header={sessionsHeader}
                   data={sessions}
-                  clickCondition={"feedback"}
+                  clickCondition={"feedbackProvided"}
                   onRowClick={{
-                    slug: "id",
+                    slug: "sessionId",
                     path: `/trainer/team/${teamId}/athlete/${athleteId}/feedback/`,
                   }}
                 />

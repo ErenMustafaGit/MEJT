@@ -6,15 +6,20 @@ import { useRouter } from "next/router";
 import BooleanChips from "@/components/home/boolean-chips";
 import FeedbackAttribut from "@/components/home/feedback-attribut";
 import DisplayLongText from "@/components/home/display-long-text";
+import GoBack from "@/components/home/go-back";
+import { getToken } from "@/lib/auth";
+import { useEffect, useState } from "react";
+import Axios from "axios";
+import { displayToaster } from "@/lib/utils";
 
 export default function SessionDetail({}: {}) {
   const router = useRouter();
   const { teamId, athleteId, sessionId } = router.query;
+  const API_URL = process.env.NEXT_PUBLIC_MEJT_API_URL;
+  const token = getToken();
 
-  //   Soit affichage du feedback de la session
-  //   Soit affichage du formulaire de feedback
-
-  const feedback = {
+  const [loading, setLoading] = useState<boolean>(false);
+  const [feedback, setFeedback] = useState<any>({
     sessionId: 0,
     name: "entrainement bas du corps",
     shape: 5,
@@ -24,7 +29,43 @@ export default function SessionDetail({}: {}) {
       "pas au top Lorem ipsum dolor sit amet consectetur adipisicing elit. Quisquam, quod. Lorem pas au top Lorem ipsum dolor sit amet consectetur adipisicing elit. Quisquam, quod. Lorem pas au top Lorem ipsum dolor sit amet consectetur adipisicing elit. Quisquam, quod. Lorem ",
     injury: "mollet gauche",
     date: "2012-04-25T18:25:43.511Z",
-  };
+  });
+
+  useEffect(() => {
+    const fetchData = async () => {
+      setLoading(true);
+      // GET FEEDBACK FOR A SPECIFIC SESSION OF A SPECIFIQUE ATHLETE
+      Axios.get(
+        `${API_URL}/athlete/feedbackSession/?sessionId=${sessionId}&athleteId=${athleteId}`,
+        {
+          headers: { Authorization: `Bearer ${token}` },
+        },
+      )
+        .then((res) => {
+          const data = res.data;
+          if (data.success) {
+            if (data.sessionFeedback === null) {
+              displayToaster("error", "Error : no feedback found");
+            } else {
+              setFeedback(data.sessionFeedback);
+            }
+          } else {
+            displayToaster("error", "Error while fetching data");
+            console.error("error", res.data.error);
+          }
+          setLoading(false);
+        })
+        .catch((err) => {
+          setLoading(false);
+          console.log(err);
+          displayToaster("error", "Error while fetching data");
+        });
+    };
+
+    if (sessionId) {
+      fetchData();
+    }
+  }, [sessionId]);
 
   return (
     <Layout>
@@ -48,6 +89,11 @@ export default function SessionDetail({}: {}) {
             className="flex w-full flex-col py-20 md:py-32"
             variants={FADE_DOWN_ANIMATION_VARIANTS}
           >
+            <div className="">
+              <GoBack
+                path={`/trainer/team/${teamId}/athlete/${athleteId}/feedback/`}
+              />
+            </div>
             <section className="mb-10 flex w-full flex-col gap-4 px-8 sm:mx-4">
               <h2 className="text-3xl font-bold text-rblue-700">
                 <Balancer>{feedback.name}</Balancer>

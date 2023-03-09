@@ -13,10 +13,6 @@ import { displayToaster } from "@/lib/utils";
 
 import { Switch } from "@headlessui/react";
 
-import * as Slider from "@radix-ui/react-slider";
-
-import { colors } from "@/lib/constants";
-
 import Axios from "axios";
 
 import { getToken } from "@/lib/auth";
@@ -77,21 +73,6 @@ export default function SessionDetail({}: {}) {
     undefined,
   );
 
-  /*
-  [TESTING PURPOSE : TO SEE WHEN FEEDBACK IS GIVEN]
-  const feedback = {
-    sessionId: 0,
-    name: "entrainement bas du corps",
-    shape: 5,
-    tiredness: 8,
-    stress: 3,
-    sensation:
-      "pas au top Lorem ipsum dolor sit amet consectetur adipisicing elit. Quisquam, quod. Lorem pas au top Lorem ipsum dolor sit amet consectetur adipisicing elit. Quisquam, quod. Lorem pas au top Lorem ipsum dolor sit amet consectetur adipisicing elit. Quisquam, quod. Lorem ",
-    injury: "mollet gauche",
-    date: "2012-04-25T18:25:43.511Z",
-  };
-  */
-
   useEffect(() => {
     const fetchData = async () => {
       setLoading(true);
@@ -139,17 +120,6 @@ export default function SessionDetail({}: {}) {
       injuryDesc !== undefined &&
       details !== undefined
     ) {
-      const test = {
-        sessionId: slug,
-        shape: fitnessLevel,
-        tiredness: tirednessLevel,
-        stress: stressLevel,
-        sensation: details,
-        injury: injuryDesc,
-      };
-      console.log(test);
-
-      // UNCOMMENT WHEN API IS OK
       try {
         const res = await Axios.post(
           `${API_URL}/athlete/feedbackSession/create`,
