@@ -33,6 +33,7 @@ import { displayToaster } from "@/lib/utils";
 import Axios from "axios";
 import Skeleton from "react-loading-skeleton";
 import SessionData from "models/session-data";
+import {DateTime} from 'luxon'
 
 ChartJS.register(
   CategoryScale,
@@ -60,6 +61,11 @@ export default function Dashboard() {
 
   const [athlete, setAthlete] = useState<any>(null);
   const [loadingGraphs, setLoadingGraphs] = useState<boolean>(false);
+
+  const [xValues, setXValues] = useState<number[]>([]);
+  const [yValuesStress, setYValuesStress] = useState<number[]>([]);
+  const [yValuesTiredness, setYValuesTiredness] = useState<number[]>([]);
+  const [yValuesFitness, setYValuesFitness] = useState<number[]>([]);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -141,6 +147,26 @@ export default function Dashboard() {
     setAthletes(athletes);
   }, [athletesData]);
 
+  useEffect(() => {
+    const xValuesIn: number[] = [];
+
+    const yValuesStressIn: number[] = [];
+    const yValuesTirednessIn: number[] = [];
+    const yValuesFitnessIn: number[] = [];
+
+    athlete?.sessionsFeedbacks.forEach((feedback:any) => {
+      xValuesIn.push(DateTime.fromISO(feedback.date).toMillis());
+      yValuesStressIn.push(feedback.stress);
+      yValuesTirednessIn.push(feedback.tiredness);
+      yValuesFitnessIn.push(feedback.shape);
+    });
+
+    setXValues(xValuesIn);
+    setYValuesStress(yValuesStressIn);
+    setYValuesFitness(yValuesFitnessIn);
+    setYValuesTiredness(yValuesTirednessIn);
+  }, [athlete]);
+
   const sessionsHeader = [
     {
       name: "sessionId",
@@ -180,41 +206,6 @@ export default function Dashboard() {
     },
   ];
 
-  const config = {
-    title: "Stress",
-    xValues: [
-      Date.parse("2021-01-20"),
-      Date.parse("2022-01-20"),
-      Date.parse("2022-07-14"),
-      Date.parse("2022-11-15"),
-      Date.parse("2022-12-12"),
-      Date.parse("2023-02-05"),
-      Date.parse("2023-02-15"),
-      Date.parse("2023-02-17"),
-      Date.parse("2023-02-25"),
-      Date.parse("2023-02-27"),
-      Date.parse("2023-02-28"),
-      Date.now(),
-    ],
-    yValues: [0, 10, 5, 8, 2, 3, 0, 0, 2, 9, 5, 6],
-    lineColor: BLUE_LINE_GRAPH,
-    fillColor: BLUE_FILL_GRAPH,
-  };
-
-  const config2 = {
-    ...config,
-    title: "Tiredness",
-    lineColor: ORANGE_LINE_GRAPH,
-    fillColor: ORANGE_FILL_GRAPH,
-  };
-
-  const config3 = {
-    ...config,
-    title: "Fitness",
-    lineColor: VIOLET_LINE_GRAPH,
-    fillColor: VIOLET_FILL_GRAPH,
-  };
-
   return (
     <Layout>
       <div className="flex w-full flex-col items-center">
@@ -251,33 +242,33 @@ export default function Dashboard() {
                 <div className="">
                   <Graphic
                     loading={loadingGraphs}
-                    title={config.title}
-                    xValues={config.xValues}
-                    yValues={config.yValues}
-                    lineColor={config.lineColor}
-                    fillColor={config.fillColor}
+                    title="Stress"
+                    xValues={xValues}
+                    yValues={yValuesStress}
+                    lineColor={BLUE_LINE_GRAPH}
+                    fillColor={BLUE_FILL_GRAPH}
                   />
                 </div>
 
                 <div className="">
                   <Graphic
                     loading={loadingGraphs}
-                    title={config2.title}
-                    xValues={config2.xValues}
-                    yValues={config2.yValues}
-                    lineColor={config2.lineColor}
-                    fillColor={config2.fillColor}
+                    title="Tiredness"
+                    xValues={xValues}
+                    yValues={yValuesTiredness}
+                    lineColor={ORANGE_LINE_GRAPH}
+                    fillColor={ORANGE_FILL_GRAPH}
                   />
                 </div>
 
                 <div className="">
                   <Graphic
                     loading={loadingGraphs}
-                    title={config3.title}
-                    xValues={config3.xValues}
-                    yValues={config3.yValues}
-                    lineColor={config3.lineColor}
-                    fillColor={config3.fillColor}
+                    title="Fitness"
+                    xValues={xValues}
+                    yValues={yValuesFitness}
+                    lineColor={VIOLET_LINE_GRAPH}
+                    fillColor={VIOLET_FILL_GRAPH}
                   />
                 </div>
               </div>
