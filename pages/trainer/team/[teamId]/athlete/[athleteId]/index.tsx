@@ -75,7 +75,6 @@ export default function Dashboard() {
           setLoading(false);
           const data = res.data;
           if (data.success && data.athlete) {
-            console.log("data", data);
             // setAthletesData(data.athletes);
             setAthlete(data.athlete);
           } else {

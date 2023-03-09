@@ -31,7 +31,6 @@ export const authOptions: NextAuthOptions = {
           );
           // const user = response.data.user;
           const res = response?.data;
-          console.log("res", res);
           const token = res?.token;
           const user = res?.user;
           if (token && user) {
@@ -53,10 +52,6 @@ export const authOptions: NextAuthOptions = {
   ],
   callbacks: {
     async jwt({ token, user, account }): Promise<any> {
-      console.log("jwt");
-      console.log("token jwt", token);
-      console.log("user jwt", user);
-      console.log("account", account);
       if (account && user) {
         return {
           ...token,

@@ -53,6 +53,7 @@ export default function Dashboard() {
   const token = getToken();
   const [loading, setLoading] = useState(false);
   const [loadingGraphs, setLoadingGraphs] = useState(false);
+  const [loadingFeedbackLess, setLoadingFeedbackLess] = useState(false);
   const API_URL = process.env.NEXT_PUBLIC_MEJT_API_URL;
 
   const [sessions, setSessions] = useState<SessionData[]>([]);
@@ -76,6 +77,7 @@ export default function Dashboard() {
   const [yValuesStress, setYValuesStress] = useState<number[]>([]);
   const [yValuesTiredness, setYValuesTiredness] = useState<number[]>([]);
   const [yValuesFitness, setYValuesFitness] = useState<number[]>([]);
+  const [feedbackLess, setFeedbackLess] = useState<any>([]);
 
   const sessionsHeader = [
     {
@@ -122,26 +124,6 @@ export default function Dashboard() {
     },
   ];
 
-  const sessionsLess = [
-    {
-      teamName:
-        "l'équipe du dimanche l'équipe du dimanche l'équipe du dimanche",
-      sessionId: 20,
-      date: "2012-04-28T18:25:43.511Z",
-      place: "le stade de sport, 69100 Villeurbanne",
-      description: "entrainement du bas du corps en vu de la compétition",
-      name: "entrainement pre-compet",
-    },
-    {
-      teamName: "les ours",
-      sessionId: 30,
-      date: "2012-06-27T18:25:43.511Z",
-      place: "la salle de sport, 69000 Lyon",
-      description: "entrainement du haut du corps",
-      name: "entrainement post-vacances",
-    },
-  ];
-
   const [teams, setTeams] = useState<{ teamId: number; teamName: string }[]>(
     [],
   );
@@ -169,6 +151,26 @@ export default function Dashboard() {
 
   useEffect(() => {
     setLoadingGraphs(true);
+    setLoadingFeedbackLess(true);
+    // Getting feedbackLess sessions
+    Axios.get(`${API_URL}/athlete/feedbackSession/notProvided`, {
+      headers: { Authorization: `Bearer ${token}` },
+    })
+      .then((res) => {
+        const data = res.data;
+        setLoadingFeedbackLess(false);
+        if (data.success && data.sessions) {
+          setFeedbackLess(data.sessions);
+        } else {
+          displayToaster("error", "Error while fetching data");
+          console.error("error", res.data.error);
+        }
+      })
+      .catch((err) => {
+        setLoadingFeedbackLess(false);
+        console.log(err);
+        displayToaster("error", "Error while fetching data");
+      });
 
     if (selectedTeam) {
       Axios.get(`${API_URL}/user/feedbackSessions/?teamId=${selectedTeam}`, {
@@ -197,9 +199,7 @@ export default function Dashboard() {
           setLoadingGraphs(false);
           const data = res.data;
           if (data.success) {
-            console.log("data", data);
             setSessions(data.sessions);
-            console.log(data.sessions);
           } else {
             if (!data.success) {
               displayToaster("error", "Error while fetching data");
@@ -273,25 +273,47 @@ export default function Dashboard() {
               <h2 className="text-3xl font-bold text-rblue-700">
                 <Balancer>Feedback less sessions</Balancer>
               </h2>
-              <div className="m-6 flex flex-wrap gap-6">
-                {sessionsLess.map((session, key) => (
-                  <SessionCard
-                    key={key}
-                    id={session.sessionId}
-                    place={session.place}
-                    date={session.date}
-                    description={session.description}
-                    name={session.name}
-                    teamName={session.teamName}
-                  />
-                ))}
-              </div>
+
+              {!loadingFeedbackLess && (
+                <motion.div
+                  className="m-6 flex flex-wrap gap-6"
+                  variants={FADE_DOWN_ANIMATION_VARIANTS}
+                >
+                  {feedbackLess.map((session: any, key: number) => (
+                    <SessionCard
+                      key={key}
+                      id={session.sessionId}
+                      place={session.place}
+                      date={session.date}
+                      description={session.description}
+                      name={session.name}
+                      teamName={session.teamName}
+                    />
+                  ))}
+                </motion.div>
+              )}
+              {loadingFeedbackLess && (
+                <div className="m-6 flex w-full gap-6">
+                  <div className="w-full">
+                    <Skeleton height={80} style={{ borderRadius: 10 }} />
+                  </div>
+                  <div className="w-full">
+                    <Skeleton height={80} style={{ borderRadius: 10 }} />
+                  </div>
+                  <div className="w-full">
+                    <Skeleton height={80} style={{ borderRadius: 10 }} />
+                  </div>
+                </div>
+              )}
             </section>
             <section className="mb-10 w-full px-8 sm:mx-4">
               <h2 className="text-3xl font-bold text-rblue-700">
                 <Balancer>Teams</Balancer>
               </h2>
-              <div className="mt-5 grid grid-cols-3 gap-4 md:grid-cols-4 xl:grid-cols-5">
+              <motion.div
+                className="mt-5 grid grid-cols-3 gap-4 md:grid-cols-4 xl:grid-cols-5"
+                variants={FADE_DOWN_ANIMATION_VARIANTS}
+              >
                 {!loading &&
                   teams.length != 0 &&
                   teams.map((team) => {
@@ -309,10 +331,35 @@ export default function Dashboard() {
                       </button>
                     );
                   })}
+              </motion.div>
+              <div className="mt-5 grid grid-cols-3 gap-4 md:grid-cols-4 xl:grid-cols-5">
                 {loading && (
-                  <Skeleton height={100} className={`rounded-full`} />
+                  <div className="flex w-full gap-6">
+                    <div className="w-full">
+                      <Skeleton
+                        height={50}
+                        width={200}
+                        style={{ borderRadius: 50 }}
+                      />
+                    </div>
+                    <div className="w-full">
+                      <Skeleton
+                        height={50}
+                        width={200}
+                        style={{ borderRadius: 50 }}
+                      />
+                    </div>
+                    <div className="w-full">
+                      <Skeleton
+                        height={50}
+                        width={200}
+                        style={{ borderRadius: 50 }}
+                      />
+                    </div>
+                  </div>
                 )}
               </div>
+
               <div className="mt-10 flex h-auto w-full flex-col flex-wrap justify-center gap-8 lg:h-2/4 lg:flex-row">
                 <div className="">
                   <Graphic

@@ -10,7 +10,6 @@ export default function AddToHomescreenButton() {
 
   const browserIsSupported = (useragent: any) => {
     const browser = getParser(useragent);
-    console.log(browser);
     const currentBrowser = browser.getBrowserName();
     let isSupported = true;
     INCOMPATIBLE_BROWSERS.forEach((incompatible_browser) => {
