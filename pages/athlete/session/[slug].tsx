@@ -34,20 +34,6 @@ export default function SessionDetail({}: {}) {
   const [injuryDesc, setInjuryDesc] = useState<string>("");
   const [details, setDetails] = useState<string>("");
 
-  const [feedback, setFeedback] = useState<{
-    success: boolean;
-    sessionsFeedback: null | {
-      sessionId: number;
-      name: string;
-      shape: number;
-      tiredness: number;
-      stress: number;
-      sensation: string;
-      injury: string;
-      date: string;
-    };
-  }>();
-
   const [feedbackIfGiven, setFeedbackIfGiven] = useState<{
     sessionId: number;
     name: string;
@@ -137,7 +123,7 @@ export default function SessionDetail({}: {}) {
         console.log(res);
         if (res.data.success) {
           displayToaster("success", "Feedback given");
-          router.push(`/athlete/session/${slug}`);
+          router.push(`/athlete/dashboard`);
         }
       } catch (error) {
         if (Axios.isAxiosError(error)) {
