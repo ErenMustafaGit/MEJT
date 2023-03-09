@@ -32,6 +32,7 @@ import { getToken } from "@/lib/auth";
 import { displayToaster } from "@/lib/utils";
 import Axios from "axios";
 import Skeleton from "react-loading-skeleton";
+import { DateTime } from "luxon";
 
 ChartJS.register(
   CategoryScale,
@@ -54,6 +55,10 @@ export default function Dashboard() {
   });
   const [athletesData, setAthletesData] = useState<any>([]);
   const [athletes, setAthletes] = useState<AthleteData[]>([]);
+  const [xValuesMean, setXValuesMean] = useState<number[]>([]);
+  const [yValuesStressMean, setYValuesStressMean] = useState<number[]>([]);
+  const [yValuesTirednessMean, setYValuesTirednessMean] = useState<number[]>([]);
+  const [yValuesFitnessMean, setYValuesFitnessMean] = useState<number[]>([]);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -158,40 +163,89 @@ export default function Dashboard() {
     },
   ];
 
-  const config = {
-    title: "Stress",
-    xValues: [
-      Date.parse("2021-01-20"),
-      Date.parse("2022-01-20"),
-      Date.parse("2022-07-14"),
-      Date.parse("2022-11-15"),
-      Date.parse("2022-12-12"),
-      Date.parse("2023-02-05"),
-      Date.parse("2023-02-15"),
-      Date.parse("2023-02-17"),
-      Date.parse("2023-02-25"),
-      Date.parse("2023-02-27"),
-      Date.parse("2023-02-28"),
-      Date.now(),
-    ],
-    yValues: [0, 10, 5, 8, 2, 3, 0, 0, 2, 9, 5, 6],
-    lineColor: BLUE_LINE_GRAPH,
-    fillColor: BLUE_FILL_GRAPH,
-  };
+  useEffect(() => {
+    console.log(athletesData);
+    const athletes:any[] = athletesData;
 
-  const config2 = {
-    ...config,
-    title: "Tiredness",
-    lineColor: ORANGE_LINE_GRAPH,
-    fillColor: ORANGE_FILL_GRAPH,
-  };
+    let datesMean:{[key:number]:{
+      nFeedbacks:number;
+      stress:number;
+      tiredness:number;
+      fitness:number;
+    }} = {};
 
-  const config3 = {
-    ...config,
-    title: "Fitness",
-    lineColor: VIOLET_LINE_GRAPH,
-    fillColor: VIOLET_FILL_GRAPH,
-  };
+    const xValues:number[] = [];
+    const yValuesStress:number[] = [];
+    const yValuesTiredness:number[] = [];
+    const yValuesFitness:number[] = [];
+
+    athletes.forEach((athlete) =>
+    {
+      console.log(athlete);
+      const feedbacks = athlete.sessionsFeedbacks;
+      if(feedbacks)
+      {
+        feedbacks.forEach((feedback:any) => {
+          if(Object.keys(datesMean).includes(DateTime.fromISO(feedback.date).toMillis().toString()))
+          {
+            datesMean[DateTime.fromISO(feedback.date).toMillis()].nFeedbacks += 1;
+            datesMean[DateTime.fromISO(feedback.date).toMillis()].stress += feedback.stress;
+            datesMean[DateTime.fromISO(feedback.date).toMillis()].fitness += feedback.shape;
+            datesMean[DateTime.fromISO(feedback.date).toMillis()].tiredness += feedback.tiredness;
+          }
+          else
+          {
+            datesMean = {...datesMean, 
+              [DateTime.fromISO(feedback.date).toMillis()]:
+              {
+                nFeedbacks:1,
+                stress:feedback.stress,
+                fitness:feedback.shape,
+                tiredness:feedback.tiredness
+              }
+            }
+          }                
+        });
+      }
+    });
+
+    if(Object.keys(datesMean))
+    {
+      Object.keys(datesMean).forEach((dateMean) => {
+        // ! dateMean is millis in string
+        // Math.round(...*10)/10 used to round at 1 decimal place
+        const keyNum:number = parseInt(dateMean);
+        datesMean[keyNum].stress = Math.round((datesMean[keyNum].stress / datesMean[keyNum].nFeedbacks)*10)/10;
+        datesMean[keyNum].fitness = Math.round((datesMean[keyNum].fitness / datesMean[keyNum].nFeedbacks)*10)/10;
+        datesMean[keyNum].tiredness = Math.round((datesMean[keyNum].tiredness / datesMean[keyNum].nFeedbacks)*10)/10;
+      });
+
+      const orderedDatesMean = Object.keys(datesMean).sort().reduce(
+        (obj:{[key:number]:any}, key) => { 
+          obj[parseInt(key)] = datesMean[parseInt(key)]; 
+          return obj;
+        }, 
+        {}
+      );
+
+      Object.keys(orderedDatesMean).forEach((dateMean:string) => {
+
+        const dateInNumber:number = parseInt(dateMean);
+
+        xValues.push(dateInNumber);
+        yValuesStress.push(orderedDatesMean[dateInNumber].stress);
+        yValuesTiredness.push(orderedDatesMean[dateInNumber].tiredness);
+        yValuesFitness.push(orderedDatesMean[dateInNumber].fitness);
+
+      });
+
+      setXValuesMean(xValues);
+      setYValuesStressMean(yValuesStress);
+      setYValuesTirednessMean(yValuesTiredness);
+      setYValuesFitnessMean(yValuesFitness);
+    }
+    
+  },[athletesData]);
 
   return (
     <Layout>
@@ -236,31 +290,31 @@ export default function Dashboard() {
               <div className="mt-5 flex h-auto w-full flex-col flex-wrap justify-center gap-8 lg:h-2/4 lg:flex-row">
                 <div className="">
                   <Graphic
-                    title={config.title}
-                    xValues={config.xValues}
-                    yValues={config.yValues}
-                    lineColor={config.lineColor}
-                    fillColor={config.fillColor}
+                    title="Stress"
+                    xValues={xValuesMean}
+                    yValues={yValuesStressMean}
+                    lineColor={BLUE_LINE_GRAPH}
+                    fillColor={BLUE_FILL_GRAPH}
                   />
                 </div>
 
                 <div className="">
                   <Graphic
-                    title={config2.title}
-                    xValues={config2.xValues}
-                    yValues={config2.yValues}
-                    lineColor={config2.lineColor}
-                    fillColor={config2.fillColor}
+                    title="Tiredness"
+                    xValues={xValuesMean}
+                    yValues={yValuesTirednessMean}
+                    lineColor={ORANGE_LINE_GRAPH}
+                    fillColor={ORANGE_FILL_GRAPH}
                   />
                 </div>
 
                 <div className="">
                   <Graphic
-                    title={config3.title}
-                    xValues={config3.xValues}
-                    yValues={config3.yValues}
-                    lineColor={config3.lineColor}
-                    fillColor={config3.fillColor}
+                    title="Fitness"
+                    xValues={xValuesMean}
+                    yValues={yValuesFitnessMean}
+                    lineColor={VIOLET_LINE_GRAPH}
+                    fillColor={VIOLET_FILL_GRAPH}
                   />
                 </div>
               </div>
