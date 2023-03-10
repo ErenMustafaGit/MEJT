@@ -33,7 +33,7 @@ import { displayToaster } from "@/lib/utils";
 import Axios from "axios";
 import Skeleton from "react-loading-skeleton";
 import SessionData from "models/session-data";
-import {DateTime} from 'luxon'
+import { DateTime } from "luxon";
 
 ChartJS.register(
   CategoryScale,
@@ -154,7 +154,7 @@ export default function Dashboard() {
     const yValuesTirednessIn: number[] = [];
     const yValuesFitnessIn: number[] = [];
 
-    athlete?.sessionsFeedbacks.forEach((feedback:any) => {
+    athlete?.sessionsFeedbacks.forEach((feedback: any) => {
       xValuesIn.push(DateTime.fromISO(feedback.date).toMillis());
       yValuesStressIn.push(feedback.stress);
       yValuesTirednessIn.push(feedback.tiredness);
@@ -273,7 +273,7 @@ export default function Dashboard() {
                 </div>
               </div>
             </section>
-            <section className="mb-10 w-full px-8 sm:mx-4">
+            <section className="mb-10 w-full gap-4 px-8 sm:mx-4 sm:mx-4">
               <h2 className="text-3xl font-bold text-rblue-700">
                 <Balancer>Sessions</Balancer>
               </h2>

@@ -391,7 +391,7 @@ export default function Dashboard() {
                 </div>
               </div>
             </section>
-            <section className="mb-10 w-full px-8 sm:mx-4">
+            <section className="mb-10 w-full gap-4 px-8 sm:mx-4">
               <h2 className="text-3xl font-bold text-rblue-700">
                 <Balancer>Sessions</Balancer>
               </h2>
