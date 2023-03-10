@@ -18,7 +18,7 @@ export default function Graphic({
   loading = false,
 }: {
   title: string;
-  xValues: number[] | Date[];
+  xValues: number[];
   yValues: number[];
   lineColor: string;
   fillColor: string;
