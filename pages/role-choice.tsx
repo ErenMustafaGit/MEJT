@@ -36,7 +36,7 @@ export default function RoleChoice() {
             className="bg-gradient-to-br from-rblue-800 to-rblue-500 bg-clip-text text-center font-display text-4xl font-bold tracking-[-0.02em] text-transparent drop-shadow-sm md:text-6xl md:leading-[5rem]"
             variants={FADE_DOWN_ANIMATION_VARIANTS}
           >
-            <Balancer>What is your role ?</Balancer>
+            <Balancer>Choose your role</Balancer>
           </motion.h1>
           <motion.div
             className="mx-auto mt-6 flex flex-col items-center justify-center gap-12  sm:flex-row sm:gap-12"

@@ -10,6 +10,7 @@ import { Mail, Lock } from "lucide-react";
 import { useState } from "react";
 import { setCookie } from "cookies-next";
 import ActionButton from "@/components/home/action-button";
+import { displayToaster } from "@/lib/utils";
 
 export default function Login() {
   const API_URL = process.env.NEXT_PUBLIC_MEJT_API_URL;
@@ -43,6 +44,7 @@ export default function Login() {
           : router.push("/athlete/dashboard");
       } else {
         setLoading(false);
+        displayToaster("error", res.data.error);
       }
     } catch (error) {
       setLoading(false);

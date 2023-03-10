@@ -16,10 +16,11 @@ import { Listbox, Transition } from "@headlessui/react";
 import { CheckIcon, ChevronDown, Mail, Lock, User, Globe } from "lucide-react";
 import { setCookie } from "cookies-next";
 import ActionButton from "@/components/home/action-button";
+import { displayToaster } from "@/lib/utils";
 
 const roles = [
-  { id: ATHLETE, name: "Athlete" },
   { id: TRAINER, name: "Trainer" },
+  { id: ATHLETE, name: "Athlete" },
 ];
 
 export default function Register() {
@@ -63,13 +64,16 @@ export default function Register() {
             ? router.push("/trainer/dashboard")
             : router.push("/athlete/dashboard");
         } else {
+          displayToaster("error", res.data.error);
           setLoading(false);
         }
       } else {
+        displayToaster("error", data.error);
         setLoading(false);
       }
     } catch (error) {
       setLoading(false);
+      displayToaster("error", "Something went wrong");
       if (Axios.isAxiosError(error)) {
         console.error(error);
       } else {
