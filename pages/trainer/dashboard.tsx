@@ -137,7 +137,7 @@ export default function Dashboard() {
                   />
                 )}
                 {loading && (
-                  <Skeleton height={100} className={`rounded-full`} />
+                  <Skeleton height={100} style={{ borderRadius: 10 }} />
                 )}
               </div>
               <div className="flex w-full justify-center">

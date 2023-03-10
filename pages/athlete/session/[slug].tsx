@@ -62,7 +62,7 @@ export default function SessionDetail({}: {}) {
   useEffect(() => {
     const fetchData = async () => {
       setLoading(true);
-      Axios.get(`${API_URL}/athlete/feedbackSession/?sessionId=${slug}`, {
+      Axios.get(`${API_URL}/user/singleFeedbackSession?sessionId=${slug}`, {
         headers: { Authorization: `Bearer ${token}` },
       })
         .then((res) => {

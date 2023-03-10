@@ -11,24 +11,26 @@ import { getToken } from "@/lib/auth";
 import { useEffect, useState } from "react";
 import Axios from "axios";
 import { displayToaster, formatPrettyDate } from "@/lib/utils";
+import { DateTime } from "luxon";
+import { Oval } from "react-loader-spinner";
+import Skeleton from "react-loading-skeleton";
 
 export default function SessionDetail({}: {}) {
   const router = useRouter();
-  const { teamId, athleteId, sessionId } = router.query;
+  const { teamId, athleteId, feedbackId } = router.query;
   const API_URL = process.env.NEXT_PUBLIC_MEJT_API_URL;
   const token = getToken();
 
   const [loading, setLoading] = useState<boolean>(false);
   const [feedback, setFeedback] = useState<any>({
-    sessionId: 0,
-    name: "entrainement bas du corps",
-    shape: 5,
-    tiredness: 8,
-    stress: 3,
-    sensation:
-      "pas au top Lorem ipsum dolor sit amet consectetur adipisicing elit. Quisquam, quod. Lorem pas au top Lorem ipsum dolor sit amet consectetur adipisicing elit. Quisquam, quod. Lorem pas au top Lorem ipsum dolor sit amet consectetur adipisicing elit. Quisquam, quod. Lorem ",
-    injury: "mollet gauche",
-    date: "2012-04-25T18:25:43.511Z",
+    sessionId: -1,
+    name: "Error on loading",
+    shape: 0,
+    tiredness: 0,
+    stress: 0,
+    sensation: "",
+    injury: "",
+    date: DateTime.now().toString(),
   });
 
   useEffect(() => {
@@ -36,7 +38,7 @@ export default function SessionDetail({}: {}) {
       setLoading(true);
       // GET FEEDBACK FOR A SPECIFIC SESSION OF A SPECIFIQUE ATHLETE
       Axios.get(
-        `${API_URL}/athlete/feedbackSession/?sessionId=${sessionId}&athleteId=${athleteId}`,
+        `${API_URL}/user/singleFeedbackSession?sessionId=${feedbackId}&athleteId=${athleteId}`,
         {
           headers: { Authorization: `Bearer ${token}` },
         },
@@ -61,11 +63,10 @@ export default function SessionDetail({}: {}) {
           displayToaster("error", "Error while fetching data");
         });
     };
-
-    if (sessionId) {
+    if (feedbackId) {
       fetchData();
     }
-  }, [sessionId]);
+  }, [feedbackId]);
 
   return (
     <Layout>
@@ -94,10 +95,16 @@ export default function SessionDetail({}: {}) {
                 path={`/trainer/team/${teamId}/athlete/${athleteId}/feedback/`}
               />
             </div>
+
             <section className="mb-10 flex w-full flex-col gap-4 px-8 sm:mx-4">
-              <h2 className="text-3xl font-bold text-rblue-700">
-                <Balancer>{feedback.name}</Balancer>
-              </h2>
+              {loading ? (
+                <Skeleton></Skeleton>
+              ) : (
+                <h2 className="text-3xl font-bold text-rblue-700">
+                  <Balancer>{feedback.name}</Balancer>
+                </h2>
+              )}
+
               <div className="flex w-full flex-col justify-between gap-4 sm:flex-row">
                 <p className="text-gray-500">
                   {formatPrettyDate(feedback.date)}
@@ -111,23 +118,41 @@ export default function SessionDetail({}: {}) {
                   ></BooleanChips>
                 </div>
               </div>
-              <div className="flex w-full flex-wrap justify-center gap-12 ">
-                <FeedbackAttribut
-                  value={feedback.shape}
-                  title="Fitness"
-                  icon={"/assets/fitness-icon.png"}
-                ></FeedbackAttribut>
-                <FeedbackAttribut
-                  value={feedback.tiredness}
-                  title="Tiredness"
-                  icon={"/assets/tiredness-icon.png"}
-                ></FeedbackAttribut>
-                <FeedbackAttribut
-                  value={feedback.stress}
-                  title="Stress"
-                  icon={"/assets/stress-icon.png"}
-                ></FeedbackAttribut>
-              </div>
+
+              {loading ? (
+                <div className="flex w-full flex-wrap justify-center gap-12 ">
+                  <Oval
+                    height={80}
+                    width={80}
+                    color="#0767BF"
+                    wrapperStyle={{}}
+                    wrapperClass=""
+                    visible={true}
+                    ariaLabel="oval-loading"
+                    secondaryColor="#0076FF"
+                    strokeWidth={2}
+                    strokeWidthSecondary={2}
+                  />
+                </div>
+              ) : (
+                <div className="flex w-full flex-wrap justify-center gap-12 ">
+                  <FeedbackAttribut
+                    value={feedback.shape}
+                    title="Fitness"
+                    icon={"/assets/fitness-icon.png"}
+                  ></FeedbackAttribut>
+                  <FeedbackAttribut
+                    value={feedback.tiredness}
+                    title="Tiredness"
+                    icon={"/assets/tiredness-icon.png"}
+                  ></FeedbackAttribut>
+                  <FeedbackAttribut
+                    value={feedback.stress}
+                    title="Stress"
+                    icon={"/assets/stress-icon.png"}
+                  ></FeedbackAttribut>
+                </div>
+              )}
 
               <div className="mt-4 flex w-full flex-col gap-12">
                 {feedback.injury !== "" && (
