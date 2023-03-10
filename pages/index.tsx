@@ -147,7 +147,7 @@ export default function Home() {
             />
           </motion.div>
           <motion.div
-            className="mx-auto mt-24 flex flex-col items-center space-x-4 space-y-4 sm:flex-row sm:space-x-12"
+            className="mx-auto mt-24 flex hidden flex-col items-center space-x-4 space-y-4 sm:flex sm:flex-row sm:space-x-12"
             variants={FADE_DOWN_ANIMATION_VARIANTS}
           >
             <div className="rounded-lg object-cover object-center p-4 ">

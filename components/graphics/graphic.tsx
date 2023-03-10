@@ -16,6 +16,7 @@ export default function Graphic({
   lineColor,
   fillColor,
   loading = false,
+  className,
 }: {
   title: string;
   xValues: number[];
@@ -23,6 +24,7 @@ export default function Graphic({
   lineColor: string;
   fillColor: string;
   loading?: boolean;
+  className?: string;
 }) {
   const [allXValues, setAllXValues] = useState<number[]>([]);
   const [allYValues, setAllYValues] = useState<number[]>([]);
@@ -177,7 +179,7 @@ export default function Graphic({
           </div>
         </div>
 
-        <div className="relative">
+        <div className={`relative ${className}`}>
           {loading && (
             <div className="absolute flex h-full w-full items-center justify-center py-20">
               <Oval
