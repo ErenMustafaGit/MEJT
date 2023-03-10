@@ -98,8 +98,8 @@ export default function CreateTeam() {
             className="flex w-full flex-col items-center justify-center py-20 md:py-32"
             variants={FADE_DOWN_ANIMATION_VARIANTS}
           >
-            <GoBack path="/trainer/dashboard"></GoBack>
             <section className="mb-10 w-full sm:mx-4 sm:px-8">
+              <GoBack path="/trainer/dashboard"></GoBack>
               <h2 className="mx-4 text-3xl font-bold text-rblue-700">
                 <Balancer>Team creation</Balancer>
               </h2>

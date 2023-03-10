@@ -48,6 +48,7 @@ export default function Login() {
       }
     } catch (error) {
       setLoading(false);
+      displayToaster("error", "Error while logging in");
       if (Axios.isAxiosError(error)) {
         console.error(error);
       } else {
