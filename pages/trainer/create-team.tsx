@@ -10,6 +10,7 @@ import DataCreationModel from "models/data-creation-model";
 import { displayToaster, mailMatcher } from "@/lib/utils";
 import Axios from "axios";
 import { getToken } from "@/lib/auth";
+import GoBack from "@/components/home/go-back";
 
 export default function CreateTeam() {
   const router = useRouter();
@@ -97,6 +98,7 @@ export default function CreateTeam() {
             className="flex w-full flex-col items-center justify-center py-20 md:py-32"
             variants={FADE_DOWN_ANIMATION_VARIANTS}
           >
+            <GoBack path="/trainer/dashboard"></GoBack>
             <section className="mb-10 w-full sm:mx-4 sm:px-8">
               <h2 className="mx-4 text-3xl font-bold text-rblue-700">
                 <Balancer>Team creation</Balancer>

@@ -21,8 +21,12 @@ import {
   Legend,
 } from "chart.js";
 import { DateTime } from "luxon";
+import { getUser } from "@/lib/auth";
 
 export default function Home() {
+  const session = getUser();
+  const { email } = session || {};
+
   const imageClassName =
     "h-2/3 w-2/3 transform rounded-lg object-cover object-center shadow-lg transition-all duration-250 ease-in-out hover:scale-105 hover:shadow-xl sm:h-1/2 sm:w-1/2";
   ChartJS.register(
@@ -98,7 +102,7 @@ export default function Home() {
           >
             <Link
               className="group flex max-w-fit items-center justify-center space-x-2 rounded-full border border-rblue-500 bg-gradient-to-br from-rblue-700 to-rblue-500 px-5 py-2 text-sm text-white transition-all duration-500 ease-in-out hover:bg-gradient-to-bl"
-              href="/role-choice"
+              href={email ? "/login" : "/role-choice"}
               rel="noopener noreferrer"
             >
               <p>Get Started</p>

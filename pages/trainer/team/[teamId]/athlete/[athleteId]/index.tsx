@@ -229,7 +229,7 @@ export default function Dashboard() {
             variants={FADE_DOWN_ANIMATION_VARIANTS}
           >
             <section className="mb-10 w-full sm:mx-4 sm:px-8">
-              <GoBack path="/trainer/dashboard"></GoBack>
+              <GoBack path={`/trainer/team/${teamId}`}></GoBack>
 
               {athlete ? (
                 <h2 className="mx-4 mb-4 text-3xl font-bold text-rblue-700">

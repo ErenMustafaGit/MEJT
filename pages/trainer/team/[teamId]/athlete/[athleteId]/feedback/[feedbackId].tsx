@@ -91,9 +91,7 @@ export default function SessionDetail({}: {}) {
             variants={FADE_DOWN_ANIMATION_VARIANTS}
           >
             <div className="">
-              <GoBack
-                path={`/trainer/team/${teamId}/athlete/${athleteId}/feedback/`}
-              />
+              <GoBack path={`/trainer/team/${teamId}/athlete/${athleteId}`} />
             </div>
 
             <section className="mb-10 flex w-full flex-col gap-4 px-8 sm:mx-4">
