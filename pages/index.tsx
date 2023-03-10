@@ -3,12 +3,58 @@ import Layout from "@/components/layout";
 import AddToHomescreenButton from "@/components/home/addToHomescreenButton";
 import Balancer from "react-wrap-balancer";
 import { motion } from "framer-motion";
-import { FADE_DOWN_ANIMATION_VARIANTS } from "@/lib/constants";
+import {
+  BLUE_FILL_GRAPH,
+  BLUE_LINE_GRAPH,
+  FADE_DOWN_ANIMATION_VARIANTS,
+} from "@/lib/constants";
 import Image from "next/image";
+import Graphic from "@/components/graphics/graphic";
+import {
+  Chart as ChartJS,
+  CategoryScale,
+  LinearScale,
+  PointElement,
+  LineElement,
+  Title,
+  Tooltip,
+  Legend,
+} from "chart.js";
+import { DateTime } from "luxon";
 
 export default function Home() {
   const imageClassName =
     "h-2/3 w-2/3 transform rounded-lg object-cover object-center shadow-lg transition-all duration-250 ease-in-out hover:scale-105 hover:shadow-xl sm:h-1/2 sm:w-1/2";
+  ChartJS.register(
+    CategoryScale,
+    LinearScale,
+    PointElement,
+    LineElement,
+    Title,
+    Tooltip,
+    Legend,
+  );
+  const defaultGraph = {
+    xValues: [
+      new Date(DateTime.now().minus({ days: 200 }).toISO()),
+      new Date(DateTime.now().minus({ days: 175 }).toISO()),
+      new Date(DateTime.now().minus({ days: 150 }).toISO()),
+      new Date(DateTime.now().minus({ days: 140 }).toISO()),
+      new Date(DateTime.now().minus({ days: 110 }).toISO()),
+      new Date(DateTime.now().minus({ days: 89 }).toISO()),
+      new Date(DateTime.now().minus({ days: 80 }).toISO()),
+      new Date(DateTime.now().minus({ days: 60 }).toISO()),
+      new Date(DateTime.now().minus({ days: 50 }).toISO()),
+      new Date(DateTime.now().minus({ days: 43 }).toISO()),
+      new Date(DateTime.now().minus({ days: 30 }).toISO()),
+      new Date(DateTime.now().minus({ days: 25 }).toISO()),
+      new Date(DateTime.now().minus({ days: 20 }).toISO()),
+      new Date(DateTime.now().minus({ days: 10 }).toISO()),
+      new Date(DateTime.now().minus({ days: 6 }).toISO()),
+      new Date(DateTime.now().minus({ days: 2 }).toISO()),
+    ],
+    yValues: [5, 4, 3, 5, 4, 6, 5, 3, 7, 6, 2, 0, 8, 7, 9, 8, 10, 9],
+  };
 
   return (
     <Layout>
@@ -97,6 +143,28 @@ export default function Home() {
               height={2321}
               src="/assets/trainer.jpg"
               alt="Trainer helping athlete"
+            />
+          </motion.div>
+          <motion.div
+            className="mx-auto mt-24 flex flex-col items-center space-x-4 space-y-4 sm:flex-row sm:space-x-12"
+            variants={FADE_DOWN_ANIMATION_VARIANTS}
+          >
+            <div className="rounded-lg object-cover object-center p-4 ">
+              <h3 className="text-2xl font-bold text-rblue-700">
+                Track your data
+              </h3>
+              <p className="mt-2 text-gray-400">
+                Track all your data in one place. We provide you with a
+                dashboard that allows you to track your progress and analyze
+                your performance. Allow us to help you achieve your goals.
+              </p>
+            </div>
+            <Graphic
+              title=""
+              xValues={defaultGraph.xValues}
+              yValues={defaultGraph.yValues}
+              lineColor={BLUE_LINE_GRAPH}
+              fillColor={BLUE_FILL_GRAPH}
             />
           </motion.div>
         </motion.div>
