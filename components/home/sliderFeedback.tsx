@@ -1,15 +1,18 @@
 import * as Slider from "@radix-ui/react-slider"
 
-import { colors } from "@/lib/constants";
+import { colors, invertedColors } from "@/lib/constants";
 
 export default function FeedbackSlider(
-    {title,
+    {
+    inverted,
+    title,
     lowBoundText, 
     highBoundText,
     dynamicValue,
     valueChangeCallback,
     className = ""
     }:{
+        inverted:boolean;
         title:string;
         lowBoundText:string;
         highBoundText:string;
@@ -35,7 +38,7 @@ export default function FeedbackSlider(
                       <Slider.SliderRange className="absolute "/>
                     </Slider.Track>
                     <Slider.Thumb className="bg-white w-8 h-8 block rounded-full focus:shadow-2xl border-blue-500 border-2 items-center justify-center cursor-pointer">
-                      <p className={`${(dynamicValue === 10 ) ? "ml-[5px]" : "ml-[9px]"} mt-8 ${colors[dynamicValue]} font-bold`}>{dynamicValue}</p>
+                      <p className={`${(dynamicValue === 10 ) ? "ml-[5px]" : "ml-[9px]"} mt-8 ${ (inverted) ? invertedColors[dynamicValue]: colors[dynamicValue]} font-bold`}>{dynamicValue}</p>
                     </Slider.Thumb>
                 </Slider.Root>
 

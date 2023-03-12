@@ -155,7 +155,17 @@ export default function Dashboard() {
     const yValuesFitnessIn: number[] = [];
 
     athlete?.sessionsFeedbacks.forEach((feedback: any) => {
-      xValuesIn.push(DateTime.fromISO(feedback.date).toMillis());
+
+      let sessionDate:number = 0;
+      sessions.forEach((session) => {
+        if(session.sessionId == feedback.sessionId)
+        {
+          sessionDate = DateTime.fromISO(session.date).toMillis()
+        }
+      })
+      xValuesIn.push(sessionDate);
+
+      //xValuesIn.push(DateTime.fromISO(feedback.date).toMillis());
       yValuesStressIn.push(feedback.stress);
       yValuesTirednessIn.push(feedback.tiredness);
       yValuesFitnessIn.push(feedback.shape);
@@ -165,7 +175,7 @@ export default function Dashboard() {
     setYValuesStress(yValuesStressIn);
     setYValuesFitness(yValuesFitnessIn);
     setYValuesTiredness(yValuesTirednessIn);
-  }, [athlete]);
+  }, [athlete, sessions]);
 
   const sessionsHeader = [
     {

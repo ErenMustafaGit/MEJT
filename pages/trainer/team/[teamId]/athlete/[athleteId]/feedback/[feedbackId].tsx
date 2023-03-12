@@ -135,16 +135,19 @@ export default function SessionDetail({}: {}) {
               ) : (
                 <div className="flex w-full flex-wrap justify-center gap-12 ">
                   <FeedbackAttribut
+                    inverted={false}
                     value={feedback.shape}
                     title="Fitness"
                     icon={"/assets/fitness-icon.png"}
                   ></FeedbackAttribut>
                   <FeedbackAttribut
+                    inverted={true}
                     value={feedback.tiredness}
                     title="Tiredness"
                     icon={"/assets/tiredness-icon.png"}
                   ></FeedbackAttribut>
                   <FeedbackAttribut
+                    inverted={true}
                     value={feedback.stress}
                     title="Stress"
                     icon={"/assets/stress-icon.png"}

@@ -193,16 +193,19 @@ export default function SessionDetail({}: {}) {
                 </div>
                 <div className="flex w-full flex-wrap justify-center gap-12 ">
                   <FeedbackAttribut
+                    inverted={false}
                     value={feedbackIfGiven.shape}
                     title="Fitness"
                     icon={"/assets/fitness-icon.png"}
                   ></FeedbackAttribut>
                   <FeedbackAttribut
+                    inverted={true}
                     value={feedbackIfGiven.tiredness}
                     title="Tiredness"
                     icon={"/assets/tiredness-icon.png"}
                   ></FeedbackAttribut>
                   <FeedbackAttribut
+                    inverted={true}
                     value={feedbackIfGiven.stress}
                     title="Stress"
                     icon={"/assets/stress-icon.png"}
@@ -258,6 +261,7 @@ export default function SessionDetail({}: {}) {
                 </h1>
 
                 <FeedbackSlider
+                  inverted={false}
                   title="Fitness"
                   lowBoundText="Feeling bad..."
                   highBoundText="Feeling well !"
@@ -267,6 +271,7 @@ export default function SessionDetail({}: {}) {
                 />
 
                 <FeedbackSlider
+                  inverted={true}
                   title="Level of tiredness"
                   lowBoundText="Fresh !"
                   highBoundText="Tired..."
@@ -276,6 +281,7 @@ export default function SessionDetail({}: {}) {
                 />
 
                 <FeedbackSlider
+                  inverted={true}
                   title="Level of stress"
                   lowBoundText="Zen !"
                   highBoundText="Very stressed !"

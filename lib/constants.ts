@@ -39,3 +39,17 @@ export const colors = [
   "text-green-600",
   "text-green-700",
 ];
+
+export const invertedColors = [
+  "text-green-700",
+  "text-green-600",
+  "text-green-600/80",
+  "text-green-400",
+  "text-green-400/70",
+  "text-yellow-400",
+  "text-orange-400",
+  "text-orange-500",
+  "text-red-600/80",
+  "text-red-700",
+  "text-red-800",
+];
