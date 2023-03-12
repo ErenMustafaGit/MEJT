@@ -148,27 +148,49 @@ export default function Dashboard() {
   }, [athletesData]);
 
   useEffect(() => {
-    const xValuesIn: number[] = [];
-
+        const xValuesIn: number[] = [];
     const yValuesStressIn: number[] = [];
     const yValuesTirednessIn: number[] = [];
     const yValuesFitnessIn: number[] = [];
 
-    athlete?.sessionsFeedbacks.forEach((feedback: any) => {
+    let datesForSort: {
+      [key: number]: {
+        stress: number;
+        tiredness: number;
+        fitness: number;
+      };
+    } = {};
 
-      let sessionDate:number = 0;
+    athlete?.sessionsFeedbacks.forEach((feedback:any) => {
+
       sessions.forEach((session) => {
         if(session.sessionId == feedback.sessionId)
         {
-          sessionDate = DateTime.fromISO(session.date).toMillis()
+          datesForSort[DateTime.fromISO(session.date).toMillis()] = {
+            stress:feedback.stress,
+            tiredness:feedback.tiredness,
+            fitness:feedback.shape
+          }
         }
       })
-      xValuesIn.push(sessionDate);
 
-      //xValuesIn.push(DateTime.fromISO(feedback.date).toMillis());
-      yValuesStressIn.push(feedback.stress);
-      yValuesTirednessIn.push(feedback.tiredness);
-      yValuesFitnessIn.push(feedback.shape);
+    });
+
+    const orderedDates = Object.keys(datesForSort)
+      .sort()
+      .reduce((obj: { [key: number]: any }, key) => {
+        obj[parseInt(key)] = datesForSort[parseInt(key)];
+        return obj;
+      }, {});
+
+      Object.keys(orderedDates).forEach((date: string) => {
+      const dateInNumber: number = parseInt(date);
+
+      xValuesIn.push(dateInNumber);
+      yValuesStressIn.push(orderedDates[dateInNumber].stress);
+      yValuesTirednessIn.push(orderedDates[dateInNumber].tiredness);
+      yValuesFitnessIn.push(orderedDates[dateInNumber].fitness);
+
     });
 
     setXValues(xValuesIn);

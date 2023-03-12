@@ -18,6 +18,8 @@ import { useRouter } from "next/router";
 import Graphic from "@/components/graphics/graphic";
 import GoBack from "@/components/home/go-back";
 
+import SessionData from "models/session-data";
+
 import {
   Chart as ChartJS,
   CategoryScale,
@@ -53,7 +55,7 @@ export default function Dashboard() {
   const [team, setTeam] = useState<any>({
     name: "",
   });
-  const [athletesData, setAthletesData] = useState<any>([]);
+  const [athletesData, setAthletesData] = useState<any[]>([]);
   const [athletes, setAthletes] = useState<AthleteData[]>([]);
   const [xValuesMean, setXValuesMean] = useState<number[]>([]);
   const [yValuesStressMean, setYValuesStressMean] = useState<number[]>([]);
@@ -61,6 +63,9 @@ export default function Dashboard() {
     [],
   );
   const [yValuesFitnessMean, setYValuesFitnessMean] = useState<number[]>([]);
+
+  const [mock, setMock] = useState(false);
+  const [sessions, setSessions] = useState<SessionData[]>([]);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -161,7 +166,33 @@ export default function Dashboard() {
   ];
 
   useEffect(() => {
-    console.log(athletesData);
+    //first, get all sessions concerned (only to target one player)
+    if(athletesData && athletesData.length !== 0)
+    {
+      Axios.get(`${API_URL}/athlete/sessions/?athleteId=${athletesData[0].userId}&teamId=${teamId}`, {
+        headers: { Authorization: `Bearer ${token}` },
+      }).then( (res) => {
+        setLoadingGraphs(false);
+        const data = res.data;
+        if (data.success) {
+          setSessions(data.sessions);
+        } else {
+          if (!data.success) {
+            displayToaster("error", "Error while fetching data");
+            console.error("error", res.data.error);
+          }
+        }
+      })
+      .catch((err) => {
+        setLoadingGraphs(false);
+        console.log(err);
+        displayToaster("error", "Error while fetching data");
+      })
+    }
+    
+  }, [athletesData]);
+
+  useEffect(() => {
     const athletes: any[] = athletesData;
 
     let datesMean: {
@@ -183,24 +214,29 @@ export default function Dashboard() {
       const feedbacks = athlete.sessionsFeedbacks;
       if (feedbacks) {
         feedbacks.forEach((feedback: any) => {
+
+          //here, we need to get the actual date
+
+          const sessionDateInMillis:number = getSessionDate(feedback);
+          
           if (
             Object.keys(datesMean).includes(
-              DateTime.fromISO(feedback.date).toMillis().toString(),
+              sessionDateInMillis.toString(),
             )
           ) {
             datesMean[
-              DateTime.fromISO(feedback.date).toMillis()
+              sessionDateInMillis
             ].nFeedbacks += 1;
-            datesMean[DateTime.fromISO(feedback.date).toMillis()].stress +=
+            datesMean[sessionDateInMillis].stress +=
               feedback.stress;
-            datesMean[DateTime.fromISO(feedback.date).toMillis()].fitness +=
+            datesMean[sessionDateInMillis].fitness +=
               feedback.shape;
-            datesMean[DateTime.fromISO(feedback.date).toMillis()].tiredness +=
+            datesMean[sessionDateInMillis].tiredness +=
               feedback.tiredness;
           } else {
             datesMean = {
               ...datesMean,
-              [DateTime.fromISO(feedback.date).toMillis()]: {
+              [sessionDateInMillis]: {
                 nFeedbacks: 1,
                 stress: feedback.stress,
                 fitness: feedback.shape,
@@ -252,7 +288,21 @@ export default function Dashboard() {
       setYValuesTirednessMean(yValuesTiredness);
       setYValuesFitnessMean(yValuesFitness);
     }
-  }, [athletesData]);
+  }, [sessions]);
+
+  const getSessionDate = (feedback:any) : number => {
+    let sessionDate = 0;
+    
+    sessions.forEach((session) => {
+      if(session.sessionId == feedback.sessionId)
+      {
+        sessionDate = DateTime.fromISO(session.date).toMillis();
+      }
+    })
+
+    return sessionDate;
+
+  }
 
   return (
     <Layout>
