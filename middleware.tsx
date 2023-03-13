@@ -15,16 +15,17 @@ export function middleware(req: NextRequest) {
   if (authPrefix.some((prefix) => pathname.startsWith(prefix))) {
     const session =
       req.cookies.get("session")?.value || req.cookies.get("session");
+    console.log(session);
     if (!session) {
       return NextResponse.redirect(new URL("/login", req.url));
     } else {
       // On verifie le type de l'utilisateur et on redirige vers la bonne page
-      const user: User | null = getUser(req.cookies.get("session")?.value);
-      if (user?.type === TRAINER && pathname.startsWith("/athlete")) {
-        return NextResponse.redirect(new URL("/trainer/dashboard", req.url));
-      } else if (user?.type === ATHLETE && pathname.startsWith("/trainer")) {
-        return NextResponse.redirect(new URL("/athlete/dashboard", req.url));
-      }
+      // const user: User | null = getUser(req.cookies.get("session")?.value);
+      // if (user?.type === TRAINER && pathname.startsWith("/athlete")) {
+      //   return NextResponse.redirect(new URL("/trainer/dashboard", req.url));
+      // } else if (user?.type === ATHLETE && pathname.startsWith("/trainer")) {
+      //   return NextResponse.redirect(new URL("/athlete/dashboard", req.url));
+      // }
     }
   }
 
