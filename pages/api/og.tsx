@@ -13,9 +13,8 @@ const sfPro = fetch(
 export default async function handler(req: NextRequest) {
   const [sfProData] = await Promise.all([sfPro]);
 
-  const { searchParams } = req.nextUrl;
-  const title = searchParams.get("title") || "MEJT";
-
+  // const { searchParams } = req.nextUrl;
+  // const title = searchParams.get("title") || "MEJT";
   return new ImageResponse(
     (
       <div
@@ -28,27 +27,27 @@ export default async function handler(req: NextRequest) {
           justifyContent: "center",
           backgroundColor: "white",
           backgroundImage:
-            "linear-gradient(to bottom right, #E0E7FF 25%, #ffffff 50%, #CFFAFE 75%)",
+            "linear-gradient(to bottom right, #E0E7FF 25%, #ffffff 50%, #84ACD2 100%)",
         }}
       >
         <img
           src={new URL("../../public/logo.png", import.meta.url).toString()}
           alt="MEJT Logo"
-          tw="w-40 h-28 mb-4 opacity-95"
+          tw="h-28 mb-4 opacity-95"
         />
         <h1
           style={{
-            fontSize: "100px",
+            fontSize: "64px",
             fontFamily: "SF Pro",
             background:
-              "linear-gradient(to bottom right, #000000 21.66%, #4B6CEF 86.47%)",
+              "linear-gradient(to bottom right, #000000 21.66%, #0767BF 86.47%)",
             backgroundClip: "text",
             color: "transparent",
             lineHeight: "5rem",
             letterSpacing: "-0.02em",
           }}
         >
-          {title}
+          Training platform for athletes and trainers
         </h1>
       </div>
     ),
