@@ -13,7 +13,8 @@ export function middleware(req: NextRequest) {
 
   // Si l'utilisateur n'est pas connecté, on le redirige vers la page de login
   if (authPrefix.some((prefix) => pathname.startsWith(prefix))) {
-    const session = req.cookies.get("session")?.value;
+    const session =
+      req.cookies.get("session")?.value || req.cookies.get("session");
     if (!session) {
       return NextResponse.redirect(new URL("/login", req.url));
     } else {
