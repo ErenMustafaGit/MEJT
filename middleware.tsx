@@ -15,7 +15,6 @@ export function middleware(req: NextRequest) {
   if (authPrefix.some((prefix) => pathname.startsWith(prefix))) {
     const session =
       req.cookies.get("session")?.value || req.cookies.get("session");
-    console.log(session);
     if (!session) {
       return NextResponse.redirect(new URL("/login", req.url));
     } else {
@@ -37,7 +36,6 @@ export function middleware(req: NextRequest) {
       if (user?.type === TRAINER) {
         return NextResponse.redirect(new URL("/trainer/dashboard", req.url));
       } else if (user?.type === ATHLETE) {
-        console.log("redirecting to trainer dashboard");
         return NextResponse.redirect(new URL("/athlete/dashboard", req.url));
       }
     }

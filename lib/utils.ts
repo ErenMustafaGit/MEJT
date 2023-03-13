@@ -87,20 +87,6 @@ export const filterData = (
   const newYValues: number[] = allYValues.slice(
     allYValues.length - newLabels.length,
   );
-  /*
-
-  DEBUGING PURPOSE
-
-  newLabels.forEach(newLabel => {
-    console.log(DateTime.fromMillis(newLabel).toISO());
-
-  });
-
-  newYValues.forEach(newYValue => {
-    console.log(newYValue);
-  });
-
-  */
 
   return {
     labels: newLabels,

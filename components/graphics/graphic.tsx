@@ -46,8 +46,6 @@ export default function Graphic({
   });
 
   useEffect(() => {
-    console.log(activeTab);
-
     if (activeTab[0]) {
       defaultData();
     } else if (activeTab[1]) {

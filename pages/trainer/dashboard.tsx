@@ -1,11 +1,9 @@
 import Layout from "@/components/layout";
 import DataGrid from "@/components/home/data-grid";
 import { useState, useEffect } from "react";
-import Balancer from "react-wrap-balancer";
 import { motion } from "framer-motion";
 import { FADE_DOWN_ANIMATION_VARIANTS } from "@/lib/constants";
 import { useRouter } from "next/router";
-import TeamData from "models/team-data";
 import Axios from "axios";
 import { getToken } from "@/lib/auth";
 import Skeleton from "react-loading-skeleton";
@@ -73,22 +71,6 @@ export default function Dashboard() {
       show: true,
     },
   ];
-
-  // TO BE DELETED (DATA REPLACING API CALL)
-  // const teams: TeamData[] = Array(6).fill({
-  //   teamId: "1",
-  //   name: "3 IFA",
-  //   trainerId: "1",
-  //   sessionNumber: 5,
-  //   athleteNumber: 10,
-  // });
-  // teams.push({
-  //   teamId: "2",
-  //   name: "Les IFA",
-  //   trainerId: "1",
-  //   sessionNumber: 5,
-  //   athleteNumber: 10,
-  // });
 
   return (
     <Layout>
