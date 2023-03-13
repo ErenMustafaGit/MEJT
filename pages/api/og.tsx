@@ -34,14 +34,14 @@ export default async function handler(req: NextRequest) {
         <img
           src={new URL("../../public/logo.png", import.meta.url).toString()}
           alt="MEJT Logo"
-          tw="w-80 h-20 mb-4 opacity-95"
+          tw="w-full h-28 mb-4 opacity-95"
         />
         <h1
           style={{
             fontSize: "100px",
             fontFamily: "SF Pro",
             background:
-              "linear-gradient(to bottom right, #000000 21.66%, #78716c 86.47%)",
+              "linear-gradient(to bottom right, #000000 21.66%, #0767BF 86.47%)",
             backgroundClip: "text",
             color: "transparent",
             lineHeight: "5rem",
