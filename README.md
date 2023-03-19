@@ -4,6 +4,10 @@
 
 MEJT is a training app. It allows you to create and manage your training sessions. You can also share your training sessions with your friends.
 
+## Back-end / API
+
+- [MEJT-API](https://github.com/ErenMustafaGit/MEJT-API)
+
 ## Tech Stack + Features
 
 ### Frameworks
