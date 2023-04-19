@@ -87,7 +87,7 @@ export default function Dashboard() {
         headers: { Authorization: `Bearer ${token}` },
       })
         .then((res) => {
-          setLoadingGraphs(false)
+          setLoadingGraphs(false);
           const data = res.data;
           if (data.success) {
             setAthletesData(data.athletes);
@@ -96,7 +96,7 @@ export default function Dashboard() {
           }
         })
         .catch((err) => {
-          setLoadingGraphs(false)
+          setLoadingGraphs(false);
           console.log(err);
         });
     };
@@ -167,29 +167,31 @@ export default function Dashboard() {
 
   useEffect(() => {
     //first, get all sessions concerned (only to target one player)
-    if(athletesData && athletesData.length !== 0)
-    {
-      Axios.get(`${API_URL}/athlete/sessions/?athleteId=${athletesData[0].userId}&teamId=${teamId}`, {
-        headers: { Authorization: `Bearer ${token}` },
-      }).then( (res) => {
-        setLoadingGraphs(false);
-        const data = res.data;
-        if (data.success) {
-          setSessions(data.sessions);
-        } else {
-          if (!data.success) {
-            displayToaster("error", "Error while fetching data");
-            console.error("error", res.data.error);
+    if (athletesData && athletesData.length !== 0) {
+      Axios.get(
+        `${API_URL}/athlete/sessions/?athleteId=${athletesData[0].userId}&teamId=${teamId}`,
+        {
+          headers: { Authorization: `Bearer ${token}` },
+        },
+      )
+        .then((res) => {
+          setLoadingGraphs(false);
+          const data = res.data;
+          if (data.success) {
+            setSessions(data.sessions);
+          } else {
+            if (!data.success) {
+              displayToaster("error", "Error while fetching data");
+              console.error("error", res.data.error);
+            }
           }
-        }
-      })
-      .catch((err) => {
-        setLoadingGraphs(false);
-        console.log(err);
-        displayToaster("error", "Error while fetching data");
-      })
+        })
+        .catch((err) => {
+          setLoadingGraphs(false);
+          console.log(err);
+          displayToaster("error", "Error while fetching data");
+        });
     }
-    
   }, [athletesData]);
 
   useEffect(() => {
@@ -214,25 +216,15 @@ export default function Dashboard() {
       const feedbacks = athlete.sessionsFeedbacks;
       if (feedbacks) {
         feedbacks.forEach((feedback: any) => {
-
           //here, we need to get the actual date
 
-          const sessionDateInMillis:number = getSessionDate(feedback);
-          
-          if (
-            Object.keys(datesMean).includes(
-              sessionDateInMillis.toString(),
-            )
-          ) {
-            datesMean[
-              sessionDateInMillis
-            ].nFeedbacks += 1;
-            datesMean[sessionDateInMillis].stress +=
-              feedback.stress;
-            datesMean[sessionDateInMillis].fitness +=
-              feedback.shape;
-            datesMean[sessionDateInMillis].tiredness +=
-              feedback.tiredness;
+          const sessionDateInMillis: number = getSessionDate(feedback);
+
+          if (Object.keys(datesMean).includes(sessionDateInMillis.toString())) {
+            datesMean[sessionDateInMillis].nFeedbacks += 1;
+            datesMean[sessionDateInMillis].stress += feedback.stress;
+            datesMean[sessionDateInMillis].fitness += feedback.shape;
+            datesMean[sessionDateInMillis].tiredness += feedback.tiredness;
           } else {
             datesMean = {
               ...datesMean,
@@ -290,19 +282,17 @@ export default function Dashboard() {
     }
   }, [sessions]);
 
-  const getSessionDate = (feedback:any) : number => {
+  const getSessionDate = (feedback: any): number => {
     let sessionDate = 0;
-    
+
     sessions.forEach((session) => {
-      if(session.sessionId == feedback.sessionId)
-      {
+      if (session.sessionId == feedback.sessionId) {
         sessionDate = DateTime.fromISO(session.date).toMillis();
       }
-    })
+    });
 
     return sessionDate;
-
-  }
+  };
 
   return (
     <Layout>
@@ -392,6 +382,7 @@ export default function Dashboard() {
                     slug: "userId",
                     path: `/trainer/team/${teamId}/athlete/`,
                   }}
+                  loading={loadingGraphs}
                 />
               </div>
             </section>

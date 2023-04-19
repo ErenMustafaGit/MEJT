@@ -116,6 +116,7 @@ export default function Dashboard() {
                       path: "/trainer/team/",
                     }}
                     emptyString="You don't have any team yet"
+                    loading={loading}
                   />
                 )}
                 {loading && (

@@ -9,6 +9,18 @@ MEJT is a training app. It allows you to create and manage your training session
 - [MEJT-API](https://github.com/ErenMustafaGit/MEJT-API)
 - Supabase Database (POSTGRESQL)
 
+## Demo creditendials
+
+### Trainer
+
+- email: trainer@mejt.fr
+- password: MEJT1MEJT
+
+### Athlete
+
+- email: athlete@mejt.fr
+- password: MEJT1MEJT
+
 ## Tech Stack + Features
 
 ### Frameworks

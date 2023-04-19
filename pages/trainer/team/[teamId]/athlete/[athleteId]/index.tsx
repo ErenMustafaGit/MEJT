@@ -148,7 +148,7 @@ export default function Dashboard() {
   }, [athletesData]);
 
   useEffect(() => {
-        const xValuesIn: number[] = [];
+    const xValuesIn: number[] = [];
     const yValuesStressIn: number[] = [];
     const yValuesTirednessIn: number[] = [];
     const yValuesFitnessIn: number[] = [];
@@ -161,19 +161,16 @@ export default function Dashboard() {
       };
     } = {};
 
-    athlete?.sessionsFeedbacks.forEach((feedback:any) => {
-
+    athlete?.sessionsFeedbacks.forEach((feedback: any) => {
       sessions.forEach((session) => {
-        if(session.sessionId == feedback.sessionId)
-        {
+        if (session.sessionId == feedback.sessionId) {
           datesForSort[DateTime.fromISO(session.date).toMillis()] = {
-            stress:feedback.stress,
-            tiredness:feedback.tiredness,
-            fitness:feedback.shape
-          }
+            stress: feedback.stress,
+            tiredness: feedback.tiredness,
+            fitness: feedback.shape,
+          };
         }
-      })
-
+      });
     });
 
     const orderedDates = Object.keys(datesForSort)
@@ -183,14 +180,13 @@ export default function Dashboard() {
         return obj;
       }, {});
 
-      Object.keys(orderedDates).forEach((date: string) => {
+    Object.keys(orderedDates).forEach((date: string) => {
       const dateInNumber: number = parseInt(date);
 
       xValuesIn.push(dateInNumber);
       yValuesStressIn.push(orderedDates[dateInNumber].stress);
       yValuesTirednessIn.push(orderedDates[dateInNumber].tiredness);
       yValuesFitnessIn.push(orderedDates[dateInNumber].fitness);
-
     });
 
     setXValues(xValuesIn);
@@ -305,7 +301,7 @@ export default function Dashboard() {
                 </div>
               </div>
             </section>
-            <section className="mb-10 w-full gap-4 px-8 sm:mx-4 sm:mx-4">
+            <section className="mb-10 w-full gap-4 px-8 sm:mx-4">
               <h2 className="text-3xl font-bold text-rblue-700">
                 <Balancer>Sessions</Balancer>
               </h2>
@@ -319,6 +315,7 @@ export default function Dashboard() {
                     slug: "sessionId",
                     path: `/trainer/team/${teamId}/athlete/${athleteId}/feedback/`,
                   }}
+                  loading={loadingGraphs}
                 />
               </div>
             </section>

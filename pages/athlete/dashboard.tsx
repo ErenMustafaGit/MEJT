@@ -138,18 +138,15 @@ export default function Dashboard() {
     } = {};
 
     athlete?.sessionsFeedbacks.forEach((feedback) => {
-
       sessions.forEach((session) => {
-        if(session.sessionId == feedback.sessionId)
-        {
+        if (session.sessionId == feedback.sessionId) {
           datesForSort[DateTime.fromISO(session.date).toMillis()] = {
-            stress:feedback.stress,
-            tiredness:feedback.tiredness,
-            fitness:feedback.shape
-          }
+            stress: feedback.stress,
+            tiredness: feedback.tiredness,
+            fitness: feedback.shape,
+          };
         }
-      })
-
+      });
     });
 
     const orderedDates = Object.keys(datesForSort)
@@ -159,14 +156,13 @@ export default function Dashboard() {
         return obj;
       }, {});
 
-      Object.keys(orderedDates).forEach((date: string) => {
+    Object.keys(orderedDates).forEach((date: string) => {
       const dateInNumber: number = parseInt(date);
 
       xValuesIn.push(dateInNumber);
       yValuesStressIn.push(orderedDates[dateInNumber].stress);
       yValuesTirednessIn.push(orderedDates[dateInNumber].tiredness);
       yValuesFitnessIn.push(orderedDates[dateInNumber].fitness);
-
     });
 
     setXValues(xValuesIn);
@@ -436,6 +432,7 @@ export default function Dashboard() {
                     slug: "sessionId",
                     path: "/athlete/session/",
                   }}
+                  loading={loading}
                 />
               </div>
             </section>

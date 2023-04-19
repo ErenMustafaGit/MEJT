@@ -11,6 +11,7 @@ export default function DataGrid({
   onRowClick,
   emptyString = "No data",
   clickCondition,
+  loading = false,
 }: {
   header: DataHeader[];
   data: DataGridData[];
@@ -22,6 +23,7 @@ export default function DataGrid({
         path: string;
       }
     | undefined;
+  loading?: boolean;
 }) {
   const router = useRouter();
   return (
@@ -35,7 +37,7 @@ export default function DataGrid({
             return (
               <div
                 key={index}
-                className={`flex h-12 w-full items-center justify-center border-b-4 border-gray-200 bg-gray-50 text-sm font-bold font-medium text-gray-500`}
+                className={`flex h-12 w-full items-center justify-center border-b-4 border-gray-200 bg-gray-50 text-sm font-bold  text-gray-500`}
               >
                 <Balancer className="text-xs font-bold md:text-base lg:text-lg">
                   {item.name}
@@ -44,10 +46,17 @@ export default function DataGrid({
             );
           })}
       </div>
-      {data.length === 0 && (
+      {data.length === 0 && !loading && (
         <div className="flex h-full w-full items-center justify-center p-2">
           <Balancer className="text-italic text-sm italic text-gray-400 md:text-base lg:text-lg">
             {emptyString}
+          </Balancer>
+        </div>
+      )}
+      {data.length === 0 && loading && (
+        <div className="flex h-full w-full items-center justify-center p-2">
+          <Balancer className="text-italic text-sm italic text-gray-400 md:text-base lg:text-lg">
+            Loading...
           </Balancer>
         </div>
       )}
@@ -101,9 +110,9 @@ export default function DataGrid({
                           {formatDateYYYYMMDD(item[header.slug])}
                         </Balancer>
                       ) : (
-                        <Balancer className="truncate text-ellipsis xl:overflow-visible">
+                        <p className="flex w-44 justify-center overflow-visible truncate text-ellipsis">
                           {item[header.slug]}
-                        </Balancer>
+                        </p>
                       )}
                     </div>
                   );
