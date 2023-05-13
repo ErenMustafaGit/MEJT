@@ -21,6 +21,47 @@ MEJT is a training app. It allows you to create and manage your training session
 - email: athlete@mejt.fr
 - password: MEJT1MEJT
 
+## **📷 Galerie**
+
+<table>
+    <thead>
+        <tr>
+            <th>Home</th>
+            <th>Register</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr>
+            <td><img target="_blank" alt="Home" src="./images/home_page.png"/></td>
+            <td><img target="_blank" alt="Register" src="./images/register_page.png"></td>
+        </tr>
+    </tbody>
+     <thead>
+        <tr>
+            <th>Trainer Dashboard</th>
+            <th>Team creation (Trainer)</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr>
+            <td><img target="_blank" alt="Trainer Dashboard" src="./images/trainer_dashboard.png"></td>
+            <td><img target="_blank" alt="Team creation (Trainer)" src="./images/team_creation.png"></td>
+        </tr>
+    </tbody>
+    <thead>
+        <tr>
+            <th>Athlete dashboard</th>
+            <th>Feedback detail</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr>
+            <td><img target="_blank" alt="Objectif pédagogique" src="./images/athlete_dashboard.png" /></td>
+            <td><img target="_blank"  alt="Feedback detail"src="./images/feedback_detail.png" /></td>
+        </tr>
+    </tbody>
+</table>
+
 ## Tech Stack + Features
 
 ### Frameworks
